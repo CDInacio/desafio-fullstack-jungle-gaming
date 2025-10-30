@@ -1,3 +1,4 @@
+import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
@@ -12,40 +13,72 @@ export class AppService {
   ) {}
 
   async createTask(task: CreateTaskDto) {
-    const newTask = new TaskEntity();
-    newTask.title = task.title;
-    newTask.description = task.description;
-    newTask.status = TaskStatus[task.status ?? TaskStatus.TODO];
-    newTask.priority = TaskPriority[task.priority ?? TaskPriority.MEDIUM];
-    newTask.deadline = task.deadline;
-    newTask.createdBy = task.createdBy;
+    try {
+      const newTask = new TaskEntity();
+      newTask.title = task.title;
+      newTask.description = task.description;
+      newTask.status = TaskStatus[task.status ?? TaskStatus.TODO];
+      newTask.priority = TaskPriority[task.priority ?? TaskPriority.MEDIUM];
+      newTask.deadline = task.deadline;
+      newTask.createdBy = task.createdBy;
 
-    const respose = await this.taskRepository.save(newTask);
-    return respose;
+      const respose = await this.taskRepository.save(newTask);
+      return respose;
+    } catch (error) {
+      throw new RpcException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to create task',
+        error: error.message,
+      });
+    }
   }
 
   async getTaskById(id: string) {
-    const task = await this.taskRepository.findOne({ where: { id } });
+    try {
+      const task = await this.taskRepository.findOne({ where: { id } });
 
-    if (!task)
-      throw new HttpException(
-        `Task with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      if (!task) {
+        throw new RpcException({
+          statusCode: 404,
+          message: `Task with ID ${id} not found`,
+        });
+      }
 
-    return task;
+      return task;
+    } catch (error) {
+      if (error instanceof RpcException) {
+        throw error;
+      }
+
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Failed to get task',
+        error: error.message,
+      });
+    }
   }
 
   async deleteTaskById(id: string) {
-    const result = await this.taskRepository.delete(id);
+    try {
+      const result = await this.taskRepository.delete(id);
+      if (result.affected === 0) {
+        throw new RpcException({
+          statusCode: 404,
+          message: `Task with ID ${id} not found`,
+        });
+      }
 
-    if (result.affected === 0) {
-      throw new HttpException(
-        `Task with ID ${id} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      return { message: `Task with ID ${id} deleted successfully` };
+    } catch (error) {
+      if (error instanceof RpcException) {
+        throw error;
+      }
+
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Failed to delete task',
+        error: error.message,
+      });
     }
-
-    return { message: `Task with ID ${id} deleted successfully` };
   }
 }
