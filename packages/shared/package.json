@@ -1,0 +1,41 @@
+{
+  "extends": "@repo/typescript-config/react-library.json",
+  "name": "@repo/shared",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./user": {
+      "types": "./src/dto/user.dto.ts",
+      "default": "./dist/dto/user.dto.js"
+    },
+    "./task": {
+      "types": "./src/dto/task.dto.ts",
+      "default": "./dist/dto/task.dto.js"
+    },
+    "./exceptions/rpc": {
+      "types": "./src/exceptions/rpc.ts",
+      "default": "./dist/exceptions/rpc.js"
+    },
+    "./entities/task": {
+      "types": "./src/entities/task.entity.ts",
+      "default": "./dist/entities/task.entity.js"
+    },
+    "./entities/user": {
+      "types": "./src/entities/user.entity.ts",
+      "default": "./dist/entities/user.entity.js"
+    },
+    "./index": {
+      "types": "./src/constants/index.ts",
+      "default": "./dist/constants/index.js"
+    }
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "typescript": "latest"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,21 @@
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
+
+export class TaskEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id?: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  title: string;
+
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Column({ type: 'varchar', length: 50, default: 'TODO' })
+  status: string;
+
+  @Column({ type: 'varchar', length: 50, default: 'MEDIUM' })
+  priority: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  deadline?: Date;
+}
