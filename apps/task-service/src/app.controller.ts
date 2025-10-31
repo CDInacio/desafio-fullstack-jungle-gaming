@@ -5,7 +5,7 @@ import {
 } from '@nestjs/microservices';
 import { Controller, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import type { CreateTaskDto } from '@repo/shared/task';
+import { CreateTaskDto } from '@repo/shared/task';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 
 @Controller()

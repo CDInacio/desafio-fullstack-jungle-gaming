@@ -1,7 +1,7 @@
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Controller, Get, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
-import type { NotificationsGateway } from './notifications.gateway';
+import { NotificationsGateway } from './notifications.gateway';
 
 @Controller()
 export class AppController {

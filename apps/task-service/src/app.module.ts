@@ -10,6 +10,7 @@ import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([TaskEntity]),
     ClientsModule.register([
       {
         name: NOTIFICATION_SERVICE_RABBITMQ,
@@ -25,7 +26,6 @@ import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
-    TypeOrmModule.forFeature([TaskEntity]),
   ],
   controllers: [AppController],
   providers: [AppService],
