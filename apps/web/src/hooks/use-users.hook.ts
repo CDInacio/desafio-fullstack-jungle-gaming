@@ -14,16 +14,7 @@ export function useLogin() {
       toast.error("Erro ao fazer login", { description: error.message });
     },
     onSuccess: (data) => {
-      if (data && data.data.token) {
-        login(data.data.token, data.data.user);
-        toast.success("Login realizado com sucesso", {
-          description: "Você será redirecionado para a página inicial.",
-        });
-
-        setTimeout(() => {
-          navigate({ to: "/home" as any });
-        }, 1500);
-      }
+      login(data.data.token, data.data.user);
     },
   });
 }

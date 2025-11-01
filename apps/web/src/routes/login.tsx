@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ILogin } from "@/types/auth";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { useLogin } from "@/hooks/use-users.hook";
 
@@ -23,6 +23,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginComponent() {
   const { mutate: login } = useLogin();
+  const navigate = useNavigate();
 
   const form = useForm<ILogin>({
     defaultValues: {
@@ -32,7 +33,11 @@ function LoginComponent() {
   });
 
   function onSubmit(data: ILogin) {
-    login(data);
+    login(data, {
+      onSuccess: () => {
+        navigate({ to: "/home" as any });
+      },
+    });
     // toast.success("Login realizado com sucesso!", {
     //   description: "Voce será redicionado para a página inicial.",
     // });
