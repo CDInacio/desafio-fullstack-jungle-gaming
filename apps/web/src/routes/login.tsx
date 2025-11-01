@@ -38,7 +38,7 @@ function LoginComponent() {
         toast.success("Login realizado com sucesso!", {
           description: "Voce será redicionado para a página inicial.",
         });
-        // navigate({ to: "/home" as any });
+        navigate({ to: "/home" as any });
       },
     });
     // console.log(data);
