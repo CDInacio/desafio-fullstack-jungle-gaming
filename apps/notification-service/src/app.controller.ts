@@ -15,7 +15,6 @@ export class AppController {
   async handleTaskCreated(@Payload() payload: any) {
     console.log('Received task.created payload:', payload);
     this.logger.log('task.created received');
-    console.log(payload.assignments);
     const userIds = extractUserIds(payload).map(String);
     this.gateway.emitToUsers('task.created', payload, userIds);
     return { status: 'Notification sent' };

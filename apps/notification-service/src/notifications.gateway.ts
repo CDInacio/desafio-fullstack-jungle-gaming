@@ -47,6 +47,7 @@ export class NotificationsGateway
       });
 
       const userId = String(decoded.sub || decoded['userId'] || decoded['id']);
+
       if (!userId) {
         this.logger.warn(`Connection rejected: Token has no user identifier`);
         client.disconnect();
