@@ -27,6 +27,10 @@
       "types": "./src/entities/user.entity.ts",
       "default": "./dist/entities/user.entity.js"
     },
+    "./entities/task-assignment": {
+      "types": "./src/entities/task-assignment.entity.ts",
+      "default": "./dist/entities/task-assignment.entity.js"
+    },
     "./index": {
       "types": "./src/constants/index.ts",
       "default": "./dist/constants/index.js"
