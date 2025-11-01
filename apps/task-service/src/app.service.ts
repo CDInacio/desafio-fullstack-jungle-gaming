@@ -32,7 +32,11 @@ export class AppService {
         const savedTask = await manager.save(newTask);
 
         // Create task assignments if assignedUsers are provided
-        if (task.assignedUsers && task.assignedUsers.length > 0) {
+        if (
+          savedTask.id &&
+          task.assignedUsers &&
+          task.assignedUsers.length > 0
+        ) {
           const assignments = task.assignedUsers.map((user) => {
             return manager.create(TaskAssignmentEntity, {
               taskId: savedTask.id,
