@@ -34,10 +34,6 @@ export class AssignedUserDto {
   @IsString()
   @IsOptional()
   email?: string;
-
-  @IsString()
-  @IsOptional()
-  password?: string;
 }
 
 export class CreateTaskDto {
