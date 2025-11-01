@@ -25,6 +25,7 @@ const queryClient = new QueryClient();
 function NotificationsConnector() {
   const { token } = useAuth();
   const qc = useQueryClient();
+
   useNotifications(token, {
     onTaskCreated: (payload) => {
       // exemplo: invalidar lista de tarefas e mostrar toast

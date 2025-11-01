@@ -80,10 +80,7 @@ function RouteComponent() {
   const handleRemoveAssignedUser = (userId: string) => {
     setAssignedUsers((prev) => prev.filter((user) => user.id !== userId));
   };
-
   const handleCreateTask = () => {
-    const user = useAuth();
-    console.log(user);
     const assignedUsersDto: AssignedUser[] = assignedUsers
       .filter((u) => u?.id)
       .map((u) => ({

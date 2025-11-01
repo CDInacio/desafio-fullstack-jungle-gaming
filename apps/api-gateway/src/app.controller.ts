@@ -83,10 +83,7 @@ export class AppController {
   @Post('tasks')
   async createTask(@Body() body: CreateTaskDto) {
     try {
-      const res = await firstValueFrom(
-        this.taskClient.send('task.created', body),
-      );
-      console.log(res); // return { message: 'Task creation event emitted' };
+      await firstValueFrom(this.taskClient.send('task.created', body));
     } catch (error) {
       this.logger.error('Error emitting task creation event:', error);
       throw new HttpException(
