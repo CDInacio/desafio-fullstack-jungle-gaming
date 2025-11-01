@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { hashSync as bcryptHashSync } from 'bcrypt';
 import { UserDto } from './user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '@repo/shared/entities/user';
+import { UserEntity } from 'src/db/entities/user.entity';
 
 @Injectable()
 export class UsersService {

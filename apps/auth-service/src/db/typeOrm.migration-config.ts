@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { DataSourceOptions } from 'typeorm';
 import { DataSource } from 'typeorm';
-import { UserEntity } from '@repo/shared/entities/user';
+import { UserEntity } from 'src/db/entities/user.entity';
 config();
 
 const configService = new ConfigService();
