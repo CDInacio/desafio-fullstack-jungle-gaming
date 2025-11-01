@@ -25,7 +25,6 @@ const queryClient = new QueryClient();
 function NotificationsConnector() {
   const { token } = useAuth();
   const qc = useQueryClient();
-
   useNotifications(token, {
     onTaskCreated: (payload) => {
       // exemplo: invalidar lista de tarefas e mostrar toast
@@ -54,11 +53,11 @@ function NotificationsConnector() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
         <AppWithRouter />
-      </AuthProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </AuthProvider>
   );
 }
 

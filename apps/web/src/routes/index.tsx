@@ -51,19 +51,18 @@ const priorities = [
 
 function RouteComponent() {
   const qc = useQueryClient();
-  const { token } = useAuth();
+  const user = useAuth();
+  // const onTaskCreated = useCallback(
+  //   (payload: any) => {
+  //     qc.invalidateQueries({ queryKey: ["tasks"] });
+  //     toast.success("Novo comentário nessa tarefa");
+  //   },
+  //   [qc]
+  // );
 
-  const onTaskCreated = useCallback(
-    (payload: any) => {
-      qc.invalidateQueries({ queryKey: ["tasks"] });
-      toast.success("Novo comentário nessa tarefa");
-    },
-    [qc]
-  );
-
-  useNotifications(token, {
-    onTaskCreated,
-  });
+  // useNotifications(token, {
+  //   onTaskCreated,
+  // });
 
   return (
     <Layout>

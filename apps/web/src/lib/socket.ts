@@ -7,8 +7,7 @@ let socket: Socket | null = null;
 export function createSocket(accessToken?: string) {
   if (socket) return socket;
 
-  const url =
-    import.meta.env.VITE_NOTIFICATIONS_WS_URL || "http://localhost:3005";
+  const url = "http://localhost:3005";
   socket = io(url, {
     auth: {
       token: accessToken,

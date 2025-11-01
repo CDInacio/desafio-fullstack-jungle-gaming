@@ -82,6 +82,8 @@ function RouteComponent() {
   };
 
   const handleCreateTask = () => {
+    const user = useAuth();
+    console.log(user);
     const assignedUsersDto: AssignedUser[] = assignedUsers
       .filter((u) => u?.id)
       .map((u) => ({

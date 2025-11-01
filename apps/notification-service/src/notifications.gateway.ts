@@ -35,7 +35,7 @@ export class NotificationsGateway
     try {
       const token =
         client.handshake.auth?.token || client.handshake.query?.token;
-
+      this.logger.log(`Token received: ${token ? 'yes' : 'no'}`);
       if (!token) {
         this.logger.warn(`Connection rejected: No token provided`);
         client.disconnect();
@@ -43,7 +43,6 @@ export class NotificationsGateway
       }
 
       if (!process.env.JWT_SECRET) {
-        // log explícito para facilitar debug (caso o registerAsync não tenha sido colocado)
         this.logger.warn(
           'Connection rejected: JWT_SECRET is not set in environment',
         );
@@ -54,6 +53,8 @@ export class NotificationsGateway
       const decoded = this.jwtService.verify<DecodedToken>(token as string, {
         secret: process.env.JWT_SECRET,
       });
+      if (!decoded)
+        this.logger.log(`Decoded token: ${JSON.stringify(decoded)}`);
 
       const userId = String(decoded.sub || decoded['userId'] || decoded['id']);
 
