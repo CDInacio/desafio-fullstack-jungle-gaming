@@ -30,6 +30,7 @@ export class AppService {
 
         const savedTask = await manager.save(TaskEntity, newTask);
 
+        let savedAssignments: TaskAssignmentEntity[] = [];
         if (
           savedTask.id &&
           task.assignedUsers &&
@@ -42,10 +43,19 @@ export class AppService {
               assignedBy: task.createdBy,
             });
           });
-          await manager.save(TaskAssignmentEntity, assignments);
+          savedAssignments = await manager.save(
+            TaskAssignmentEntity,
+            assignments,
+          );
         }
 
-        return savedTask;
+        // Recarrega a task com as assignments usando o mesmo manager (dentro da transaction)
+        const taskWithAssignments = await manager.findOne(TaskEntity, {
+          where: { id: savedTask.id },
+          relations: ['assignments'],
+        });
+
+        return taskWithAssignments;
       });
 
       const response = {

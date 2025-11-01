@@ -14,33 +14,59 @@ export class AppController {
   @MessagePattern('task.created')
   async handleTaskCreated(@Payload() payload: any) {
     this.logger.log('task.created received');
+    console.log(payload.assignments);
     const userIds = extractUserIds(payload).map(String);
-    console.log('Notifying...:');
+    console.log(userIds);
     this.gateway.emitToUsers('task.created', payload, userIds);
 
     return { status: 'Notification sent' };
   }
 }
 
-function extractUserIds(payload: any): (string | number)[] {
+function extractUserIds(payload: any): string[] {
   if (!payload) return [];
-  // possiveis campos
-  if (Array.isArray(payload.assigneeIds) && payload.assigneeIds.length) {
-    return payload.assigneeIds;
+
+  const task = payload.data ?? payload.task ?? payload;
+
+  try {
+    console.log('Received payload:', JSON.stringify(payload, null, 2));
+  } catch (err) {
+    console.dir(payload, { depth: null });
   }
-  if (Array.isArray(payload.assignees) && payload.assignees.length) {
-    return payload.assignees.map((a) => a.id || a.userId);
+
+  const candidates =
+    task?.assignments ??
+    task?.assignedUsers ??
+    task?.assignees ??
+    task?.participantIds ??
+    task?.assigneeIds ??
+    [];
+
+  const ids = new Set<string>();
+
+  if (Array.isArray(candidates) && candidates.length > 0) {
+    candidates.forEach((item) => {
+      if (!item) return;
+
+      if (typeof item === 'string' || typeof item === 'number') {
+        ids.add(String(item));
+        return;
+      }
+
+      if (item.userId) ids.add(String(item.userId));
+      else if (item.user_id) ids.add(String(item.user_id));
+      else if (item.id) ids.add(String(item.id));
+      else if (item.assignedTo) ids.add(String(item.assignedTo));
+      else if (item.user && (item.user.id || item.userId))
+        ids.add(String(item.user.id ?? item.userId));
+    });
   }
-  // para comentários: participantes, subscribers, members...
-  if (Array.isArray(payload.participantIds) && payload.participantIds.length) {
-    return payload.participantIds;
+
+  // campos únicos no próprio task (fallback)
+  const fallbacks = ['userId', 'creatorId', 'createdBy', 'created_by'];
+  for (const f of fallbacks) {
+    if (task && (task as any)[f]) ids.add(String((task as any)[f]));
   }
-  // fallback: if payload contains userId
-  if (payload.userId) return [payload.userId];
-  if (payload.creatorId) return [payload.creatorId];
-  // If task present, try task.assignees
-  if (payload.task && Array.isArray(payload.task.assignees)) {
-    return payload.task.assignees.map((a) => a.id || a.userId);
-  }
-  return [];
+
+  return Array.from(ids);
 }

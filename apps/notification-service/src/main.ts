@@ -11,7 +11,8 @@ async function bootstrap() {
     origin: process.env.FRONTEND_ORIGIN || '*',
   });
 
-  await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  // Conectar o microservice RMQ ao app e iniciar todos microservices
+  app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://user:password@localhost:5672'],
@@ -25,6 +26,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.useGlobalFilters(new ExceptionFilter());
+
+  await app.startAllMicroservices();
+  Logger.log('🚀 Notification microservice connected to RabbitMQ');
 
   const port = Number(process.env.PORT) || 3005;
 

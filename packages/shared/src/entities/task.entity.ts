@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { TaskAssignmentEntity } from "./task-assignment.entity";
 
 @Entity("tasks")
 export class TaskEntity {
@@ -36,4 +37,7 @@ export class TaskEntity {
     name: "updated_at",
   })
   updatedAt?: Date;
+
+  @OneToMany(() => TaskAssignmentEntity, (assignment) => assignment.task)
+  assignments?: TaskAssignmentEntity[];
 }

@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { TaskEntity } from "./task.entity";
 
 @Entity("task_assignments")
 export class TaskAssignmentEntity {
@@ -20,4 +27,8 @@ export class TaskAssignmentEntity {
 
   @Column({ type: "uuid", name: "assigned_by" })
   assignedBy: string;
+
+  @ManyToOne(() => TaskEntity, (task) => task.assignments)
+  @JoinColumn({ name: "task_id" })
+  task?: TaskEntity;
 }
