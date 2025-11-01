@@ -38,9 +38,9 @@ export function useNotifications(
     });
 
     return () => {
-      socket.off("task:created", onTaskCreated);
-      socket.off("task:updated", onTaskUpdated);
-      socket.off("comment:new", onCommentNew);
+      socket.off("task.created", onTaskCreated);
+      socket.off("task.updated", onTaskUpdated);
+      socket.off("comment.new", onCommentNew);
       // we keep the connection alive across routes by not disconnecting
       // if you want to disconnect, call disconnectSocket() here.
     };

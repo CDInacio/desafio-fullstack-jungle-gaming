@@ -72,7 +72,7 @@ function AppWithRouter() {
 
   return (
     <>
-      <NotificationsConnector />
+      {/* <NotificationsConnector /> */}
       <RouterProvider router={router} context={{ auth }} />
     </>
   );

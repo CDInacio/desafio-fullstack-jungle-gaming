@@ -26,6 +26,10 @@ import {
   SelectGroup,
 } from "@/components/ui/select";
 import { useAuth } from "@/context/auth-context";
+import { useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useNotifications } from "@/hooks/use-notification";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -46,7 +50,21 @@ const priorities = [
 ];
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const qc = useQueryClient();
+  const { token } = useAuth();
+
+  const onTaskCreated = useCallback(
+    (payload: any) => {
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+      toast.success("Novo comentário nessa tarefa");
+    },
+    [qc]
+  );
+
+  useNotifications(token, {
+    onTaskCreated,
+  });
+
   return (
     <Layout>
       <CenteredContainer className="text-input">

@@ -79,6 +79,7 @@ export class NotificationsGateway
 
   emitToUsers(event: string, payload: any, userIds: string[] | number[]) {
     if (!userIds || userIds.length === 0) return;
+    console.log(userIds, event, payload);
     for (const id of userIds) {
       const room = this.roomForUser(String(id));
       this.server.to(room).emit(event, payload);
