@@ -25,6 +25,7 @@ export function useNotifications(
       console.log("socket event task.created", payload);
       handlers?.onTaskCreated?.(payload);
     };
+
     const onTaskUpdated = (payload: any) => {
       console.log("socket event task.updated", payload);
       handlers?.onTaskUpdated?.(payload);

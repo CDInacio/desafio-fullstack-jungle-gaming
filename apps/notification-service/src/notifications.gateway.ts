@@ -53,6 +53,8 @@ export class NotificationsGateway
       const decoded = this.jwtService.verify<DecodedToken>(token as string, {
         secret: process.env.JWT_SECRET,
       });
+      this.logger.log(`Token decoded successfully`);
+      this.logger.log(`Decoded token: ${JSON.stringify(decoded)}`);
       if (!decoded)
         this.logger.log(`Decoded token: ${JSON.stringify(decoded)}`);
 
@@ -90,7 +92,7 @@ export class NotificationsGateway
 
   emitToUsers(event: string, payload: any, userIds: string[] | number[]) {
     if (!userIds || userIds.length === 0) return;
-    console.log(userIds, event, payload);
+    // console.log(userIds, event, payload);
     for (const id of userIds) {
       const room = this.roomForUser(String(id));
       this.server.to(room).emit(event, payload);

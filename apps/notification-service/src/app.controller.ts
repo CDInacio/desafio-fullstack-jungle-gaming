@@ -13,7 +13,7 @@ export class AppController {
 
   @MessagePattern('task.created')
   async handleTaskCreated(@Payload() payload: any) {
-    console.log('Received task.created payload:', payload);
+    // console.log('Received task.created payload:', payload);
     this.logger.log('task.created received');
     const userIds = extractUserIds(payload).map(String);
     this.gateway.emitToUsers('task.created', payload, userIds);
@@ -27,7 +27,7 @@ function extractUserIds(payload: any): string[] {
   const task = payload.data ?? payload.task ?? payload;
 
   try {
-    console.log('Received payload:', JSON.stringify(payload, null, 2));
+    // console.log('Received payload:', JSON.stringify(payload, null, 2));
   } catch (err) {
     console.dir(payload, { depth: null });
   }
