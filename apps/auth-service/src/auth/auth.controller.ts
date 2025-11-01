@@ -31,4 +31,15 @@ export class AuthController {
       return { error: error.message };
     }
   }
+
+  @MessagePattern('users.get')
+  async getUsers() {
+    try {
+      const result = await this.authService.getUsers();
+      return result;
+    } catch (error) {
+      console.error('Get users error in microservice:', error);
+      return { error: error.message };
+    }
+  }
 }

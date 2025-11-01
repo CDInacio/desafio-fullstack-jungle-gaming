@@ -30,4 +30,9 @@ export class AuthService {
     console.log(result);
     return result;
   }
+
+  async getUsers() {
+    const result = this.usersService.getUsers();
+    return result;
+  }
 }

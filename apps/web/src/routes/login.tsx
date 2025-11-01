@@ -7,34 +7,49 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { toast } from "sonner";
 
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { ILogin } from "@/types/auth";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useLogin } from "@/hooks/use-users.hook";
+import * as z from "zod";
 
 export const Route = createFileRoute("/login")({
+  beforeLoad: async ({ context }) => {
+    if (context.auth.isAuthenticated) {
+      throw redirect({
+        to: "/home",
+      });
+    }
+  },
   component: LoginComponent,
 });
 
+const formSchema = z.object({
+  email: z.string().email("E-mail inválido"),
+  password: z.string().min(6, {
+    message: "A senha deve ter pelo menos 6 caracteres.",
+  }),
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 function LoginComponent() {
   const { mutate: login } = useLogin();
-  const navigate = useNavigate();
 
-  const form = useForm<ILogin>({
+  const form = useForm<FormData>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
   // General001!
-  function onSubmit(data: ILogin) {
+  const onSubmit: SubmitHandler<FormData> = async (data: ILogin) => {
     login(data);
-  }
+  };
 
   return (
     <main className="flex items-center justify-center w-shcree h-screen">

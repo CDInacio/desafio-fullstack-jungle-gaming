@@ -35,4 +35,8 @@ export class UsersService {
 
     return foundUser;
   }
+
+  async getUsers(): Promise<UserEntity[]> {
+    return this.userEntity.find();
+  }
 }

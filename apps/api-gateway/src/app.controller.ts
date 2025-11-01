@@ -132,4 +132,22 @@ export class AppController {
       );
     }
   }
+
+  // ================================ USERS ==================================
+
+  @Get('/users')
+  async getUsers() {
+    try {
+      const result = await firstValueFrom(
+        this.authClient.send('users.get', {}),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error emitting users get event:', error);
+      throw new HttpException(
+        'Failed to emit users get event',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

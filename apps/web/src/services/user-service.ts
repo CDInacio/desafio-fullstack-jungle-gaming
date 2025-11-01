@@ -30,6 +30,15 @@ export class UserService {
       throw handleApiError(error);
     }
   }
+
+  async getUsers() {
+    try {
+      const { data: result } = await api.get("/api/users");
+      return result;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
 }
 
 export const userService = new UserService();

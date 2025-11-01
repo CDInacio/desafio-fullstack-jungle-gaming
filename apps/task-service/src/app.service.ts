@@ -14,24 +14,25 @@ export class AppService {
   ) {}
 
   async createTask(task: CreateTaskDto) {
-    try {
-      const result = await this.dataSource.transaction(async (manager) => {
-        const newTask = manager.create(TaskEntity, {
-          title: task.title,
-          description: task.description,
-          status: TaskStatus.IN_PROGRESS,
-          priority: TaskPriority.MEDIUM,
-        });
-        return await manager.save(newTask);
-      });
+    console.log(task);
+    // try {
+    //   const result = await this.dataSource.transaction(async (manager) => {
+    //     const newTask = manager.create(TaskEntity, {
+    //       title: task.title,
+    //       description: task.description,
+    //       status: TaskStatus.IN_PROGRESS,
+    //       priority: TaskPriority.MEDIUM,
+    //     });
+    //     return await manager.save(newTask);
+    //   });
 
-      const respose = {
-        statusCode: HttpStatus.CREATED,
-        message: 'Task created successfully',
-        data: result,
-      };
-      return respose;
-    } catch (error) {}
+    //   const respose = {
+    //     statusCode: HttpStatus.CREATED,
+    //     message: 'Task created successfully',
+    //     data: result,
+    //   };
+    //   return respose;
+    // } catch (error) {}
   }
 
   async getTaskById(id: string) {
