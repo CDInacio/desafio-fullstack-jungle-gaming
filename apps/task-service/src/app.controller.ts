@@ -17,6 +17,8 @@ export class AppController {
     const result = await this.appService.createTask(payload);
 
     this.notificationClient.emit('task.created', result);
+
+    return result;
   }
 
   @MessagePattern('task.get')

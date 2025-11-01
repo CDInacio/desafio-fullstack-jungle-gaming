@@ -11,13 +11,14 @@ export class AppController {
   ) {}
   private logger = new Logger('AppController');
 
-  @MessagePattern('task-created')
+  @MessagePattern('task.created')
   async handleTaskCreated(@Payload() payload: any) {
-    this.logger.log('task:created received');
+    this.logger.log('task.created received');
     const userIds = extractUserIds(payload).map(String);
-    this.gateway.emitToUsers('task:created', payload, userIds);
+    console.log('Notifying...:');
+    this.gateway.emitToUsers('task.created', payload, userIds);
 
-    return this.appService.getHello();
+    return { status: 'Notification sent' };
   }
 }
 
