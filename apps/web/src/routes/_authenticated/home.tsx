@@ -29,6 +29,9 @@ import { useUsers } from "@/hooks/use-users.hook";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import type { IUser } from "@/types/auth";
+import { useCreateTask } from "@/hooks/use-tasks.hook";
+import type { ITask } from "@/types/task";
+import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: RouteComponent,
@@ -49,7 +52,9 @@ const priorities = [
 ];
 
 function RouteComponent() {
+  const { user } = useAuth();
   const { data: users } = useUsers();
+  const { mutate: createTask } = useCreateTask();
 
   const [assignInput, setAssignInput] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -74,10 +79,15 @@ function RouteComponent() {
     const newTask = {
       title,
       description,
-      status: selectedStatus,
-      priority: selectedPriority,
-      assignedUsers,
+      status: selectedStatus || "TODO",
+      priority: selectedPriority || "MEDIUM",
+      createdBy: user?.id || "",
+      assignments: assignedUsers
+        .map((user) => user.id)
+        .filter((id): id is string => id !== undefined),
     };
+
+    createTask(newTask as ITask);
   };
 
   return (

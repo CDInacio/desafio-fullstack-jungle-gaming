@@ -13,6 +13,7 @@ export class AppController {
 
   @MessagePattern('task.created')
   async handleTaskCreated(@Payload() payload: any) {
+    console.log('Received task.created payload:', payload);
     this.logger.log('task.created received');
     console.log(payload.assignments);
     const userIds = extractUserIds(payload).map(String);

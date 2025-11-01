@@ -29,9 +29,9 @@ export function useNotifications(
       console.log("WS connected", socket.id);
     });
 
-    socket.on("task:created", onTaskCreated);
-    socket.on("task:updated", onTaskUpdated);
-    socket.on("comment:new", onCommentNew);
+    socket.on("task.created", onTaskCreated);
+    socket.on("task.updated", onTaskUpdated);
+    socket.on("comment.new", onCommentNew);
 
     socket.on("disconnect", (reason) => {
       console.log("WS disconnected", reason);

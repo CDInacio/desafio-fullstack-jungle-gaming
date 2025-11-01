@@ -1,17 +1,20 @@
+import type { IUser } from "./auth";
+
 // types/tasks.ts
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
 export interface ITask {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
   status: TaskStatus;
   priority: TaskPriority;
+  assignments: string[];
   deadline?: string;
   createdBy: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ICreateTask {
