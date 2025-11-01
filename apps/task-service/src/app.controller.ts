@@ -1,8 +1,4 @@
-import {
-  MessagePattern,
-  Payload,
-  type ClientProxy,
-} from '@nestjs/microservices';
+import { MessagePattern, Payload, ClientProxy } from '@nestjs/microservices';
 import { Controller, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateTaskDto } from '@repo/shared/task';

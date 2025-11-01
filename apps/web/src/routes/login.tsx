@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Login } from "@/types/auth";
+import type { ILogin } from "@/types/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
@@ -21,14 +21,14 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginComponent() {
-  const form = useForm<Login>({
+  const form = useForm<ILogin>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(data: Login) {
+  function onSubmit(data: ILogin) {
     toast.success("Login realizado com sucesso!", {
       description: "Voce será redicionado para a página inicial.",
     });

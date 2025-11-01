@@ -11,11 +11,11 @@ export interface IRegister {
 }
 
 export interface IUser {
-  id: string;
+  id?: string;
   username: string;
   email: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IAuthResponse {
@@ -23,3 +23,11 @@ export interface IAuthResponse {
   refreshToken: string;
   user: IUser;
 }
+
+export type AuthState = {
+  isAuthenticated: boolean;
+  accessToken: string | null;
+  user: IUser | null;
+  login: (token: string, user: IUser) => void;
+  logout: () => void;
+};

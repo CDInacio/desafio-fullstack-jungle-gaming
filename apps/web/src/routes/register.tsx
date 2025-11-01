@@ -22,6 +22,7 @@ import { type IRegister } from "@/types/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRegister } from "@/hooks/use-users.hook";
 
 export const Route = createFileRoute("/register")({
   component: RegisterComponent,
@@ -48,6 +49,8 @@ const formSchema = z
   });
 
 function RegisterComponent() {
+  const { mutate } = useRegister();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,6 +63,7 @@ function RegisterComponent() {
 
   function onSubmit(data: IRegister) {
     console.log(data);
+    mutate(data);
   }
 
   return (
@@ -80,12 +84,7 @@ function RegisterComponent() {
                     <FormControl>
                       <>
                         <Label htmlFor="username">Nome de usuário</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          required
-                          {...field}
-                        />
+                        <Input id="username" type="text" required {...field} />
                       </>
                     </FormControl>
                     <FormMessage />
@@ -114,7 +113,7 @@ function RegisterComponent() {
                   <FormItem className="mb-5">
                     <FormControl>
                       <>
-                        <Label htmlFor="email">Senha</Label>
+                        <Label htmlFor="password">Senha</Label>
                         <Input
                           id="password"
                           type="password"
@@ -134,7 +133,7 @@ function RegisterComponent() {
                   <FormItem className="">
                     <FormControl>
                       <>
-                        <Label htmlFor="email">Confirmar senha</Label>
+                        <Label htmlFor="confirmPassword">Confirmar senha</Label>
                         <Input
                           id="confirmPassword"
                           type="password"

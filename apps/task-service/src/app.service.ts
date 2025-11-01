@@ -2,7 +2,7 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
-import { Repository, type DataSource } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { TaskEntity } from '@repo/shared/entities/task';
 
 @Injectable()

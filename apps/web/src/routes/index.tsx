@@ -25,6 +25,7 @@ import {
   SelectLabel,
   SelectGroup,
 } from "@/components/ui/select";
+import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -45,6 +46,8 @@ const priorities = [
 ];
 
 function RouteComponent() {
+  const { user } = useAuth();
+  console.log(user);
   return (
     <Layout>
       <CenteredContainer className="text-input">
