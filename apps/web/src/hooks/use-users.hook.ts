@@ -16,6 +16,14 @@ export function useLogin() {
     },
     onSuccess: (data) => {
       login(data.data.token, data.data.user);
+
+      toast.success("Login realizado com sucesso!", {
+        description: "Você será redirecionado para a página inicial.",
+      });
+
+      setTimeout(() => {
+        navigate({ to: "/home" as any });
+      }, 100);
     },
   });
 }

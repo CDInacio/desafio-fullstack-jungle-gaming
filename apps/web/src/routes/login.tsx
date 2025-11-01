@@ -33,15 +33,7 @@ function LoginComponent() {
   });
   // General001!
   function onSubmit(data: ILogin) {
-    login(data, {
-      onSuccess: () => {
-        toast.success("Login realizado com sucesso!", {
-          description: "Voce será redicionado para a página inicial.",
-        });
-        navigate({ to: "/home" as any });
-      },
-    });
-    // console.log(data);
+    login(data);
   }
 
   return (
