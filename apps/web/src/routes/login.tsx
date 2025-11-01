@@ -31,16 +31,16 @@ function LoginComponent() {
       password: "",
     },
   });
-
+  // General001!
   function onSubmit(data: ILogin) {
     login(data, {
       onSuccess: () => {
-        navigate({ to: "/home" as any });
+        toast.success("Login realizado com sucesso!", {
+          description: "Voce será redicionado para a página inicial.",
+        });
+        // navigate({ to: "/home" as any });
       },
     });
-    // toast.success("Login realizado com sucesso!", {
-    //   description: "Voce será redicionado para a página inicial.",
-    // });
     // console.log(data);
   }
 
