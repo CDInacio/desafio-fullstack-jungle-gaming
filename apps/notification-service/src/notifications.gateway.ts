@@ -16,7 +16,7 @@ interface DecodedToken {
 @Injectable()
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_ORIGIN,
+    origin: 'http://localhost:5173',
   },
 })
 export class NotificationsGateway
