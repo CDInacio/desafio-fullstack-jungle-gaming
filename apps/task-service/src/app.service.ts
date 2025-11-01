@@ -18,7 +18,7 @@ export class AppService {
 
   async createTask(task: CreateTaskDto) {
     try {
-      const ressult = await this.dataSource.transaction(async (manager) => {
+      const result = await this.dataSource.transaction(async (manager) => {
         const newTask = manager.create(TaskEntity, {
           title: task.title,
           description: task.description,
@@ -49,7 +49,6 @@ export class AppService {
           );
         }
 
-        // Recarrega a task com as assignments usando o mesmo manager (dentro da transaction)
         const taskWithAssignments = await manager.findOne(TaskEntity, {
           where: { id: savedTask.id },
           relations: ['assignments'],
@@ -61,9 +60,8 @@ export class AppService {
       const response = {
         statusCode: HttpStatus.CREATED,
         message: 'Task created successfully',
-        data: ressult,
+        data: result,
       };
-
       return response;
     } catch (error) {
       throw new RpcException({

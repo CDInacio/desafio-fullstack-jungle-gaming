@@ -30,7 +30,13 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import type { IUser } from "@/types/auth";
 import { useCreateTask } from "@/hooks/use-tasks.hook";
-import type { ITask } from "@/types/task";
+import type {
+  AssignedUser,
+  CreateTask,
+  TaskStatus,
+  TaskPriority,
+  ITask,
+} from "@/types/task";
 import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/_authenticated/home")({
@@ -76,15 +82,21 @@ function RouteComponent() {
   };
 
   const handleCreateTask = () => {
-    const newTask = {
+    const assignedUsersDto: AssignedUser[] = assignedUsers
+      .filter((u) => u?.id)
+      .map((u) => ({
+        id: u.id!,
+        username: u.username,
+        email: u.email,
+      }));
+
+    const newTask: CreateTask = {
       title,
-      description,
-      status: selectedStatus || "TODO",
-      priority: selectedPriority || "MEDIUM",
-      createdBy: user?.id || "",
-      assignments: assignedUsers
-        .map((user) => user.id)
-        .filter((id): id is string => id !== undefined),
+      description: description,
+      status: selectedStatus as TaskStatus,
+      priority: selectedPriority as TaskPriority,
+      createdBy: user?.id ?? "",
+      assignedUsers: assignedUsersDto.length > 0 ? assignedUsersDto : undefined,
     };
 
     createTask(newTask as ITask);

@@ -17,9 +17,7 @@ export class AppController {
     this.logger.log('task.created received');
     console.log(payload.assignments);
     const userIds = extractUserIds(payload).map(String);
-    console.log(userIds);
     this.gateway.emitToUsers('task.created', payload, userIds);
-
     return { status: 'Notification sent' };
   }
 }
