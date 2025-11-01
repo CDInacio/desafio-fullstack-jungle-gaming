@@ -16,7 +16,7 @@ export class UsersService {
     const userExists = await this.findByEmail(userData.email);
 
     if (userExists) {
-      throw new ConflictException('User with this email already exists');
+      throw new ConflictException('Endereço de email já está em uso');
     }
 
     const newUser = new UserEntity();

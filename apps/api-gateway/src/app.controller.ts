@@ -72,6 +72,7 @@ export class AppController {
 
       return { message: 'User registered successfully', data: result };
     } catch (error) {
+      console.log(error);
       this.logger.error('Error in register:', error);
       throw error;
     }

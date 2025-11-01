@@ -15,6 +15,9 @@ export function useLogin() {
 export function useRegister() {
   return useMutation<IAuthResponse, Error, IRegister>({
     mutationFn: userService.register,
+    onError: (error) => {
+      toast.error("Erro ao registrar usuário", { description: error.message });
+    },
   });
 }
 
