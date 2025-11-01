@@ -15,12 +15,15 @@ import { Label } from "@/components/ui/label";
 import type { ILogin } from "@/types/auth";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
+import { useLogin } from "@/hooks/use-users.hook";
 
 export const Route = createFileRoute("/login")({
   component: LoginComponent,
 });
 
 function LoginComponent() {
+  const { mutate: login } = useLogin();
+
   const form = useForm<ILogin>({
     defaultValues: {
       email: "",
@@ -29,10 +32,11 @@ function LoginComponent() {
   });
 
   function onSubmit(data: ILogin) {
-    toast.success("Login realizado com sucesso!", {
-      description: "Voce será redicionado para a página inicial.",
-    });
-    console.log(data);
+    login(data);
+    // toast.success("Login realizado com sucesso!", {
+    //   description: "Voce será redicionado para a página inicial.",
+    // });
+    // console.log(data);
   }
 
   return (
@@ -51,10 +55,12 @@ function LoginComponent() {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <>
-                        <Label htmlFor="email">Email</Label>
+                      <div>
+                        <Label htmlFor="email" className="mb-2">
+                          Email
+                        </Label>
                         <Input id="email" type="email" required {...field} />
-                      </>
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}
@@ -65,15 +71,17 @@ function LoginComponent() {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <>
-                        <Label htmlFor="email">Senha</Label>
+                      <div>
+                        <Label htmlFor="email" className="mb-2">
+                          Senha
+                        </Label>
                         <Input
                           id="password"
                           type="password"
                           required
                           {...field}
                         />
-                      </>
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}

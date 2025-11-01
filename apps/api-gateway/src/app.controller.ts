@@ -45,9 +45,9 @@ export class AppController {
       if (result.error)
         throw new HttpException(result.error, HttpStatus.UNAUTHORIZED);
 
-      return { message: 'Login successful', data: result };
+      return { message: 'Login realizado com sucesso.', data: result };
     } catch (error) {
-      this.logger.error('Login failed:', error);
+      this.logger.error('Falha ao realizar o login:', error);
       throw error;
     }
   }

@@ -49,7 +49,7 @@ const formSchema = z
   });
 
 function RegisterComponent() {
-  const { mutate } = useRegister();
+  const { mutate: register, isSuccess } = useRegister();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,8 +62,9 @@ function RegisterComponent() {
   });
 
   function onSubmit(data: IRegister) {
-    console.log(data);
-    mutate(data);
+    register(data);
+
+    if (isSuccess) form.reset();
   }
 
   return (
@@ -82,10 +83,10 @@ function RegisterComponent() {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <>
+                      <div>
                         <Label htmlFor="username">Nome de usuário</Label>
                         <Input id="username" type="text" required {...field} />
-                      </>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -97,10 +98,10 @@ function RegisterComponent() {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <>
+                      <div>
                         <Label htmlFor="email">Email</Label>
                         <Input id="email" type="email" required {...field} />
-                      </>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -112,7 +113,7 @@ function RegisterComponent() {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <>
+                      <div>
                         <Label htmlFor="password">Senha</Label>
                         <Input
                           id="password"
@@ -120,7 +121,7 @@ function RegisterComponent() {
                           required
                           {...field}
                         />
-                      </>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -132,7 +133,7 @@ function RegisterComponent() {
                 render={({ field }) => (
                   <FormItem className="">
                     <FormControl>
-                      <>
+                      <div>
                         <Label htmlFor="confirmPassword">Confirmar senha</Label>
                         <Input
                           id="confirmPassword"
@@ -140,7 +141,7 @@ function RegisterComponent() {
                           required
                           {...field}
                         />
-                      </>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

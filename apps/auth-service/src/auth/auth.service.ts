@@ -15,14 +15,14 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user || !bcryptCompareSync(password, user.password)) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Credenciais inválidas.');
     }
 
-    const payload = { sub: user.id, userName: user.username };
+    const payload = { sub: user.id, user };
 
     const token = this.jwtService.sign(payload);
 
-    return { token, expiresIn: '15m' };
+    return { token, expiresIn: '15m', user };
   }
 
   async register(data: SignupCredentialsDto) {

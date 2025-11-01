@@ -19,14 +19,19 @@ export interface IUser {
 }
 
 export interface IAuthResponse {
-  accessToken: string;
-  refreshToken: string;
+  message: string;
+  data: IData;
+}
+
+interface IData {
+  token: string;
+  expiresIn: string;
   user: IUser;
 }
 
 export type AuthState = {
   isAuthenticated: boolean;
-  accessToken: string | null;
+  token: string | null;
   user: IUser | null;
   login: (token: string, user: IUser) => void;
   logout: () => void;
