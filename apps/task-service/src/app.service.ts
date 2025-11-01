@@ -1,38 +1,67 @@
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
 import { Repository, DataSource } from 'typeorm';
 import { TaskEntity } from '@repo/shared/entities/task';
+import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectRepository(TaskEntity)
     private taskRepository: Repository<TaskEntity>,
+    @InjectRepository(TaskAssignmentEntity)
+    private taskAssignmentRepository: Repository<TaskAssignmentEntity>,
     private dataSource: DataSource,
   ) {}
 
   async createTask(task: CreateTaskDto) {
-    console.log(task);
-    // try {
-    //   const result = await this.dataSource.transaction(async (manager) => {
-    //     const newTask = manager.create(TaskEntity, {
-    //       title: task.title,
-    //       description: task.description,
-    //       status: TaskStatus.IN_PROGRESS,
-    //       priority: TaskPriority.MEDIUM,
-    //     });
-    //     return await manager.save(newTask);
-    //   });
+    try {
+      const ressult = await this.dataSource.transaction(async (manager) => {
+        const newTask = manager.create(TaskEntity, {
+          title: task.title,
+          description: task.description,
+          status: TaskStatus[task.status ?? TaskStatus.TODO],
+          priority: TaskPriority[task.priority ?? TaskPriority.MEDIUM],
+          deadline: task.deadline,
+          createdBy: task.createdBy,
+        });
 
-    //   const respose = {
-    //     statusCode: HttpStatus.CREATED,
-    //     message: 'Task created successfully',
-    //     data: result,
-    //   };
-    //   return respose;
-    // } catch (error) {}
+        const savedTask = await manager.save(TaskEntity, newTask);
+
+        if (
+          savedTask.id &&
+          task.assignedUsers &&
+          task.assignedUsers.length > 0
+        ) {
+          const assignments = task.assignedUsers.map((user) => {
+            return manager.create(TaskAssignmentEntity, {
+              taskId: savedTask.id,
+              userId: user.id,
+              assignedBy: task.createdBy,
+            });
+          });
+          await manager.save(TaskAssignmentEntity, assignments);
+        }
+
+        return savedTask;
+      });
+
+      const response = {
+        statusCode: HttpStatus.CREATED,
+        message: 'Task created successfully',
+        data: ressult,
+      };
+
+      return response;
+    } catch (error) {
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Failed to create task',
+        error: error.message,
+      });
+    }
   }
 
   async getTaskById(id: string) {
