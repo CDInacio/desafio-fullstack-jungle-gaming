@@ -8,8 +8,7 @@ export function createSocket(accessToken?: string) {
   if (socket) return socket;
 
   const url =
-    import.meta.env.NEXT_PUBLIC_NOTIFICATIONS_WS_URL ||
-    "<http://localhost:3004>";
+    import.meta.env.NEXT_PUBLIC_NOTIFICATIONS_WS_URL || "http://localhost:3005";
   socket = io(url, {
     auth: {
       token: accessToken,

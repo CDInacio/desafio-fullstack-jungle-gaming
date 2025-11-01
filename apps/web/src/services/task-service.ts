@@ -21,6 +21,15 @@ export class TaskService {
     }
   }
 
+  async getAll() {
+    try {
+      const { data: result } = await api.get("/api/tasks");
+      return result;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+
   async update(id: string, task: Partial<ITask>) {
     try {
       const { data: result } = await api.put(`/api/tasks/${id}`, task);

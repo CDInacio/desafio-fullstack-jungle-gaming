@@ -1,6 +1,6 @@
 import { taskService } from "@/services/task-service";
 import type { ITask } from "@/types/task";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useCreateTask() {
@@ -13,5 +13,12 @@ export function useCreateTask() {
     onSuccess: () => {
       toast.success("Tarefa criada com sucesso!");
     },
+  });
+}
+
+export function useGetTasks() {
+  return useQuery<ITask[], Error>({
+    queryKey: ["tasks"],
+    queryFn: () => taskService.getAll(),
   });
 }

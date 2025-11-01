@@ -3,7 +3,7 @@ import type { IUser } from "@/types/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export interface AuthState {
-  accessToken: string | null;
+  token: string | null;
   user: IUser | null;
   login: (token: string, userData: IUser) => void;
   logout: () => void;
@@ -15,8 +15,8 @@ const AuthContext = createContext<AuthState | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [accessToken, setAccessToken] = useState<string | null>(() => {
-    const token = localStorage.getItem("accessToken");
+  const [token, setToken] = useState<string | null>(() => {
+    const token = localStorage.getItem("token");
     return token ? token : null;
   });
 
@@ -26,9 +26,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   useEffect(() => {
-    if (accessToken) localStorage.setItem("accessToken", accessToken);
-    else localStorage.removeItem("accessToken");
-  }, [accessToken]);
+    if (token) localStorage.setItem("token", token);
+    else localStorage.removeItem("token");
+  }, [token]);
 
   useEffect(() => {
     if (user) localStorage.setItem("user", JSON.stringify(user));
@@ -36,20 +36,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [user]);
 
   const login = (token: string, userData: IUser): void => {
-    setAccessToken(token);
+    setToken(token);
     setUser(userData);
   };
 
   const logout = (): void => {
-    setAccessToken(null);
+    setToken(null);
     setUser(null);
   };
 
-  const isAuthenticated = !!accessToken && !!user;
+  const isAuthenticated = !!token && !!user;
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, user, login, logout, isAuthenticated }}
+      value={{ token, user, login, logout, isAuthenticated }}
     >
       {children}
     </AuthContext.Provider>

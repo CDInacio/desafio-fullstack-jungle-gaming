@@ -6,7 +6,7 @@ import { useEffect } from "react";
 type Handler = (payload: any) => void;
 
 export function useNotifications(
-  accessToken: string | null,
+  token: string | null,
   handlers?: {
     onTaskCreated?: Handler;
     onTaskUpdated?: Handler;
@@ -14,12 +14,12 @@ export function useNotifications(
   }
 ) {
   useEffect(() => {
-    if (!accessToken) {
+    if (!token) {
       disconnectSocket();
       return;
     }
 
-    const socket = createSocket(accessToken);
+    const socket = createSocket(token);
 
     const onTaskCreated = (payload: any) => handlers?.onTaskCreated?.(payload);
     const onTaskUpdated = (payload: any) => handlers?.onTaskUpdated?.(payload);
@@ -45,7 +45,7 @@ export function useNotifications(
       // if you want to disconnect, call disconnectSocket() here.
     };
   }, [
-    accessToken,
+    token,
     handlers?.onTaskCreated,
     handlers?.onTaskUpdated,
     handlers?.onCommentNew,
