@@ -21,9 +21,18 @@ export function useNotifications(
 
     const socket = createSocket(token);
 
-    const onTaskCreated = (payload: any) => handlers?.onTaskCreated?.(payload);
-    const onTaskUpdated = (payload: any) => handlers?.onTaskUpdated?.(payload);
-    const onCommentNew = (payload: any) => handlers?.onCommentNew?.(payload);
+    const onTaskCreated = (payload: any) => {
+      console.log("socket event task.created", payload);
+      handlers?.onTaskCreated?.(payload);
+    };
+    const onTaskUpdated = (payload: any) => {
+      console.log("socket event task.updated", payload);
+      handlers?.onTaskUpdated?.(payload);
+    };
+    const onCommentNew = (payload: any) => {
+      console.log("socket event comment.new", payload);
+      handlers?.onCommentNew?.(payload);
+    };
 
     socket.on("connect", () => {
       console.log("WS connected", socket.id);

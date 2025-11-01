@@ -42,6 +42,15 @@ export class NotificationsGateway
         return;
       }
 
+      if (!process.env.JWT_SECRET) {
+        // log explícito para facilitar debug (caso o registerAsync não tenha sido colocado)
+        this.logger.warn(
+          'Connection rejected: JWT_SECRET is not set in environment',
+        );
+        client.disconnect();
+        return;
+      }
+
       const decoded = this.jwtService.verify<DecodedToken>(token as string, {
         secret: process.env.JWT_SECRET,
       });
