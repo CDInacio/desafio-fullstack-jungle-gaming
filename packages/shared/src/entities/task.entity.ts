@@ -29,8 +29,8 @@ export class TaskEntity {
   @Column({ type: "timestamp", nullable: true })
   deadline?: Date;
 
-  @Column({ type: "uuid", name: "created_by" })
-  createdBy: string;
+  // @Column({ type: "uuid", name: "created_by" })
+  // createdBy: string;
 
   @Column({
     type: "timestamp",

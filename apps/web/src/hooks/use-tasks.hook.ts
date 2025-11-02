@@ -1,5 +1,10 @@
 import { taskService } from "@/services/task-service";
-import type { CreateTask, ITask, ITaskResponse } from "@/types/task";
+import type {
+  CreateTask,
+  ITask,
+  ITaskResponse,
+  TaskApiResponse,
+} from "@/types/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -19,7 +24,7 @@ export function useCreateTask() {
 }
 
 export function useGetTask(id: string) {
-  return useQuery<ITask, Error>({
+  return useQuery<TaskApiResponse, Error>({
     queryKey: ["task", id],
     queryFn: () => taskService.getById(id),
   });

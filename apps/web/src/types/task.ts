@@ -42,6 +42,12 @@ export interface IAssignment {
   assigner: IUser | null;
 }
 
+export interface TaskApiResponse {
+  statusCode: number;
+  message: string;
+  data: ITask;
+}
+
 export interface ITask {
   id: string;
   title: string;

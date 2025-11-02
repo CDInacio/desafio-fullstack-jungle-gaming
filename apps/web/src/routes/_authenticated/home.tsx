@@ -2,7 +2,6 @@ import Layout from "@/components/layout";
 import CenteredContainer from "@/components/centered-container";
 import { useGetTasks, useCreateTask } from "@/hooks/use-tasks.hook";
 import { useUsers } from "@/hooks/use-users.hook";
-import { useAuth } from "@/context/auth-context";
 import { TaskFormDialog } from "@/components/tasks/task-form-dialog";
 import { TaskTable } from "@/components/tasks/task-table";
 import type { CreateTask } from "@/types/task";
@@ -16,13 +15,9 @@ function RouteComponent() {
   const { data: tasks } = useGetTasks();
   const { data: users } = useUsers();
   const { mutate: createTask } = useCreateTask();
-  const { user } = useAuth();
-  console.log(tasks);
+
   const handleCreateTask = (data: CreateTask) => {
-    createTask({
-      ...data,
-      createdBy: user?.id ?? "",
-    });
+    createTask(data);
   };
 
   return (

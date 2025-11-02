@@ -11,8 +11,6 @@ import {
 import { StatusBadge } from "@/components/status-badge";
 import { PriorityBadge } from "@/components/priority-badge";
 import type { ITask } from "@/types/task";
-import { useUsers } from "@/hooks/use-users.hook";
-import type { IUser } from "@/types/auth";
 import { Link } from "@tanstack/react-router";
 
 interface TaskTableProps {
@@ -20,16 +18,6 @@ interface TaskTableProps {
 }
 
 export function TaskTable({ tasks }: TaskTableProps) {
-  const { data: users } = useUsers();
-
-  // const usersMap: Record<string, string> = (users ?? []).reduce(
-  //   (acc: Record<string, string>, user: IUser) => {
-  //     if (user?.id) acc[user.id] = user.username;
-  //     return acc;
-  //   },
-  //   {}
-  // );
-
   return (
     <Table className="bg-primary/40 backdrop-blur-md border border-border/20 rounded-xl overflow-hidden mt-8">
       <TableCaption className="text-input/60 py-3">
@@ -49,6 +37,9 @@ export function TaskTable({ tasks }: TaskTableProps) {
           </TableHead>
           <TableHead className="text-right text-input font-semibold">
             Criado por
+          </TableHead>
+          <TableHead className="text-right text-input font-semibold">
+            N. att
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -74,9 +65,12 @@ export function TaskTable({ tasks }: TaskTableProps) {
             <TableCell className="text-right text-input/60">
               {task.deadline ?? "Não definido"}
             </TableCell>
-            {/* <TableCell className="text-right text-input/70">
-              {usersMap[task.createdBy] ?? task.createdBy}
-            </TableCell> */}
+            <TableCell className="text-right text-input/70">
+              {task.creator?.username}
+            </TableCell>
+            <TableCell className="text-right text-input/70">
+              {task.assignments.length}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
