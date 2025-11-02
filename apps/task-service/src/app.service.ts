@@ -1,7 +1,13 @@
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
+import {
+  CreateTaskDto,
+  TaskPriority,
+  TaskStatus,
+  type QueryParams,
+} from '@repo/shared/task';
+import { PaginationQuery, PaginatedResponse } from '@repo/shared/pagination';
 import { Repository, DataSource } from 'typeorm';
 import { TaskEntity } from '@repo/shared/entities/task';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
@@ -71,6 +77,57 @@ export class AppService {
         error: error.message,
       });
     }
+  }
+
+  async getTasks(query: PaginationQuery) {
+    try {
+      const page = query.page && query.page > 0 ? query.page : 1;
+      const limit =
+        query.limit && query.limit > 0 && query.limit <= 100 ? query.limit : 10;
+      const sortBy = query.sortBy || 'createdAt';
+      const sortOrder = query.sortOrder || 'DESC';
+
+      const skip = (page - 1) * limit;
+
+      const validSortFields = [
+        'createdAt',
+        'updatedAt',
+        'title',
+        'status',
+        'priority',
+        'deadline',
+      ];
+
+      const orderField = validSortFields.includes(sortBy)
+        ? sortBy
+        : 'createdAt';
+
+      const [tasks, total] = await this.taskRepository.findAndCount({
+        relations: ['assignments'],
+        take: limit,
+        skip: skip,
+        order: {
+          [orderField]: sortOrder,
+        },
+      });
+
+      const totalPages = Math.ceil(total / limit);
+
+      return {
+        message: 'Tasks retrieved successfully',
+        data: {
+          tasks,
+          pagination: {
+            totalItems: total,
+            totalPages: totalPages,
+            currentPage: page,
+            pageLimit: limit,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1,
+          },
+        },
+      };
+    } catch (error) {}
   }
 
   async getTaskById(id: string) {

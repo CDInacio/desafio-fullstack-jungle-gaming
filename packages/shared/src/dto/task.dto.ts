@@ -107,3 +107,8 @@ export class TaskResponseDto {
 export interface FindParams {
   id: string;
 }
+
+export interface QueryParams {
+  page: number;
+  size: number;
+}

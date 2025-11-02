@@ -20,7 +20,7 @@ export class AuthService {
 
     const payload = { sub: user.id, user };
 
-    const token = this.jwtService.sign(payload, { expiresIn: 3600 });
+    const token = this.jwtService.sign(payload);
 
     return { token, user };
   }

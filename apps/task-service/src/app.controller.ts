@@ -1,8 +1,9 @@
 import { MessagePattern, Payload, ClientProxy } from '@nestjs/microservices';
 import { Controller, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateTaskDto } from '@repo/shared/task';
+import { CreateTaskDto, type QueryParams } from '@repo/shared/task';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
+import type { PaginationQuery } from '@repo/shared/pagination';
 
 @Controller()
 export class AppController {
@@ -25,6 +26,12 @@ export class AppController {
   async getTaskById(@Payload() id: string) {
     const task = await this.appService.getTaskById(id);
     console.log(task);
+  }
+
+  @MessagePattern('task.getAll')
+  async getTasks(@Payload() query: PaginationQuery) {
+    const tasks = await this.appService.getTasks(query);
+    return tasks;
   }
 
   @MessagePattern('task.delete')

@@ -10,10 +10,12 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
-import type { CreateTaskDto } from '@repo/shared/task';
+import type { PaginationQuery } from '@repo/shared/pagination';
+import type { CreateTaskDto, QueryParams } from '@repo/shared/task';
 import type {
   SigninCredentialsDto,
   SignupCredentialsDto,
@@ -88,6 +90,33 @@ export class AppController {
       this.logger.error('Error emitting task creation event:', error);
       throw new HttpException(
         'Failed to emit task creation event',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('tasks')
+  async getTasks(
+    @Query('page') page: number,
+    @Query('size') size: number,
+    @Query('sortBy') sortBy: string,
+    @Query('sortOrder') sortOrder: 'ASC' | 'DESC',
+  ) {
+    try {
+      if (page < 1) page = 1;
+      if (size < 1) size = 10;
+      if (size > 100) size = 100;
+
+      const query = { page, size, sortBy, sortOrder };
+
+      const result = await firstValueFrom(
+        this.taskClient.send('task.getAll', query),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error emitting tasks getAll event:', error);
+      throw new HttpException(
+        'Failed to emit tasks getAll event',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
