@@ -2,11 +2,12 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
-import { PaginationQuery, PaginatedResponse } from '@repo/shared/pagination';
+import { PaginationQuery } from '@repo/shared/pagination';
 import { Repository, DataSource } from 'typeorm';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 import { TaskEntity } from '@repo/shared/entities/task';
 import { UserEntity } from '@repo/shared/entities/user';
+import { In } from 'typeorm';
 
 @Injectable()
 export class AppService {
@@ -113,22 +114,46 @@ export class AppService {
           await manager.update(TaskEntity, { id }, fieldsToUpdate as any);
         }
 
+        // ⚙️ Merge inteligente de assignedUsers
         if (
           updateData.assignedUsers &&
           Array.isArray(updateData.assignedUsers)
         ) {
-          await manager.delete(TaskAssignmentEntity, { taskId: id });
+          const existingAssignments = await manager.find(TaskAssignmentEntity, {
+            where: { taskId: id },
+          });
 
-          const assignments = updateData.assignedUsers.map((u) =>
-            manager.create(TaskAssignmentEntity, {
-              taskId: id,
-              userId: u.id,
-              assignedBy: updateData.createdBy ?? existingTask.createdBy ?? '',
-            }),
+          const existingUserIds = existingAssignments.map((a) => a.userId);
+          const newUserIds = updateData.assignedUsers.map((u) => u.id);
+
+          // Identifica quem entra e quem sai
+          const usersToAdd = newUserIds.filter(
+            (uid) => !existingUserIds.includes(uid),
+          );
+          const usersToRemove = existingUserIds.filter(
+            (uid) => !newUserIds.includes(uid),
           );
 
-          if (assignments.length > 0) {
-            await manager.save(TaskAssignmentEntity, assignments);
+          // 🔸 Remove somente quem saiu
+          if (usersToRemove.length > 0) {
+            await manager.delete(TaskAssignmentEntity, {
+              taskId: id,
+              userId: In(usersToRemove),
+            });
+          }
+
+          // 🔹 Adiciona apenas quem é novo
+          if (usersToAdd.length > 0) {
+            const newAssignments = usersToAdd.map((userId) =>
+              manager.create(TaskAssignmentEntity, {
+                taskId: id,
+                userId,
+                assignedBy:
+                  updateData.createdBy ?? existingTask.createdBy ?? '',
+              }),
+            );
+
+            await manager.save(TaskAssignmentEntity, newAssignments);
           }
         }
 
@@ -140,6 +165,7 @@ export class AppService {
           },
         });
 
+        console.log('updated->' + updated?.assignments);
         return updated;
       });
 

@@ -42,20 +42,10 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
 
     setIsLoading(true);
     try {
-      // Aqui você chamaria a API real para atribuir múltiplos usuários
-      console.log("Atribuindo usuários:", {
-        taskId: task.id,
-        users: assignedUsers,
-      });
-
-      // TODO: Chamar API para atribuir usuários
-      // await taskService.assignUsers(task.id, assignedUsers.map(u => u.id));
-
       toast.success(
         `${assignedUsers.length} pessoa(s) atribuída(s) com sucesso!`
       );
 
-      // Fechar modal e resetar
       setOpen(false);
       setAssignedUsers([]);
     } catch (err) {

@@ -39,6 +39,17 @@ export class TaskService {
       throw handleApiError(error);
     }
   }
+  async addAssignments(taskId: string, userIds: string[], assignedBy: string) {
+    try {
+      const { data } = await api.post(`/api/tasks/${taskId}/assignments`, {
+        userIds,
+        assignedBy,
+      });
+      return data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
 }
 
 export const taskService = new TaskService();
