@@ -18,10 +18,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { ITask } from "@/types/task";
+import type { IUser } from "@/types/auth";
 import { useUsers } from "@/hooks/use-users.hook";
+import { AssignedUserInput } from "./assigned-user-input";
+import { toast } from "sonner";
 
 interface TaskAssignmentsCardProps {
   task: ITask;
@@ -29,31 +30,50 @@ interface TaskAssignmentsCardProps {
 
 export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
   const [open, setOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [assignedUsers, setAssignedUsers] = useState<IUser[]>([]);
   const { data: users } = useUsers();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAssignUser = async () => {
-    if (!selectedUserId) return;
+  const handleAssignUsers = async () => {
+    if (assignedUsers.length === 0) {
+      toast.error("Selecione pelo menos um usuário");
+      return;
+    }
 
     setIsLoading(true);
     try {
-      const user = users?.find((u) => u.id === selectedUserId);
-      if (!user) return;
+      // Aqui você chamaria a API real para atribuir múltiplos usuários
+      console.log("Atribuindo usuários:", {
+        taskId: task.id,
+        users: assignedUsers,
+      });
 
-      // Aqui você chamaria a API real
-      console.log("Atribuindo usuário:", { taskId: task.id, user });
+      // TODO: Chamar API para atribuir usuários
+      // await taskService.assignUsers(task.id, assignedUsers.map(u => u.id));
+
+      toast.success(
+        `${assignedUsers.length} pessoa(s) atribuída(s) com sucesso!`
+      );
 
       // Fechar modal e resetar
       setOpen(false);
-      setSelectedUserId(null);
-
-      // toast.success("Pessoa atribuída com sucesso!");
+      setAssignedUsers([]);
     } catch (err) {
-      console.error("Erro ao atribuir usuário:", err);
-      // toast.error("Erro ao atribuir pessoa");
+      console.error("Erro ao atribuir usuários:", err);
+      toast.error("Erro ao atribuir pessoas");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRemoveAssignment = async (userId: string) => {
+    try {
+      // TODO: Chamar API para remover atribuição
+      console.log("Removendo atribuição:", { taskId: task.id, userId });
+      toast.success("Atribuição removida com sucesso!");
+    } catch (err) {
+      console.error("Erro ao remover atribuição:", err);
+      toast.error("Erro ao remover atribuição");
     }
   };
 
@@ -76,28 +96,22 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[425px] bg-zinc-900 border-zinc-800">
+            <DialogContent className="sm:max-w-[525px] bg-[#2a2a2a] border-zinc-800">
               <DialogHeader>
-                <DialogTitle className="text-white">
-                  Adicionar Pessoa
+                <DialogTitle className="text-input text-xl">
+                  Adicionar Pessoas
                 </DialogTitle>
                 <DialogDescription className="text-zinc-400">
-                  Selecione um usuário para atribuir à tarefa.
+                  Selecione os usuários para atribuir à tarefa.
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="grid gap-3 py-4 max-h-64 overflow-y-auto">
-                {users?.map((user) => (
-                  <Button
-                    key={user.id}
-                    variant={selectedUserId === user.id ? "default" : "outline"}
-                    className="w-full justify-start text-white border-zinc-700 hover:bg-zinc-800"
-                    onClick={() => setSelectedUserId(user.id ?? null)}
-                  >
-                    {user.username} -{" "}
-                    <span className="text-zinc-400">{user.email}</span>
-                  </Button>
-                ))}
+              <div className="py-4">
+                <AssignedUserInput
+                  users={users || []}
+                  assignedUsers={assignedUsers}
+                  setAssignedUsers={setAssignedUsers}
+                />
               </div>
 
               <DialogFooter>
@@ -110,8 +124,8 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
                   </Button>
                 </DialogClose>
                 <Button
-                  onClick={handleAssignUser}
-                  disabled={isLoading || !selectedUserId}
+                  onClick={handleAssignUsers}
+                  disabled={isLoading || assignedUsers.length === 0}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   {isLoading ? "Atribuindo..." : "Atribuir"}
@@ -126,23 +140,36 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
         {task.assignments && task.assignments.length > 0 ? (
           <div className="space-y-3">
             {task.assignments.map((a) => (
-              <div key={a.id} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 text-sm font-medium flex-shrink-0">
-                  {a.user?.username?.[0]?.toUpperCase() || "U"}
+              <div
+                key={a.id}
+                className="flex items-center justify-between gap-4 p-2 rounded-lg hover:bg-zinc-800/50 transition-colors"
+              >
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 text-sm font-medium flex-shrink-0">
+                    {a.user?.username?.[0]?.toUpperCase() || "U"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white">
+                      {a.user?.username || "Usuário desconhecido"}
+                    </p>
+                    <p className="text-sm text-zinc-400 truncate">
+                      {a.user?.email || "Email não disponível"}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white">
-                    {a.user?.username || "Usuário desconhecido"}
-                  </p>
-                  <p className="text-sm text-zinc-400 truncate">
-                    {a.user?.email || "Email não disponível"}
-                  </p>
-                </div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => a.userId && handleRemoveAssignment(a.userId)}
+                  className="text-zinc-400 hover:text-red-400 hover:bg-red-950/30 h-8 w-8 p-0"
+                >
+                  ✕
+                </Button>
               </div>
             ))}
           </div>
         ) : (
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 p-2">
             <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 text-sm font-medium">
               U
             </div>
