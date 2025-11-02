@@ -20,7 +20,7 @@ export interface CreateTask {
   status: TaskStatus;
   priority: TaskPriority;
   deadline?: Date | string;
-  createdBy: string;
+  // createdBy: string;
   assignedUsers?: AssignedUser[];
 }
 
@@ -55,7 +55,7 @@ export interface ITask {
   status: TaskStatus;
   priority: TaskPriority;
   deadline: string | null;
-  createdBy: string;
+  // createdBy: string;
   createdAt: string;
   updatedAt: string;
   creator: IUser | null; // ✅ Dados do criador
@@ -80,7 +80,7 @@ export interface FindParams {
   id: string;
 }
 
-export type TaskFormData = Omit<CreateTask, "createdBy">;
+// export type TaskFormData = Omit<CreateTask, "createdBy">;
 
 export type TaskStatusLabel = {
   label: string;

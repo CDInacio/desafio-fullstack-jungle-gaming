@@ -58,9 +58,9 @@ export class CreateTaskDto {
   @IsOptional()
   deadline?: Date;
 
-  @IsString()
-  @IsNotEmpty()
-  createdBy: string;
+  // @IsString()
+  // @IsNotEmpty()
+  // createdBy: string;
 
   @IsArray()
   @ValidateNested({ each: true })

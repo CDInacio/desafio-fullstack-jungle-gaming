@@ -31,7 +31,7 @@ export class AppService {
           status: TaskStatus[task.status ?? TaskStatus.TODO],
           priority: TaskPriority[task.priority ?? TaskPriority.MEDIUM],
           deadline: task.deadline,
-          createdBy: task.createdBy,
+          // createdBy: task.createdBy,
         });
 
         const savedTask = await manager.save(TaskEntity, newTask);
@@ -46,7 +46,7 @@ export class AppService {
             return manager.create(TaskAssignmentEntity, {
               taskId: savedTask.id,
               userId: user.id,
-              assignedBy: task.createdBy,
+              assignedBy: user.id,
             });
           });
           // console.log(assignments);

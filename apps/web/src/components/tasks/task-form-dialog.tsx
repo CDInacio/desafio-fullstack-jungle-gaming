@@ -65,7 +65,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         username: u.username,
         email: u.email,
       })),
-      createdBy: "",
+      // createdBy: "users.id",
     });
 
     // Limpar formulário e fechar dialog

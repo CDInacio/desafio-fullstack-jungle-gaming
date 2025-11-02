@@ -9,11 +9,8 @@ export class Tasks1761773165943 implements MigrationInterface {
                 "status" VARCHAR(50) NOT NULL DEFAULT 'TODO',
                 "priority" VARCHAR(50) NOT NULL DEFAULT 'MEDIUM',
                 "deadline" TIMESTAMP,
-                "created_by" UUID NOT NULL,
                 "created_at" TIMESTAMP NOT NULL DEFAULT NOW(),
                 "updated_at" TIMESTAMP NOT NULL DEFAULT NOW(),
-                CONSTRAINT "fk_tasks_created_by" FOREIGN KEY ("created_by")
-                REFERENCES "user"("id") ON DELETE CASCADE
 );`);
   }
 
