@@ -48,7 +48,7 @@ const items = [
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent className="bg-foreground">
+      <SidebarContent className="bg-primary">
         <SidebarGroup>
           <SidebarGroupLabel className="text-input">
             Application

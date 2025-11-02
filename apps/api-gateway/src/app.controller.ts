@@ -122,15 +122,37 @@ export class AppController {
     }
   }
 
-  @Get('/tasks/:id')
+  @Get('tasks/:id')
   async getTaskById(@Param('id') id: string) {
-    console.log('recieved id:' + id);
     try {
-      this.taskClient.send('task.get', id);
+      this.logger.log(`Fetching task with ID: ${id}`);
+
+      const result = await firstValueFrom(
+        this.taskClient.send('task.get', id).pipe(timeout(5000)),
+      );
+
+      this.logger.log(`Task fetched successfully: ${JSON.stringify(result)}`);
+      return result;
     } catch (error) {
-      this.logger.error('Error emitting task get event:', error);
+      this.logger.error(`Error fetching task: ${JSON.stringify(error)}`);
+
+      // Tratar erros específicos do RPC
+      if (error?.statusCode === 404) {
+        throw new HttpException(
+          error.message || 'Task not found',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      if (error?.statusCode === 400) {
+        throw new HttpException(
+          error.message || 'Invalid UUID format',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       throw new HttpException(
-        'Failed to emit task get event',
+        'Failed to fetch task',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

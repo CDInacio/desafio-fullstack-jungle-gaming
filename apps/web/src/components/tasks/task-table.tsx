@@ -22,13 +22,13 @@ interface TaskTableProps {
 export function TaskTable({ tasks }: TaskTableProps) {
   const { data: users } = useUsers();
 
-  const usersMap: Record<string, string> = (users ?? []).reduce(
-    (acc: Record<string, string>, user: IUser) => {
-      if (user?.id) acc[user.id] = user.username;
-      return acc;
-    },
-    {}
-  );
+  // const usersMap: Record<string, string> = (users ?? []).reduce(
+  //   (acc: Record<string, string>, user: IUser) => {
+  //     if (user?.id) acc[user.id] = user.username;
+  //     return acc;
+  //   },
+  //   {}
+  // );
 
   return (
     <Table className="bg-primary/40 backdrop-blur-md border border-border/20 rounded-xl overflow-hidden mt-8">
@@ -74,9 +74,9 @@ export function TaskTable({ tasks }: TaskTableProps) {
             <TableCell className="text-right text-input/60">
               {task.deadline ?? "Não definido"}
             </TableCell>
-            <TableCell className="text-right text-input/70">
+            {/* <TableCell className="text-right text-input/70">
               {usersMap[task.createdBy] ?? task.createdBy}
-            </TableCell>
+            </TableCell> */}
           </TableRow>
         ))}
       </TableBody>

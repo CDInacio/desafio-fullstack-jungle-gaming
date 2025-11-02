@@ -19,6 +19,12 @@ import {
 } from "@tanstack/react-query";
 import { useNotifications } from "./hooks/use-notification";
 import { toast } from "sonner";
+import type { AuthState } from "./types/auth";
+
+interface MyRouterContext {
+  auth: AuthState; // ou o tipo correto do seu useAuth
+  queryClient: QueryClient;
+}
 
 const queryClient = new QueryClient();
 
@@ -62,10 +68,11 @@ function App() {
 
 function AppWithRouter() {
   const auth = useAuth();
-
   const router = createRouter({
     routeTree,
-    context: { auth },
+    context: {
+      auth,
+    },
   });
 
   return (

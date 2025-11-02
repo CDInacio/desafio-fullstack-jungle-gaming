@@ -1,20 +1,18 @@
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import {
-  CreateTaskDto,
-  TaskPriority,
-  TaskStatus,
-  type QueryParams,
-} from '@repo/shared/task';
+import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
 import { PaginationQuery, PaginatedResponse } from '@repo/shared/pagination';
 import { Repository, DataSource } from 'typeorm';
-import { TaskEntity } from '@repo/shared/entities/task';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
+import { TaskEntity } from '@repo/shared/entities/task';
+import { UserEntity } from '@repo/shared/entities/user';
 
 @Injectable()
 export class AppService {
   constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     @InjectRepository(TaskEntity)
     private taskRepository: Repository<TaskEntity>,
     @InjectRepository(TaskAssignmentEntity)
@@ -133,6 +131,7 @@ export class AppService {
   async getTaskById(id: string) {
     try {
       const task = await this.taskRepository.findOne({ where: { id } });
+
       if (!task) {
         throw new RpcException({
           statusCode: 404,
@@ -140,7 +139,9 @@ export class AppService {
         });
       }
 
-      return task;
+      return {
+        ...task,
+      };
     } catch (error) {
       if (error instanceof RpcException) {
         throw error;

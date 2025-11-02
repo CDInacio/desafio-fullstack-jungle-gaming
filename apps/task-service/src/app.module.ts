@@ -8,10 +8,11 @@ import { TaskEntity } from '@repo/shared/entities/task';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
+import { UserEntity } from '@repo/shared/entities/user';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TaskEntity, TaskAssignmentEntity]),
+    TypeOrmModule.forFeature([TaskEntity, TaskAssignmentEntity, UserEntity]),
     ClientsModule.register([
       {
         name: NOTIFICATION_SERVICE_RABBITMQ,
