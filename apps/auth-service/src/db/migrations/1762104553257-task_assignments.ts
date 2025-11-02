@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TaskAssignments1761773636460 implements MigrationInterface {
-  name = 'TaskAssignments1761773636460';
-
+export class TaskAssignments1762104553257 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       CREATE TABLE "task_assignments" (
