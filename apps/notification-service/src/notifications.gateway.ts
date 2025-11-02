@@ -33,9 +33,28 @@ export class NotificationsGateway
 
   async handleConnection(client: Socket) {
     try {
+      // trecho dentro de handleConnection antes de verificar
       const token =
         client.handshake.auth?.token || client.handshake.query?.token;
       this.logger.log(`Token received: ${token ? 'yes' : 'no'}`);
+      if (token) {
+        try {
+          const parts = token.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(
+              Buffer.from(parts[1], 'base64').toString(),
+            );
+            const exp = payload.exp
+              ? new Date(payload.exp * 1000).toISOString()
+              : 'no-exp';
+            this.logger.log(`Token payload sub=${payload.sub} exp=${exp}`);
+          } else {
+            this.logger.warn('Token is not a valid JWT (not 3 parts)');
+          }
+        } catch (err) {
+          this.logger.warn('Failed to decode token for debug: ' + err.message);
+        }
+      }
       if (!token) {
         this.logger.warn(`Connection rejected: No token provided`);
         client.disconnect();
