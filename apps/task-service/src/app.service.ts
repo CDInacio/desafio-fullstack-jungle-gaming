@@ -82,6 +82,85 @@ export class AppService {
     }
   }
 
+  async updateTask(id: string, updateData: Partial<CreateTaskDto>) {
+    try {
+      const existingTask = await this.taskRepository.findOne({
+        where: { id },
+        relations: { assignments: true, creator: true },
+      });
+
+      if (!existingTask) {
+        throw new RpcException({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: `Task with ID ${id} not found`,
+        });
+      }
+
+      const result = await this.dataSource.transaction(async (manager) => {
+        const fieldsToUpdate: Partial<TaskEntity> = {};
+        if (typeof updateData.title !== 'undefined')
+          fieldsToUpdate.title = updateData.title;
+        if (typeof updateData.description !== 'undefined')
+          fieldsToUpdate.description = updateData.description;
+        if (typeof updateData.status !== 'undefined')
+          fieldsToUpdate.status = updateData.status as any;
+        if (typeof updateData.priority !== 'undefined')
+          fieldsToUpdate.priority = updateData.priority as any;
+        if (typeof updateData.deadline !== 'undefined')
+          fieldsToUpdate.deadline = updateData.deadline as any;
+
+        if (Object.keys(fieldsToUpdate).length > 0) {
+          await manager.update(TaskEntity, { id }, fieldsToUpdate as any);
+        }
+
+        if (
+          updateData.assignedUsers &&
+          Array.isArray(updateData.assignedUsers)
+        ) {
+          await manager.delete(TaskAssignmentEntity, { taskId: id });
+
+          const assignments = updateData.assignedUsers.map((u) =>
+            manager.create(TaskAssignmentEntity, {
+              taskId: id,
+              userId: u.id,
+              assignedBy: updateData.createdBy ?? existingTask.createdBy ?? '',
+            }),
+          );
+
+          if (assignments.length > 0) {
+            await manager.save(TaskAssignmentEntity, assignments);
+          }
+        }
+
+        const updated = await manager.findOne(TaskEntity, {
+          where: { id },
+          relations: {
+            assignments: { user: true, assigner: true },
+            creator: true,
+          },
+        });
+
+        return updated;
+      });
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Task updated successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (error instanceof RpcException) {
+        throw error;
+      } else {
+        throw new RpcException({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Failed to update task',
+          error: error.message,
+        });
+      }
+    }
+  }
+
   async getTasks(query: PaginationQuery) {
     try {
       const page = query.page && query.page > 0 ? query.page : 1;
@@ -182,17 +261,6 @@ export class AppService {
   async getTaskById(id: string) {
     try {
       this.logger.log(`Getting task with ID: ${id}`);
-
-      // const uuidRegex =
-      //   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      // if (!uuidRegex.test(id)) {
-      //   throw new RpcException({
-      //     statusCode: HttpStatus.BAD_REQUEST,
-      //     message: 'Invalid UUID format',
-      //     error: `Invalid ID: ${id}`,
-      //   });
-      // }
-
       const task = await this.taskRepository.findOne({
         where: { id },
         relations: {

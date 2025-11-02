@@ -4,9 +4,15 @@ import type { ITask } from "@/types/task";
 
 interface TaskHeaderProps {
   task: ITask;
+  onEditMode: (value: boolean) => void;
+  isEditMode?: boolean;
 }
 
-export function TaskHeader({ task }: TaskHeaderProps) {
+export function TaskHeader({ task, onEditMode, isEditMode }: TaskHeaderProps) {
+  const handleEditClick = () => {
+    onEditMode(!isEditMode);
+  };
+
   return (
     <div className="flex items-start justify-between">
       <div className="space-y-2">
@@ -28,6 +34,7 @@ export function TaskHeader({ task }: TaskHeaderProps) {
 
       <div className="flex gap-2">
         <Button
+          onClick={handleEditClick}
           variant="outline"
           size="sm"
           className="bg-transparent border-zinc-700 hover:bg-zinc-800 hover:text-input text-input cursor-pointer"

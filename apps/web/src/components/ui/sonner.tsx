@@ -19,15 +19,15 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4 text-green-300" />,
-        info: <InfoIcon className="size-4" />,
+        info: <InfoIcon className="size-4  " />,
         warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
+        error: <OctagonXIcon className="size-4 text-red-400" />,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
       style={
         {
           "--normal-bg": "var(--foreground)",
-          "--normal-text": "var(--popover)",
+          "--normal-text": "var(--input)",
           "--normal-description-text": "var(--destructive)",
           // "--normal-border": "var(--border)",
           "--border-radius": "var(--radius)",

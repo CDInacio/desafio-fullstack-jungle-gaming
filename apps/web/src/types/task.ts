@@ -49,6 +49,7 @@ export interface TaskApiResponse {
 }
 
 export interface ITask {
+  assignedUsers?: AssignedUser[];
   id: string;
   title: string;
   description: string;

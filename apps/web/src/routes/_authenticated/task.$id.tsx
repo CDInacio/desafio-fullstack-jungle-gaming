@@ -1,6 +1,6 @@
 import CenteredContainer from "@/components/centered-container";
 import Layout from "@/components/layout";
-import { useGetTask } from "@/hooks/use-tasks.hook";
+import { useGetTask, useUpdateTask } from "@/hooks/use-tasks.hook";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { Clock, CheckCircle2, Circle, AlertCircle } from "lucide-react";
 import { TaskHeader } from "@/components/tasks/task-header";
@@ -11,6 +11,8 @@ import type { ITask } from "@/types/task";
 import { LoadingState } from "@/components/loading-state";
 import { NotFoundState } from "@/components/not-found-state";
 import type { StatusInfo } from "@/types/status-info";
+import { useState } from "react";
+import { toast } from "sonner"; // ou seu sistema de toast preferido
 
 export const Route = createFileRoute("/_authenticated/task/$id")({
   component: RouteComponent,
@@ -42,18 +44,35 @@ const statusConfig: Record<string, StatusInfo> = {
 function RouteComponent() {
   const { id } = useParams({ strict: false });
   const { data: response, isLoading } = useGetTask(id);
+  const { mutate: updateTask } = useUpdateTask();
+  const [isEditMode, setIsEditMode] = useState(false);
 
   if (isLoading) return <LoadingState />;
   if (!response) return <NotFoundState />;
 
   const task: ITask = response?.data;
 
+  const handleSaveTask = async (updatedFields: Partial<ITask>) => {
+    console.log(updatedFields);
+    updateTask({ id: task.id, ...updatedFields });
+  };
+  console.log(task);
   return (
     <Layout>
       <CenteredContainer>
         <div className="space-y-6">
-          <TaskHeader task={task} />
-          <TaskDetailsCard task={task} statusConfig={statusConfig} />
+          <TaskHeader
+            onEditMode={setIsEditMode}
+            isEditMode={isEditMode}
+            task={task}
+          />
+          <TaskDetailsCard
+            task={task}
+            onSetEditMode={setIsEditMode}
+            isEditMode={isEditMode}
+            statusConfig={statusConfig}
+            onSave={handleSaveTask}
+          />
           <TaskAssignmentsCard task={task} />
           <TaskCommentsCard />
         </div>

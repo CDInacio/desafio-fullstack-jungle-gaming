@@ -13,10 +13,17 @@ export class AppController {
 
   @MessagePattern('task.created')
   async handleTaskCreated(@Payload() payload: any) {
-    console.log('Received task.created payload:', payload);
     this.logger.log('task.created received');
     const userIds = extractUserIds(payload).map(String);
     this.gateway.emitToUsers('task.created', payload, userIds);
+    return { status: 'Notification sent' };
+  }
+
+  @MessagePattern('task.updated')
+  async handleTaskUpdated(@Payload() payload: any) {
+    this.logger.log('task.updated received');
+    const userIds = extractUserIds(payload).map(String);
+    this.gateway.emitToUsers('task.updated', payload, userIds);
     return { status: 'Notification sent' };
   }
 }

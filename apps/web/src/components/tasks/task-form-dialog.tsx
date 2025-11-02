@@ -49,7 +49,6 @@ const prioritiesList = [
 
 export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
   const { user } = useAuth();
-  console.log(user);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -92,7 +91,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         <Button>Nova Tarefa</Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-[#2a2a2a] border-zinc-800 sm:max-w-[525px]">
+      <DialogContent className="bg-primary z-50 border-zinc-600 sm:max-w-[525px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="text-input text-2xl">
@@ -110,7 +109,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Input
                 id="title"
-                className="text-input bg-primary border-none focus:ring-input/40"
+                className="text-input bg-foreground border-zinc-600 focus:ring-input/40"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
@@ -123,7 +122,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Textarea
                 id="description"
-                className="text-input bg-primary border-none focus:ring-input/40"
+                className="text-input bg-foreground border-zinc-600  focus:ring-input/40"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
@@ -137,11 +136,11 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                   onValueChange={(v) => setStatus(v as TaskStatus)}
                   defaultValue="TODO"
                 >
-                  <SelectTrigger className="bg-primary border-none text-primary-foreground cursor-pointer">
+                  <SelectTrigger className=" text-primary-foreground cursor-pointer bg-foreground ">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
-                  <SelectContent className="bg-primary text-primary-foreground border-none shadow-lg rounded-lg">
-                    <SelectGroup>
+                  <SelectContent className="bg-primary text-primary-foreground shadow-lg rounded-lg">
+                    <SelectGroup className="border-zinc-500 ">
                       <SelectLabel className="text-input/80 px-2">
                         Status
                       </SelectLabel>

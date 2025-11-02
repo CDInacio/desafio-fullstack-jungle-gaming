@@ -36,3 +36,23 @@ export function useGetTasks() {
     queryFn: () => taskService.getAll(),
   });
 }
+
+export function useUpdateTask() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (task: Partial<ITask>) => {
+      if (!task.id) {
+        throw new Error("Task ID is required for update");
+      }
+      return taskService.update(task.id, task);
+    },
+    onSuccess: (_, task) => {
+      toast.success("Tarefa atualizada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["task", task.id] });
+    },
+    onError: (error) => {
+      toast.error("Erro ao atualizar tarefa", { description: error.message });
+    },
+  });
+}

@@ -22,6 +22,17 @@ export class AppController {
     return result;
   }
 
+  @MessagePattern('task.update')
+  async updateTask(@Payload() payload: any) {
+    const { id, ...rest } = payload;
+    const updateData =
+      payload.updateData ??
+      Object.fromEntries(Object.entries(payload).filter(([k]) => k !== 'id'));
+
+    const result = await this.appService.updateTask(id, rest);
+    return result;
+  }
+
   @MessagePattern('task.get')
   async getTaskById(@Payload() id: string) {
     const task = await this.appService.getTaskById(id);
