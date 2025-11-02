@@ -15,6 +15,7 @@ export class TaskService {
   async getById(id: string) {
     try {
       const { data: result } = await api.get(`/api/tasks/${id}`);
+      console.log(result);
       return result;
     } catch (error) {
       throw handleApiError(error);

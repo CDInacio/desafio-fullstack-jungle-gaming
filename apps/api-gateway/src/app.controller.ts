@@ -124,8 +124,9 @@ export class AppController {
 
   @Get('/tasks/:id')
   async getTaskById(@Param('id') id: string) {
+    console.log('recieved id:' + id);
     try {
-      this.taskClient.emit('task.get', id);
+      this.taskClient.send('task.get', id);
     } catch (error) {
       this.logger.error('Error emitting task get event:', error);
       throw new HttpException(
