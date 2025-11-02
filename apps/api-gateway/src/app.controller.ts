@@ -84,6 +84,7 @@ export class AppController {
 
   @Post('tasks')
   async createTask(@Body() body: CreateTaskDto) {
+    console.log(body);
     try {
       await firstValueFrom(this.taskClient.send('task.created', body));
     } catch (error) {
