@@ -133,7 +133,7 @@ export class AppService {
   async getTaskById(id: string) {
     try {
       const task = await this.taskRepository.findOne({ where: { id } });
-
+      console.log(task);
       if (!task) {
         throw new RpcException({
           statusCode: 404,

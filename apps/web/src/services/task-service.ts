@@ -12,7 +12,7 @@ export class TaskService {
     }
   }
 
-  async get(id: string) {
+  async getById(id: string) {
     try {
       const { data: result } = await api.get(`/api/tasks/${id}`);
       return result;

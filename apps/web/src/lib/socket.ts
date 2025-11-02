@@ -1,16 +1,16 @@
-//apps/web/src/lib/socket.ts
-
 import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-export function createSocket(accessToken?: string) {
+export function createSocket(userId?: string) {
   if (socket) return socket;
 
-  const url = "http://localhost:3005";
+  const url =
+    import.meta.env.VITE_NOTIFICATIONS_WS_URL || "http://localhost:3005";
+
   socket = io(url, {
     auth: {
-      token: accessToken,
+      userId: userId, // ✅ Enviar userId diretamente
     },
     transports: ["websocket"],
     reconnection: true,

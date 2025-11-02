@@ -23,17 +23,15 @@ import { toast } from "sonner";
 const queryClient = new QueryClient();
 
 function NotificationsConnector() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const qc = useQueryClient();
 
-  useNotifications(token, {
+  useNotifications(user?.id || null, {
     onTaskCreated: (payload) => {
-      // exemplo: invalidar lista de tarefas e mostrar toast
       qc.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Nova tarefa atribuída a você");
     },
     onTaskUpdated: (payload) => {
-      // se estiver na página de detalhe e for a mesma tarefa, re-fetch
       if (payload?.task?.id)
         qc.invalidateQueries({ queryKey: ["task", payload.task.id] });
       qc.invalidateQueries({ queryKey: ["tasks"] });
@@ -49,7 +47,7 @@ function NotificationsConnector() {
     },
   });
 
-  return null; // componente invisível, só para conectar handlers
+  return null;
 }
 
 function App() {

@@ -1,12 +1,10 @@
-//apps/web/src/hooks/use-notification.ts
-
 import { createSocket, disconnectSocket } from "@/lib/socket";
 import { useEffect } from "react";
 
 type Handler = (payload: any) => void;
 
 export function useNotifications(
-  token: string | null,
+  userId: string | null, // ✅ Receber userId ao invés de token
   handlers?: {
     onTaskCreated?: Handler;
     onTaskUpdated?: Handler;
@@ -14,26 +12,16 @@ export function useNotifications(
   }
 ) {
   useEffect(() => {
-    if (!token) {
+    if (!userId) {
       disconnectSocket();
       return;
     }
 
-    const socket = createSocket(token);
+    const socket = createSocket(userId); // ✅ Passar userId
 
-    const onTaskCreated = (payload: any) => {
-      console.log("socket event task.created", payload);
-      handlers?.onTaskCreated?.(payload);
-    };
-
-    const onTaskUpdated = (payload: any) => {
-      console.log("socket event task.updated", payload);
-      handlers?.onTaskUpdated?.(payload);
-    };
-    const onCommentNew = (payload: any) => {
-      console.log("socket event comment.new", payload);
-      handlers?.onCommentNew?.(payload);
-    };
+    const onTaskCreated = (payload: any) => handlers?.onTaskCreated?.(payload);
+    const onTaskUpdated = (payload: any) => handlers?.onTaskUpdated?.(payload);
+    const onCommentNew = (payload: any) => handlers?.onCommentNew?.(payload);
 
     socket.on("connect", () => {
       console.log("WS connected", socket.id);
@@ -51,11 +39,9 @@ export function useNotifications(
       socket.off("task.created", onTaskCreated);
       socket.off("task.updated", onTaskUpdated);
       socket.off("comment.new", onCommentNew);
-      // we keep the connection alive across routes by not disconnecting
-      // if you want to disconnect, call disconnectSocket() here.
     };
   }, [
-    token,
+    userId,
     handlers?.onTaskCreated,
     handlers?.onTaskUpdated,
     handlers?.onCommentNew,

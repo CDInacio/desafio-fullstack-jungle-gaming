@@ -25,7 +25,7 @@ export class AppController {
   @MessagePattern('task.get')
   async getTaskById(@Payload() id: string) {
     const task = await this.appService.getTaskById(id);
-    console.log(task);
+    return task;
   }
 
   @MessagePattern('task.getAll')

@@ -18,6 +18,13 @@ export function useCreateTask() {
   });
 }
 
+export function useGetTask(id: string) {
+  return useQuery<ITask, Error>({
+    queryKey: ["task", id],
+    queryFn: () => taskService.getById(id),
+  });
+}
+
 export function useGetTasks() {
   return useQuery<ITaskResponse, Error>({
     queryKey: ["tasks"],
