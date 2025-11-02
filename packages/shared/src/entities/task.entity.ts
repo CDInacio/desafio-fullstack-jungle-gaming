@@ -29,8 +29,8 @@ export class TaskEntity {
   @Column({ type: "timestamp", nullable: true })
   deadline?: Date;
 
-  // @Column({ type: "uuid", name: "created_by" })
-  // createdBy: string;
+  @Column({ type: "uuid", name: "created_by", nullable: true })
+  createdBy?: string | null;
 
   @Column({
     type: "timestamp",
@@ -46,11 +46,10 @@ export class TaskEntity {
   })
   updatedAt?: Date;
 
-  // ✅ Relacionamentos
   @OneToMany(() => TaskAssignmentEntity, (assignment) => assignment.task)
   assignments?: TaskAssignmentEntity[];
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: "created_by" })
-  creator?: UserEntity;
+  creator?: UserEntity | null;
 }

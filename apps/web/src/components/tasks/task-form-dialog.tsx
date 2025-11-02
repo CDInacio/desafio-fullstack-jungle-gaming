@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import type { IUser } from "@/types/auth";
 import type { CreateTask, TaskPriority, TaskStatus } from "@/types/task";
 import { AssignedUserInput } from "./assigned-user-input";
+import { useAuth } from "@/context/auth-context";
+import { toast } from "sonner";
 
 interface TaskFormDialogProps {
   users: IUser[];
@@ -46,6 +48,8 @@ const prioritiesList = [
 ];
 
 export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
+  const { user } = useAuth();
+  console.log(user);
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -55,6 +59,12 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user?.id) {
+      toast.error("Você precisa estar logado para criar uma tarefa.");
+      return;
+    }
+
     onSubmit({
       title,
       description,
@@ -65,10 +75,9 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         username: u.username,
         email: u.email,
       })),
-      // createdBy: "users.id",
+      createdBy: user.id,
     });
 
-    // Limpar formulário e fechar dialog
     setTitle("");
     setDescription("");
     setStatus("TODO");
@@ -137,11 +146,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                         Status
                       </SelectLabel>
                       {statusList.map((item) => (
-                        <SelectItem
-                          key={item.value}
-                          value={item.value}
-                          className="hover:bg-accent hover:text-accent-foreground cursor-pointer"
-                        >
+                        <SelectItem key={item.value} value={item.value}>
                           {item.label}
                         </SelectItem>
                       ))}
@@ -165,11 +170,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                         Prioridade
                       </SelectLabel>
                       {prioritiesList.map((item) => (
-                        <SelectItem
-                          key={item.value}
-                          value={item.value}
-                          className="hover:bg-accent hover:text-accent-foreground cursor-pointer"
-                        >
+                        <SelectItem key={item.value} value={item.value}>
                           {item.label}
                         </SelectItem>
                       ))}
@@ -201,6 +202,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
             <Button
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white"
+              disabled={!user?.id}
             >
               Criar
             </Button>

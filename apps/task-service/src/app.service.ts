@@ -31,7 +31,7 @@ export class AppService {
           status: TaskStatus[task.status ?? TaskStatus.TODO],
           priority: TaskPriority[task.priority ?? TaskPriority.MEDIUM],
           deadline: task.deadline,
-          // createdBy: task.createdBy,
+          createdBy: task.createdBy,
         });
 
         const savedTask = await manager.save(TaskEntity, newTask);
@@ -46,7 +46,7 @@ export class AppService {
             return manager.create(TaskAssignmentEntity, {
               taskId: savedTask.id,
               userId: user.id,
-              assignedBy: user.id,
+              assignedBy: task.createdBy,
             });
           });
           // console.log(assignments);
@@ -58,7 +58,10 @@ export class AppService {
 
         const taskWithAssignments = await manager.findOne(TaskEntity, {
           where: { id: savedTask.id },
-          relations: ['assignments'],
+          relations: {
+            assignments: { user: true, assigner: true },
+            creator: true,
+          },
         });
 
         return taskWithAssignments;
@@ -180,17 +183,16 @@ export class AppService {
     try {
       this.logger.log(`Getting task with ID: ${id}`);
 
-      const uuidRegex =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(id)) {
-        throw new RpcException({
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'Invalid UUID format',
-          error: `Invalid ID: ${id}`,
-        });
-      }
+      // const uuidRegex =
+      //   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      // if (!uuidRegex.test(id)) {
+      //   throw new RpcException({
+      //     statusCode: HttpStatus.BAD_REQUEST,
+      //     message: 'Invalid UUID format',
+      //     error: `Invalid ID: ${id}`,
+      //   });
+      // }
 
-      // ✅ Buscar task com relacionamentos
       const task = await this.taskRepository.findOne({
         where: { id },
         relations: {
@@ -209,43 +211,43 @@ export class AppService {
         });
       }
 
-      const formattedTask = {
-        ...task,
-        creator: task.creator
-          ? {
-              id: task.creator.id,
-              username: task.creator.username,
-              email: task.creator.email,
-            }
-          : null,
-        assignments:
-          task.assignments?.map((assignment) => ({
-            id: assignment.id,
-            taskId: assignment.taskId,
-            userId: assignment.userId,
-            assignedAt: assignment.assignedAt,
-            assignedBy: assignment.assignedBy,
-            user: assignment.user
-              ? {
-                  id: assignment.user.id,
-                  username: assignment.user.username,
-                  email: assignment.user.email,
-                }
-              : null,
-            assigner: assignment.assigner
-              ? {
-                  id: assignment.assigner.id,
-                  username: assignment.assigner.username,
-                  email: assignment.assigner.email,
-                }
-              : null,
-          })) || [],
-      };
+      // const formattedTask = {
+      //   ...task,
+      //   creator: task.creator
+      //     ? {
+      //         id: task.creator.id,
+      //         username: task.creator.username,
+      //         email: task.creator.email,
+      //       }
+      //     : null,
+      //   assignments:
+      //     task.assignments?.map((assignment) => ({
+      //       id: assignment.id,
+      //       taskId: assignment.taskId,
+      //       userId: assignment.userId,
+      //       assignedAt: assignment.assignedAt,
+      //       assignedBy: assignment.assignedBy,
+      //       user: assignment.user
+      //         ? {
+      //             id: assignment.user.id,
+      //             username: assignment.user.username,
+      //             email: assignment.user.email,
+      //           }
+      //         : null,
+      //       assigner: assignment.assigner
+      //         ? {
+      //             id: assignment.assigner.id,
+      //             username: assignment.assigner.username,
+      //             email: assignment.assigner.email,
+      //           }
+      //         : null,
+      //     })) || [],
+      // };
 
       return {
         statusCode: HttpStatus.OK,
         message: 'Task retrieved successfully',
-        data: formattedTask,
+        data: task,
       };
     } catch (error) {
       // this.logger.error(`Error getting task: ${error.message}`);
