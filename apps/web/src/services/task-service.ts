@@ -1,9 +1,9 @@
-import type { ITask } from "@/types/task";
+import type { CreateTask, ITask } from "@/types/task";
 import { api } from "./api";
 import { handleApiError } from "@/utils/handle-api-error";
 
 export class TaskService {
-  async create(task: ITask) {
+  async create(task: CreateTask) {
     try {
       const { data: result } = await api.post("/api/tasks", task);
       return result;
@@ -24,7 +24,7 @@ export class TaskService {
   async getAll() {
     try {
       const { data: result } = await api.get("/api/tasks");
-      return result;
+      return result.data;
     } catch (error) {
       throw handleApiError(error);
     }

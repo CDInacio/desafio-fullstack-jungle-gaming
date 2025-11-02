@@ -1,23 +1,25 @@
 import { taskService } from "@/services/task-service";
-import type { ITask } from "@/types/task";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import type { CreateTask, ITask, ITaskResponse } from "@/types/task";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useCreateTask() {
+  const queryClient = useQueryClient();
   //<return, error, argument>
-  return useMutation<ITask, Error, ITask>({
-    mutationFn: (task: ITask) => taskService.create(task),
+  return useMutation<ITask, Error, CreateTask>({
+    mutationFn: (task: CreateTask) => taskService.create(task),
     onError: (error) => {
       toast.error("Erro ao criar tarefa", { description: error.message });
     },
     onSuccess: () => {
       toast.success("Tarefa criada com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
 }
 
 export function useGetTasks() {
-  return useQuery<ITask[], Error>({
+  return useQuery<ITaskResponse, Error>({
     queryKey: ["tasks"],
     queryFn: () => taskService.getAll(),
   });

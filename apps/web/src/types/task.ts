@@ -26,23 +26,44 @@ export interface UpdateTask {
   deadline?: Date | string;
 }
 
-export interface TaskResponse {
+export interface IAssignment {
+  id: string;
+  taskId: string;
+  userId: string;
+  assignedAt: string; // ISO date string
+  assignedBy: string;
+}
+
+export interface ITask {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   status: TaskStatus;
   priority: TaskPriority;
-  deadline?: Date | string;
+  deadline: string | null;
   createdBy: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  assignments: IAssignment[];
+}
+
+export interface IPagination {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  pageLimit: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface ITaskResponse {
+  tasks: ITask[];
+  pagination: IPagination;
 }
 
 export interface FindParams {
   id: string;
 }
-
-export interface ITask extends TaskResponse {}
 
 export type TaskFormData = Omit<CreateTask, "createdBy">;
 
