@@ -126,14 +126,15 @@ export function TaskDetailsCard({
         : null;
     }
 
-    const originalAssignedIds = ((task.assignedUsers as IUser[]) || []).map(
-      (user) => user.id
-    );
-    const editedAssignedIds = editedTask.assignedUsers.map((user) => user.id);
+    const originalAssignedIds = ((task.assignedUsers as IUser[]) || [])
+      .map((user) => user.id)
+      .sort();
+    const editedAssignedIds = editedTask.assignedUsers
+      .map((user) => user.id)
+      .sort();
 
     if (
-      JSON.stringify(originalAssignedIds.sort()) !==
-      JSON.stringify(editedAssignedIds.sort())
+      JSON.stringify(originalAssignedIds) !== JSON.stringify(editedAssignedIds)
     ) {
       changed.assignedUsers = editedTask.assignedUsers.map((user) => ({
         id: user.id!,

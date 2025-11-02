@@ -114,7 +114,6 @@ export class AppService {
           await manager.update(TaskEntity, { id }, fieldsToUpdate as any);
         }
 
-        // ⚙️ Merge inteligente de assignedUsers
         if (
           updateData.assignedUsers &&
           Array.isArray(updateData.assignedUsers)

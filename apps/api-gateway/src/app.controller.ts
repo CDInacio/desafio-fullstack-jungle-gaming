@@ -173,32 +173,6 @@ export class AppController {
     }
   }
 
-  @Post('tasks/:id/assignments')
-  async addAssignments(
-    @Param('id') taskId: string,
-    @Body() body: { userIds: string[]; assignedBy: string },
-  ) {
-    try {
-      const payload = {
-        taskId,
-        userIds: body.userIds,
-        assignedBy: body.assignedBy,
-      };
-
-      const result = await firstValueFrom(
-        this.taskClient.send('task.assignUsers', payload).pipe(timeout(10000)),
-      );
-
-      return result;
-    } catch (error) {
-      this.logger.error('Error assigning users:', error);
-      throw new HttpException(
-        'Failed to assign users',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   @Delete('/tasks/:id')
   async deleteTaskById(@Param('id') id: string) {
     try {
