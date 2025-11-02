@@ -1,6 +1,6 @@
 import { RpcException } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateTaskDto, TaskPriority, TaskStatus } from '@repo/shared/task';
 import { PaginationQuery, PaginatedResponse } from '@repo/shared/pagination';
 import { Repository, DataSource } from 'typeorm';
@@ -10,6 +10,8 @@ import { UserEntity } from '@repo/shared/entities/user';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
@@ -101,7 +103,13 @@ export class AppService {
         : 'createdAt';
 
       const [tasks, total] = await this.taskRepository.findAndCount({
-        relations: ['assignments'],
+        relations: {
+          assignments: {
+            user: true,
+            assigner: true,
+          },
+          creator: true,
+        },
         take: limit,
         skip: skip,
         order: {
@@ -111,10 +119,43 @@ export class AppService {
 
       const totalPages = Math.ceil(total / limit);
 
+      const formattedTasks = tasks.map((task) => ({
+        ...task,
+        creator: task.creator
+          ? {
+              id: task.creator.id,
+              username: task.creator.username,
+              email: task.creator.email,
+            }
+          : null,
+        assignments:
+          task.assignments?.map((assignment) => ({
+            id: assignment.id,
+            taskId: assignment.taskId,
+            userId: assignment.userId,
+            assignedAt: assignment.assignedAt,
+            assignedBy: assignment.assignedBy,
+            user: assignment.user
+              ? {
+                  id: assignment.user.id,
+                  username: assignment.user.username,
+                  email: assignment.user.email,
+                }
+              : null,
+            assigner: assignment.assigner
+              ? {
+                  id: assignment.assigner.id,
+                  username: assignment.assigner.username,
+                  email: assignment.assigner.email,
+                }
+              : null,
+          })) || [],
+      }));
+
       return {
         message: 'Tasks retrieved successfully',
         data: {
-          tasks,
+          tasks: formattedTasks,
           pagination: {
             totalItems: total,
             totalPages: totalPages,
@@ -125,30 +166,96 @@ export class AppService {
           },
         },
       };
-    } catch (error) {}
+    } catch (error) {
+      this.logger.error(`Error getting tasks: ${error.message}`);
+      throw new RpcException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to get tasks',
+        error: error.message,
+      });
+    }
   }
 
   async getTaskById(id: string) {
     try {
-      const task = await this.taskRepository.findOne({ where: { id } });
+      this.logger.log(`Getting task with ID: ${id}`);
+
+      const uuidRegex =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(id)) {
+        throw new RpcException({
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: 'Invalid UUID format',
+          error: `Invalid ID: ${id}`,
+        });
+      }
+
+      // ✅ Buscar task com relacionamentos
+      const task = await this.taskRepository.findOne({
+        where: { id },
+        relations: {
+          assignments: {
+            user: true,
+            assigner: true,
+          },
+          creator: true,
+        },
+      });
 
       if (!task) {
         throw new RpcException({
-          statusCode: 404,
+          statusCode: HttpStatus.NOT_FOUND,
           message: `Task with ID ${id} not found`,
         });
       }
 
-      return {
+      const formattedTask = {
         ...task,
+        creator: task.creator
+          ? {
+              id: task.creator.id,
+              username: task.creator.username,
+              email: task.creator.email,
+            }
+          : null,
+        assignments:
+          task.assignments?.map((assignment) => ({
+            id: assignment.id,
+            taskId: assignment.taskId,
+            userId: assignment.userId,
+            assignedAt: assignment.assignedAt,
+            assignedBy: assignment.assignedBy,
+            user: assignment.user
+              ? {
+                  id: assignment.user.id,
+                  username: assignment.user.username,
+                  email: assignment.user.email,
+                }
+              : null,
+            assigner: assignment.assigner
+              ? {
+                  id: assignment.assigner.id,
+                  username: assignment.assigner.username,
+                  email: assignment.assigner.email,
+                }
+              : null,
+          })) || [],
+      };
+
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Task retrieved successfully',
+        data: formattedTask,
       };
     } catch (error) {
+      // this.logger.error(`Error getting task: ${error.message}`);
+
       if (error instanceof RpcException) {
         throw error;
       }
 
       throw new RpcException({
-        statusCode: 500,
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Failed to get task',
         error: error.message,
       });

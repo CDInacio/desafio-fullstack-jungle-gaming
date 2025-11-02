@@ -2,6 +2,12 @@
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
 export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
+export interface IUser {
+  id: string;
+  username: string;
+  email: string;
+}
+
 export interface AssignedUser {
   id: string;
   username?: string;
@@ -30,8 +36,10 @@ export interface IAssignment {
   id: string;
   taskId: string;
   userId: string;
-  assignedAt: string; // ISO date string
+  assignedAt: string;
   assignedBy: string;
+  user: IUser | null;
+  assigner: IUser | null;
 }
 
 export interface ITask {
@@ -42,8 +50,9 @@ export interface ITask {
   priority: TaskPriority;
   deadline: string | null;
   createdBy: string;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
+  creator: IUser | null; // ✅ Dados do criador
   assignments: IAssignment[];
 }
 
@@ -77,7 +86,7 @@ export type TaskPriorityLabel = {
   value: TaskPriority;
 };
 
-// Constantes auxiliares para uso em componentes
+// Constantes auxiliares
 export const TASK_STATUS_OPTIONS: TaskStatusLabel[] = [
   { label: "A fazer", value: "TODO" },
   { label: "Em progresso", value: "IN_PROGRESS" },
@@ -85,29 +94,9 @@ export const TASK_STATUS_OPTIONS: TaskStatusLabel[] = [
   { label: "Concluído", value: "DONE" },
 ];
 
-// export const TASK_PRIORITY_OPTIONS: TaskPriorityLabel[] = [
-//   { label: "Baixa", value: TaskPriority.LOW },
-//   { label: "Média", value: TaskPriority.MEDIUM },
-//   { label: "Alta", value: TaskPriority.HIGH },
-//   { label: "Urgente", value: TaskPriority.URGENT },
-// ];
-
-// Helper functions para conversão de labels
-export const getStatusLabel = (status: TaskStatus): string => {
-  return TASK_STATUS_OPTIONS.find((s) => s.value === status)?.label ?? status;
-};
-
-// export const getPriorityLabel = (priority: TaskPriority): string => {
-//   return (
-//     TASK_PRIORITY_OPTIONS.find((p) => p.value === priority)?.label ?? priority
-//   );
-// };
-
-// // Type guards
-// export const isTaskStatus = (value: string): value is TaskStatus => {
-//   return Object.values(TaskStatus).includes(value as TaskStatus);
-// };
-
-// export const isTaskPriority = (value: string): value is TaskPriority => {
-//   return Object.values(TaskPriority).includes(value as TaskPriority);
-// };
+export const TASK_PRIORITY_OPTIONS: TaskPriorityLabel[] = [
+  { label: "Baixa", value: "LOW" },
+  { label: "Média", value: "MEDIUM" },
+  { label: "Alta", value: "HIGH" },
+  { label: "Urgente", value: "URGENT" },
+];

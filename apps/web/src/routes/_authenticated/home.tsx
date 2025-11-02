@@ -17,7 +17,7 @@ function RouteComponent() {
   const { data: users } = useUsers();
   const { mutate: createTask } = useCreateTask();
   const { user } = useAuth();
-
+  console.log(tasks);
   const handleCreateTask = (data: CreateTask) => {
     createTask({
       ...data,

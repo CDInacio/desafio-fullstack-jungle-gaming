@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { TaskEntity } from "./task.entity";
+import { UserEntity } from "./user.entity";
 
 @Entity("task_assignments")
 export class TaskAssignmentEntity {
@@ -31,4 +32,12 @@ export class TaskAssignmentEntity {
   @ManyToOne(() => TaskEntity, (task) => task.assignments)
   @JoinColumn({ name: "task_id" })
   task?: TaskEntity;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: "user_id" })
+  user?: UserEntity;
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: "assigned_by" })
+  assigner?: UserEntity;
 }

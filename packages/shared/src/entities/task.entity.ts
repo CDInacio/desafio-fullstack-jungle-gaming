@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { TaskAssignmentEntity } from "./task-assignment.entity";
+import { UserEntity } from "./user.entity";
 
 @Entity("tasks")
 export class TaskEntity {
@@ -38,6 +46,11 @@ export class TaskEntity {
   })
   updatedAt?: Date;
 
+  // ✅ Relacionamentos
   @OneToMany(() => TaskAssignmentEntity, (assignment) => assignment.task)
   assignments?: TaskAssignmentEntity[];
+
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({ name: "created_by" })
+  creator?: UserEntity;
 }
