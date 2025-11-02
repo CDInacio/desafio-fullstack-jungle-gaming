@@ -97,7 +97,7 @@ function RouteComponent() {
       createdBy: user?.id ?? "",
       assignedUsers: assignedUsersDto.length > 0 ? assignedUsersDto : undefined,
     };
-
+    // console.log(newTask);
     createTask(newTask as ITask);
   };
 

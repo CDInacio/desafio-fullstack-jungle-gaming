@@ -43,6 +43,7 @@ export class AppService {
               assignedBy: task.createdBy,
             });
           });
+          console.log(assignments);
           savedAssignments = await manager.save(
             TaskAssignmentEntity,
             assignments,

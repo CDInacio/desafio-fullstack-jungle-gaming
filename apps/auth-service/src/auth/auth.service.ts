@@ -20,9 +20,9 @@ export class AuthService {
 
     const payload = { sub: user.id, user };
 
-    const token = this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload, { expiresIn: 3600 });
 
-    return { token, expiresIn: '15m', user };
+    return { token, user };
   }
 
   async register(data: SignupCredentialsDto) {
