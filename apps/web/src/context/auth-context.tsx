@@ -19,7 +19,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const token = localStorage.getItem("token");
     return token ? token : null;
   });
-
   const [user, setUser] = useState<IUser | null>(() => {
     const userData = localStorage.getItem("user");
     return userData ? JSON.parse(userData) : null;

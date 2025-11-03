@@ -26,6 +26,7 @@ export class AuthService {
       email: user.email,
       sub: {
         name: user.username,
+        id: user.id,
       },
     };
     console.log('payload:' + payload.email);
@@ -33,7 +34,7 @@ export class AuthService {
 
     return {
       ...user,
-      accessToken: token,
+      token,
     };
   }
 

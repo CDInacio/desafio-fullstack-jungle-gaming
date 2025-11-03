@@ -1,16 +1,23 @@
 import { userService } from "@/services/user-service";
-import type { IAuthResponse, ILogin, IRegister, IUser } from "@/types/auth";
+import type { IAuthResponse, IRegister, IUser } from "@/types/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
 
 export function useLogin() {
   const { login } = useAuth();
-  return useMutation<IAuthResponse, Error, ILogin>({
+  return useMutation({
     mutationFn: userService.login,
     onSuccess: (data) => {
+      console.log(data);
       if (data) {
-        login(data.data.token, data.data.user);
+        const user = {
+          username: data.data.username,
+          email: data.data.email,
+          id: data.data.id,
+        };
+        console.log(data);
+        login(data.data.token, user);
       }
     },
     onError: (error) => {

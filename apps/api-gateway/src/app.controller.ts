@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
@@ -20,6 +21,7 @@ import type {
   SignupCredentialsDto,
 } from '@repo/shared/user';
 import { catchError, firstValueFrom, timeout } from 'rxjs';
+import { JwtGuard } from '../../auth-service/src/guards/jwt-auth.guard';
 
 @Controller('api')
 export class AppController {
@@ -96,6 +98,7 @@ export class AppController {
     }
   }
 
+  // @UseGuards(JwtGuard)
   @Get('tasks')
   async getTasks(
     @Query('page') page: number,
