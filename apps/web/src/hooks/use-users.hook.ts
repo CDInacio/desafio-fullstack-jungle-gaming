@@ -6,7 +6,6 @@ import { useAuth } from "@/context/auth-context";
 
 export function useLogin() {
   const { login } = useAuth();
-
   return useMutation<IAuthResponse, Error, ILogin>({
     mutationFn: userService.login,
     onSuccess: (data) => {

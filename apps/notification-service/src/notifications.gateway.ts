@@ -26,7 +26,6 @@ export class NotificationsGateway
 
   async handleConnection(client: Socket) {
     try {
-      // ✅ Receber userId diretamente (sem JWT)
       const userId =
         client.handshake.auth?.userId ||
         (client.handshake.query?.userId as string);
