@@ -1,6 +1,6 @@
 // types/tasks.ts
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
-export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface IUser {
   id: string;
