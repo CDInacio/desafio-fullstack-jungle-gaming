@@ -28,7 +28,7 @@ export class AuthService {
         name: user.username,
       },
     };
-
+    console.log('payload:' + payload.email);
     const token = this.jwtService.sign(payload);
 
     return {
@@ -39,7 +39,6 @@ export class AuthService {
 
   async register(data: SignupCredentialsDto) {
     const result = await this.usersService.register(data);
-    console.log(result);
     return result;
   }
 

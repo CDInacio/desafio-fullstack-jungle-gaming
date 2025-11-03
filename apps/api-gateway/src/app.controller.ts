@@ -14,8 +14,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
-import type { PaginationQuery } from '@repo/shared/pagination';
-import type { CreateTaskDto, QueryParams } from '@repo/shared/task';
+import type { CreateTaskDto } from '@repo/shared/task';
 import type {
   SigninCredentialsDto,
   SignupCredentialsDto,
@@ -35,6 +34,7 @@ export class AppController {
 
   @Post('auth/login')
   async login(@Body() body: SigninCredentialsDto) {
+    console.log(body);
     // usamos o ".send" pois precisamos esperar por uma resposta (síncrono),
     // caso contrário (assincrono), usaríamos o ".emit"
     // "firstValueFrom" converte o Observable retornado pelo ".send" em uma Promise
