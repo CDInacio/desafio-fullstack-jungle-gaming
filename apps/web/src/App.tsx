@@ -35,9 +35,7 @@ function NotificationsConnector() {
       if (payload?.task?.id)
         qc.invalidateQueries({ queryKey: ["task", payload.task.id] });
       qc.invalidateQueries({ queryKey: ["tasks"] });
-      toast.info("Tarefa atualizada", {
-        description: "Verifique as mudanças feitas na tarefa.",
-      });
+      toast.info("Tarefa atualizada");
     },
     onCommentNew: (payload) => {
       if (payload?.task?.id) {
