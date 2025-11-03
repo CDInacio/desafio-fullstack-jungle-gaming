@@ -380,4 +380,8 @@ export class AppService {
       });
     }
   }
+
+  async createComment(payload: any) {
+    console.log(payload);
+  }
 }

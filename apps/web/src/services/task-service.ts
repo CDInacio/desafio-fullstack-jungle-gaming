@@ -1,4 +1,4 @@
-import type { CreateTask, ITask } from "@/types/task";
+import type { CreateTask, ITask, ITaskComment } from "@/types/task";
 import { api } from "./api";
 import { handleApiError } from "@/utils/handle-api-error";
 
@@ -15,7 +15,6 @@ export class TaskService {
   async getById(id: string) {
     try {
       const { data: result } = await api.get(`/api/tasks/${id}`);
-      console.log(result);
       return result;
     } catch (error) {
       throw handleApiError(error);
@@ -39,6 +38,16 @@ export class TaskService {
       throw handleApiError(error);
     }
   }
+
+  async updateComment(id: string, comments: string[]) {
+    try {
+      const { data: result } = await api.put(`/api/tasks/${id}/comments`, {
+        comments,
+      });
+      return result;
+    } catch (error) {}
+  }
+
   async addAssignments(taskId: string, userIds: string[], assignedBy: string) {
     try {
       const { data } = await api.post(`/api/tasks/${taskId}/assignments`, {
@@ -50,6 +59,20 @@ export class TaskService {
       throw handleApiError(error);
     }
   }
-}
 
+  async createComment(commentData: ITaskComment) {
+    // console.log(commentData);
+    try {
+      const { data: result } = await api.post(
+        `/api/tasks/${commentData.taskId}/comments`,
+        {
+          comment: commentData.content,
+        }
+      );
+      return result;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
+}
 export const taskService = new TaskService();

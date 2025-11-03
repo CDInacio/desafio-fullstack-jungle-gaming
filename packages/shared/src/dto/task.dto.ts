@@ -36,6 +36,20 @@ export class AssignedUserDto {
   email?: string;
 }
 
+export class TaskCommentDto {
+  @IsString()
+  @IsNotEmpty()
+  content: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  taskId: string;
+}
+
 export class CreateTaskDto {
   @IsString()
   @IsNotEmpty()

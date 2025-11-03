@@ -15,7 +15,11 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
 import type { PaginationQuery } from '@repo/shared/pagination';
-import type { CreateTaskDto, QueryParams } from '@repo/shared/task';
+import type {
+  CreateTaskDto,
+  QueryParams,
+  TaskCommentDto,
+} from '@repo/shared/task';
 import type {
   SigninCredentialsDto,
   SignupCredentialsDto,
@@ -74,7 +78,6 @@ export class AppController {
 
       return { message: 'User registered successfully', data: result };
     } catch (error) {
-      console.log(error);
       this.logger.error('Error in register:', error);
       throw error;
     }
@@ -84,7 +87,6 @@ export class AppController {
 
   @Post('tasks')
   async createTask(@Body() body: CreateTaskDto) {
-    console.log(body);
     try {
       await firstValueFrom(this.taskClient.send('task.created', body));
     } catch (error) {
@@ -180,6 +182,24 @@ export class AppController {
       this.logger.error('Error emitting task delete event:', error);
       throw new HttpException(
         'Failed to emit task delete event',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // ================================ TASK COMMENTS ==================================
+
+  @Post('/tasks/:id/comments')
+  async createTaskComment(
+    @Param('id') id: string,
+    @Body() body: TaskCommentDto,
+  ) {
+    try {
+      this.taskClient.emit('comment.create', { id, body });
+    } catch (error) {
+      this.logger.error('Error emitting task comments update event:', error);
+      throw new HttpException(
+        'Failed to emit task comments update event',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

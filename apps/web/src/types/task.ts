@@ -81,7 +81,11 @@ export interface FindParams {
   id: string;
 }
 
-// export type TaskFormData = Omit<CreateTask, "createdBy">;
+export interface ITaskComment {
+  content: string;
+  taskId: string;
+  userId: string | undefined;
+}
 
 export type TaskStatusLabel = {
   label: string;

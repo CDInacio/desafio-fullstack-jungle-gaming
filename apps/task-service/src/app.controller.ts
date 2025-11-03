@@ -1,7 +1,7 @@
 import { MessagePattern, Payload, ClientProxy } from '@nestjs/microservices';
 import { Controller, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateTaskDto, QueryParams } from '@repo/shared/task';
+import { CreateTaskDto, type TaskCommentDto } from '@repo/shared/task';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 import type { PaginationQuery } from '@repo/shared/pagination';
 
@@ -50,5 +50,13 @@ export class AppController {
   async deleteTaskById(@Payload() id: string) {
     const result = await this.appService.deleteTaskById(id);
     console.log(result);
+  }
+
+  @MessagePattern('comment.create')
+  async createComment(@Payload() payload: TaskCommentDto) {
+    console.log(payload.content);
+    // const result = await this.appService.createComment(payload);
+    // this.notificationClient.emit('comment.created', result);
+    // return result;
   }
 }

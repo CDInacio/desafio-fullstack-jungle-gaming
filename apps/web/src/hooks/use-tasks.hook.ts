@@ -4,6 +4,7 @@ import type {
   ITask,
   ITaskResponse,
   TaskApiResponse,
+  ITaskComment,
 } from "@/types/task";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -53,6 +54,23 @@ export function useUpdateTask() {
     },
     onError: (error) => {
       toast.error("Erro ao atualizar tarefa", { description: error.message });
+    },
+  });
+}
+
+export function useCreatTaskComment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (commentData: ITaskComment) => {
+      return taskService.createComment(commentData);
+    },
+    onSuccess: () => {
+      toast.success("Comentário criado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["task"] });
+    },
+    onError: (error) => {
+      toast.error("Erro ao criar comentário", { description: error.message });
     },
   });
 }

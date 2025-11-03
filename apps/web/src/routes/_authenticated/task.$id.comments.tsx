@@ -3,30 +3,35 @@ import {
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { useGetTask } from "@/hooks/use-tasks.hook";
+import { useCreatTaskComment, useGetTask } from "@/hooks/use-tasks.hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, MessageSquare, Send } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/context/auth-context";
+import type { ITaskComment } from "@/types/task";
 
 export const Route = createFileRoute("/_authenticated/task/$id/comments")({
   component: TaskCommentsComponent,
 });
 
 function TaskCommentsComponent() {
+  const { user } = useAuth();
   const { id } = useParams({ strict: false });
   const { data: response } = useGetTask(id);
-  const navigate = useNavigate();
+  const { mutate: createComment } = useCreatTaskComment();
   const [newComment, setNewComment] = useState("");
 
   const task = response?.data;
 
   const handleSubmitComment = () => {
-    if (!newComment.trim()) return;
-
-    // TODO: Implementar hook de criar comentário
-    setNewComment("");
+    const commentData: ITaskComment = {
+      content: newComment,
+      taskId: id,
+      userId: user?.id,
+    };
+    createComment(commentData);
   };
 
   return (
