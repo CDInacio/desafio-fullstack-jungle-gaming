@@ -4,14 +4,12 @@ import { useGetTask, useUpdateTask } from "@/hooks/use-tasks.hook";
 import { createFileRoute, Outlet, useParams } from "@tanstack/react-router";
 import { Clock, CheckCircle2, Circle, AlertCircle } from "lucide-react";
 import { TaskHeader } from "@/components/tasks/task-header";
-import { TaskDetailsCard } from "@/components/tasks/task-details-card";
-import { TaskAssignmentsCard } from "@/components/tasks/task-assignment-card";
-import { TaskCommentsCard } from "@/components/tasks/task-comments-card";
 import type { ITask } from "@/types/task";
 import { LoadingState } from "@/components/loading-state";
 import { NotFoundState } from "@/components/not-found-state";
 import type { StatusInfo } from "@/types/status-info";
 import { useState } from "react";
+import { TaskEditProvider } from "@/context/task-edit-context";
 
 export const Route = createFileRoute("/_authenticated/task/$id")({
   component: RouteComponent,
@@ -43,39 +41,22 @@ const statusConfig: Record<string, StatusInfo> = {
 function RouteComponent() {
   const { id } = useParams({ strict: false });
   const { data: response, isLoading } = useGetTask(id);
-  const { mutate: updateTask } = useUpdateTask();
-  const [isEditMode, setIsEditMode] = useState(false);
 
   if (isLoading) return <LoadingState />;
   if (!response) return <NotFoundState />;
 
-  const task: ITask = response?.data;
+  const task = response?.data;
 
-  const handleSaveTask = async (updatedFields: Partial<ITask>) => {
-    console.log(updatedFields);
-    updateTask({ id: task.id, ...updatedFields });
-  };
-  console.log("ola");
   return (
-    <Layout>
-      <CenteredContainer>
-        <div className="space-y-6">
-          <TaskHeader
-            onEditMode={setIsEditMode}
-            isEditMode={isEditMode}
-            task={task}
-          />
-          <TaskDetailsCard
-            task={task}
-            onSetEditMode={setIsEditMode}
-            isEditMode={isEditMode}
-            statusConfig={statusConfig}
-            onSave={handleSaveTask}
-          />
-          <TaskAssignmentsCard task={task} />
-          <TaskCommentsCard />
-        </div>
-      </CenteredContainer>
-    </Layout>
+    <TaskEditProvider initialTask={task}>
+      <Layout>
+        <CenteredContainer>
+          <div className="space-y-6">
+            <TaskHeader />
+            <Outlet />
+          </div>
+        </CenteredContainer>
+      </Layout>
+    </TaskEditProvider>
   );
 }

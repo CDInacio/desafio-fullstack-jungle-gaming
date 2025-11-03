@@ -216,7 +216,6 @@ export function TaskDetailsCard({
         </CardContent>
       </Card>
 
-      {/* DIALOG DE EDIÇÃO */}
       <Dialog
         open={isEditMode}
         onOpenChange={(open) => !open && handleCancel()}
