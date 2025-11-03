@@ -161,7 +161,6 @@ export class AppController {
 
   @Put('/tasks/:id')
   async updateTaskById(@Param('id') id: string, @Body() body: any) {
-    console.log(body);
     try {
       this.taskClient.emit('task.update', { id, ...body });
     } catch (error) {

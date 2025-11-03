@@ -23,12 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import type { AssignedUser, ITask } from "@/types/task";
+import type { ITask } from "@/types/task";
 import type { TaskStatusKey } from "@/types/status-info";
 import { ptBR } from "date-fns/locale";
-import { AssignedUserInput } from "./assigned-user-input";
-import { useUsers } from "@/hooks/use-users.hook";
-import type { IUser } from "@/types/auth";
 
 interface TaskDetailsCardProps {
   task: ITask;
@@ -51,7 +48,6 @@ interface EditableTaskFields {
   priority: string;
   status: TaskStatusKey;
   deadline: string;
-  assignedUsers: IUser[];
 }
 
 export function TaskDetailsCard({
@@ -61,8 +57,6 @@ export function TaskDetailsCard({
   onSetEditMode,
   onSave,
 }: TaskDetailsCardProps) {
-  const { data: users } = useUsers();
-
   const StatusIcon = statusConfig[task.status]?.icon;
   const statusInfo = statusConfig[task.status] || statusConfig.TODO;
 
@@ -74,11 +68,6 @@ export function TaskDetailsCard({
     deadline: task.deadline
       ? new Date(task.deadline).toISOString().split("T")[0]
       : "",
-    assignedUsers: (task.assignedUsers || []).map((u) => ({
-      id: u.id,
-      username: (u as any).username ?? "",
-      email: (u as any).email ?? "",
-    })),
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -93,11 +82,6 @@ export function TaskDetailsCard({
         deadline: task.deadline
           ? new Date(task.deadline).toISOString().split("T")[0]
           : "",
-        assignedUsers: (task.assignedUsers || []).map((u) => ({
-          id: u.id,
-          username: (u as any).username ?? "",
-          email: (u as any).email ?? "",
-        })),
       });
     }
   }, [isEditMode, task]);
@@ -106,7 +90,7 @@ export function TaskDetailsCard({
     setEditedTask((prev) => ({ ...prev, [field]: value }));
   };
 
-  // faz o diferencial entre o task original e o editado
+  // compara apenas os campos relevantes
   const getChangedFields = (): Partial<ITask> => {
     const changed: Partial<ITask> = {};
 
@@ -126,57 +110,23 @@ export function TaskDetailsCard({
         : null;
     }
 
-    const originalAssignedIds = ((task.assignedUsers as IUser[]) || [])
-      .map((user) => user.id)
-      .sort();
-    const editedAssignedIds = editedTask.assignedUsers
-      .map((user) => user.id)
-      .sort();
-
-    if (
-      JSON.stringify(originalAssignedIds) !== JSON.stringify(editedAssignedIds)
-    ) {
-      changed.assignedUsers = editedTask.assignedUsers.map((user) => ({
-        id: user.id!,
-        username: user.username,
-        email: user.email,
-      })) as AssignedUser[];
-    }
-
     return changed;
   };
 
   const handleSave = () => {
     setIsSaving(true);
     try {
-      // const updatedFields = {
-      //   title: editedTask.title.trim(),
-      //   description: editedTask.description.trim(),
-      //   priority: editedTask.priority as any,
-      //   status: editedTask.status,
-      //   deadline: editedTask.deadline
-      //     ? new Date(editedTask.deadline).toISOString()
-      //     : null,
-      //   assignedUsers: editedTask.assignedUsers.map((user) => ({
-      //     id: user.id!,
-      //     username: user.username,
-      //     email: user.email,
-      //   })) as AssignedUser[],
-      // } as Partial<ITask>;
       const updatedFields = getChangedFields();
-
       onSave?.(updatedFields);
       onSetEditMode?.(false);
     } catch (error) {
       console.error("Erro ao salvar:", error);
-      // Aqui você pode adicionar um toast de erro
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    // Reseta o formulário
     setEditedTask({
       title: task.title,
       description: task.description ?? "",
@@ -185,21 +135,11 @@ export function TaskDetailsCard({
       deadline: task.deadline
         ? new Date(task.deadline).toISOString().split("T")[0]
         : "",
-      assignedUsers: (task.assignedUsers || []).map((u) => ({
-        id: u.id,
-        username: (u as any).username ?? "",
-        email: (u as any).email ?? "",
-      })),
     });
     onSetEditMode?.(false);
   };
 
   const hasChanges = () => {
-    const originalAssignedIds = ((task.assignedUsers as IUser[]) || [])
-      .map((u) => u.id)
-      .sort();
-    const editedAssignedIds = editedTask.assignedUsers.map((u) => u.id).sort();
-
     return (
       editedTask.title !== task.title ||
       editedTask.description !== (task.description ?? "") ||
@@ -208,8 +148,7 @@ export function TaskDetailsCard({
       editedTask.deadline !==
         (task.deadline
           ? new Date(task.deadline).toISOString().split("T")[0]
-          : "") ||
-      JSON.stringify(originalAssignedIds) !== JSON.stringify(editedAssignedIds)
+          : "")
     );
   };
 
@@ -276,6 +215,8 @@ export function TaskDetailsCard({
           </div>
         </CardContent>
       </Card>
+
+      {/* DIALOG DE EDIÇÃO */}
       <Dialog
         open={isEditMode}
         onOpenChange={(open) => !open && handleCancel()}
@@ -309,10 +250,9 @@ export function TaskDetailsCard({
                 id="description"
                 value={editedTask.description}
                 onChange={(e) => handleChange("description", e.target.value)}
-                className={`min-h-[120px]  text-input bg-foreground border-zinc-500 `}
+                className={`min-h-[120px] text-input bg-foreground border-zinc-500`}
                 placeholder="Descreva a tarefa em detalhes..."
               />
-
               <p className="text-xs text-zinc-500">
                 {editedTask.description.length}/2000 caracteres
               </p>
@@ -332,7 +272,7 @@ export function TaskDetailsCard({
                     id="priority"
                     className="bg-foreground text-input w-full"
                   >
-                    <SelectValue className="text-input" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-primary text-input border-zinc-500">
                     <SelectItem value="LOW">Baixa</SelectItem>
@@ -393,19 +333,6 @@ export function TaskDetailsCard({
                 Deixe em branco para remover o prazo
               </p>
             </div>
-            <AssignedUserInput
-              users={users ?? []}
-              assignedUsers={editedTask.assignedUsers}
-              setAssignedUsers={(newUsers) => {
-                setEditedTask((prev) => ({
-                  ...prev,
-                  assignedUsers:
-                    typeof newUsers === "function"
-                      ? newUsers(prev.assignedUsers)
-                      : newUsers,
-                }));
-              }}
-            />
           </div>
 
           <DialogFooter className="mt-6 gap-2 sm:gap-0">

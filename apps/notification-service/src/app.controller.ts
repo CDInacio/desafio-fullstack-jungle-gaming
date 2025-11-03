@@ -22,6 +22,7 @@ export class AppController {
   @MessagePattern('task.updated')
   async handleTaskUpdated(@Payload() payload: any) {
     this.logger.log('task.updated received');
+    console.log(payload);
     const userIds = extractUserIds(payload).map(String);
     this.gateway.emitToUsers('task.updated', payload, userIds);
     return { status: 'Notification sent' };

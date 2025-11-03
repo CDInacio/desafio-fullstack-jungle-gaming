@@ -23,6 +23,7 @@ import type { IUser } from "@/types/auth";
 import { useUsers } from "@/hooks/use-users.hook";
 import { AssignedUserInput } from "./assigned-user-input";
 import { toast } from "sonner";
+import { useUpdateTask } from "@/hooks/use-tasks.hook";
 
 interface TaskAssignmentsCardProps {
   task: ITask;
@@ -32,7 +33,7 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
   const [open, setOpen] = useState(false);
   const [assignedUsers, setAssignedUsers] = useState<IUser[]>([]);
   const { data: users } = useUsers();
-  const [isLoading, setIsLoading] = useState(false);
+  const { mutate: updateTask, isPending } = useUpdateTask();
 
   const handleAssignUsers = async () => {
     if (assignedUsers.length === 0) {
@@ -40,8 +41,31 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
       return;
     }
 
-    setIsLoading(true);
     try {
+      // Combina usuários já atribuídos com os novos
+      const currentAssignedUserIds =
+        task.assignments?.map((a) => a.userId) || [];
+      const newUserIds = assignedUsers.map((u) => u.id!);
+
+      // Remove duplicatas
+      const uniqueUserIds = Array.from(
+        new Set([...currentAssignedUserIds, ...newUserIds])
+      );
+
+      // Busca os dados completos de todos os usuários
+      const allAssignedUsers =
+        users?.filter((u) => uniqueUserIds.includes(u.id!)) || [];
+
+      // Atualiza a task com todos os usuários (anteriores + novos)
+      updateTask({
+        id: task.id,
+        assignedUsers: allAssignedUsers.map((user) => ({
+          id: user.id!,
+          username: user.username,
+          email: user.email,
+        })),
+      });
+
       toast.success(
         `${assignedUsers.length} pessoa(s) atribuída(s) com sucesso!`
       );
@@ -51,15 +75,27 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
     } catch (err) {
       console.error("Erro ao atribuir usuários:", err);
       toast.error("Erro ao atribuir pessoas");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleRemoveAssignment = async (userId: string) => {
     try {
-      // TODO: Chamar API para remover atribuição
-      console.log("Removendo atribuição:", { taskId: task.id, userId });
+      // Filtra o usuário a ser removido
+      const updatedAssignedUsers =
+        task.assignments
+          ?.filter((a) => a.userId !== userId)
+          .map((a) => ({
+            id: a.userId,
+            username: a.user?.username || "",
+            email: a.user?.email || "",
+          })) || [];
+
+      // Atualiza a task removendo o usuário
+      updateTask({
+        id: task.id,
+        assignedUsers: updatedAssignedUsers,
+      });
+
       toast.success("Atribuição removida com sucesso!");
     } catch (err) {
       console.error("Erro ao remover atribuição:", err);
@@ -115,10 +151,10 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
                 </DialogClose>
                 <Button
                   onClick={handleAssignUsers}
-                  disabled={isLoading || assignedUsers.length === 0}
+                  disabled={isPending || assignedUsers.length === 0}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  {isLoading ? "Atribuindo..." : "Atribuir"}
+                  {isPending ? "Atribuindo..." : "Atribuir"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -151,6 +187,7 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
                   size="sm"
                   variant="ghost"
                   onClick={() => a.userId && handleRemoveAssignment(a.userId)}
+                  disabled={isPending}
                   className="text-zinc-400 hover:text-red-400 hover:bg-red-950/30 h-8 w-8 p-0"
                 >
                   ✕

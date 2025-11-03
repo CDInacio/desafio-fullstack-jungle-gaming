@@ -30,6 +30,7 @@ export class AppController {
       Object.fromEntries(Object.entries(payload).filter(([k]) => k !== 'id'));
 
     const result = await this.appService.updateTask(id, rest);
+    this.notificationClient.emit('task.updated', result);
     return result;
   }
 
