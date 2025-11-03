@@ -1,7 +1,7 @@
 import CenteredContainer from "@/components/centered-container";
 import Layout from "@/components/layout";
 import { useGetTask, useUpdateTask } from "@/hooks/use-tasks.hook";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useParams } from "@tanstack/react-router";
 import { Clock, CheckCircle2, Circle, AlertCircle } from "lucide-react";
 import { TaskHeader } from "@/components/tasks/task-header";
 import { TaskDetailsCard } from "@/components/tasks/task-details-card";
@@ -12,7 +12,6 @@ import { LoadingState } from "@/components/loading-state";
 import { NotFoundState } from "@/components/not-found-state";
 import type { StatusInfo } from "@/types/status-info";
 import { useState } from "react";
-import { toast } from "sonner"; // ou seu sistema de toast preferido
 
 export const Route = createFileRoute("/_authenticated/task/$id")({
   component: RouteComponent,
@@ -77,6 +76,7 @@ function RouteComponent() {
           <TaskCommentsCard />
         </div>
       </CenteredContainer>
+      <Outlet />
     </Layout>
   );
 }
