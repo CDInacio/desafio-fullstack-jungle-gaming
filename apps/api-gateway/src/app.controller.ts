@@ -191,15 +191,25 @@ export class AppController {
 
   @Post('/tasks/:id/comments')
   async createTaskComment(
-    @Param('id') id: string,
+    @Param('id') taskId: string,
     @Body() body: TaskCommentDto,
   ) {
     try {
-      this.taskClient.emit('comment.create', { id, body });
+      const payload = {
+        content: body.content,
+        userId: body.userId,
+        taskId: taskId,
+      };
+
+      const result = await firstValueFrom(
+        this.taskClient.send('comment.create', payload),
+      );
+
+      return result;
     } catch (error) {
-      this.logger.error('Error emitting task comments update event:', error);
+      this.logger.error('Error creating comment:', error);
       throw new HttpException(
-        'Failed to emit task comments update event',
+        'Failed to create comment',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

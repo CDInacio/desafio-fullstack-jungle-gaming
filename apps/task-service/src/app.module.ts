@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DbModule } from './db/db.mobule';
 import { TaskEntity } from '@repo/shared/entities/task';
+import { CommentEntity } from '@repo/shared/entities/comment';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
@@ -12,7 +13,12 @@ import { UserEntity } from '@repo/shared/entities/user';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TaskEntity, TaskAssignmentEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      TaskEntity,
+      TaskAssignmentEntity,
+      UserEntity,
+      CommentEntity,
+    ]),
     ClientsModule.register([
       {
         name: NOTIFICATION_SERVICE_RABBITMQ,

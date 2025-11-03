@@ -8,6 +8,7 @@ import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 import { TaskEntity } from '@repo/shared/entities/task';
 import { UserEntity } from '@repo/shared/entities/user';
 import { In } from 'typeorm';
+import { CommentEntity } from '@repo/shared/entities/comment';
 
 @Injectable()
 export class AppService {
@@ -20,6 +21,8 @@ export class AppService {
     private taskRepository: Repository<TaskEntity>,
     @InjectRepository(TaskAssignmentEntity)
     private taskAssignmentRepository: Repository<TaskAssignmentEntity>,
+    @InjectRepository(CommentEntity)
+    private commentRepository: Repository<CommentEntity>,
     private dataSource: DataSource,
   ) {}
 
@@ -381,7 +384,69 @@ export class AppService {
     }
   }
 
-  async createComment(payload: any) {
-    console.log(payload);
+  async createComment(payload: {
+    content: string;
+    userId: string;
+    taskId: string;
+  }) {
+    try {
+      this.logger.log(`Creating comment for task ${payload.taskId}`);
+
+      const task = await this.taskRepository.findOne({
+        where: { id: payload.taskId },
+      });
+
+      if (!task) {
+        throw new RpcException({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: `Task with ID ${payload.taskId} not found`,
+        });
+      }
+
+      const user = await this.userRepository.findOne({
+        where: { id: payload.userId },
+      });
+
+      if (!user) {
+        throw new RpcException({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: `User with ID ${payload.userId} not found`,
+        });
+      }
+
+      const comment = this.commentRepository.create({
+        content: payload.content,
+        taskId: payload.taskId,
+        userId: payload.userId,
+      });
+
+      const savedComment = await this.commentRepository.save(comment);
+
+      const commentWithRelations = await this.commentRepository.findOne({
+        where: { id: savedComment.id },
+        relations: {
+          user: true,
+          task: true,
+        },
+      });
+
+      return {
+        statusCode: HttpStatus.CREATED,
+        message: 'Comment created successfully',
+        data: commentWithRelations,
+      };
+    } catch (error) {
+      this.logger.error(`Error creating comment: ${error.message}`);
+
+      if (error instanceof RpcException) {
+        throw error;
+      }
+
+      throw new RpcException({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Failed to create comment',
+        error: error.message,
+      });
+    }
   }
 }
