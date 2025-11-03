@@ -54,9 +54,8 @@ export class AppController {
 
   @MessagePattern('comment.create')
   async createComment(@Payload() payload: TaskCommentDto) {
-    console.log(payload.content);
-    // const result = await this.appService.createComment(payload);
-    // this.notificationClient.emit('comment.created', result);
-    // return result;
+    const result = await this.appService.createComment(payload);
+    this.notificationClient.emit('comment.created', result);
+    return result;
   }
 }

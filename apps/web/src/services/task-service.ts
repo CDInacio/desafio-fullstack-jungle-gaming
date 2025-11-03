@@ -66,7 +66,9 @@ export class TaskService {
       const { data: result } = await api.post(
         `/api/tasks/${commentData.taskId}/comments`,
         {
-          comment: commentData.content,
+          content: commentData.content,
+          userId: commentData.userId,
+          taskId: commentData.taskId,
         }
       );
       return result;
