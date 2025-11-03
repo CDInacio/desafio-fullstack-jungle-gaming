@@ -55,7 +55,7 @@ function RouteComponent() {
     console.log(updatedFields);
     updateTask({ id: task.id, ...updatedFields });
   };
-  console.log(task);
+  console.log("ola");
   return (
     <Layout>
       <CenteredContainer>
@@ -76,7 +76,6 @@ function RouteComponent() {
           <TaskCommentsCard />
         </div>
       </CenteredContainer>
-      <Outlet />
     </Layout>
   );
 }
