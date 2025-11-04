@@ -1,4 +1,4 @@
-import { Clipboard, Home, LogOut, Bell, User } from "lucide-react";
+import { Clipboard, Home, LogOut } from "lucide-react";
 
 import {
   Sidebar,

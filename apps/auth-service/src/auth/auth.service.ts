@@ -13,7 +13,7 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    console.log(user);
+
     if (
       !user ||
       !user.password ||
@@ -21,12 +21,18 @@ export class AuthService {
     ) {
       throw new UnauthorizedException('Credenciais inválidas.');
     }
-    console.log(bcryptCompareSync(password, user.password));
-    const payload = { sub: user.id, user };
+
+    const payload = {
+      email: user.email,
+      sub: {
+        username: user.username,
+        userId: user.id,
+      },
+    };
 
     const token = this.jwtService.sign(payload);
 
-    return { token, user };
+    return { ...user, token };
   }
 
   async register(data: SignupCredentialsDto) {

@@ -1,3 +1,4 @@
+import { JwtGuard } from './../../auth-service/src/guards/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -11,6 +12,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
@@ -83,6 +85,11 @@ export class AppController {
     }
   }
 
+  @Post('auth/refresh-token')
+  async refreshToken(@Body() body: any) {
+    console.log(body);
+  }
+
   // ================================ TASKS CRUD ==================================
 
   @Post('tasks')
@@ -98,6 +105,7 @@ export class AppController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get('tasks')
   async getTasks(@Query('page') page: number, @Query('size') size: number) {
     try {

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import {
   Select,
   SelectTrigger,
@@ -27,6 +28,7 @@ import type { CreateTask, TaskPriority, TaskStatus } from "@/types/task";
 import { AssignedUserInput } from "./assigned-user-input";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "sonner";
+import { ptBR } from "date-fns/locale";
 
 interface TaskFormDialogProps {
   users: IUser[];
@@ -54,6 +56,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
   const [status, setStatus] = useState<TaskStatus>("TODO");
   const [priority, setPriority] = useState<TaskPriority>("LOW");
   const [assignedUsers, setAssignedUsers] = useState<IUser[]>([]);
+  const [deadline, setDeadline] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,6 +71,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
       description,
       status,
       priority,
+      deadline: new Date(deadline).toISOString().split("T")[0],
       assignedUsers: assignedUsers.map((u) => ({
         id: u.id!,
         username: u.username,
@@ -192,6 +196,24 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="deadline"
+                  className="text-white text-sm font-medium flex items-center gap-2"
+                >
+                  Prazo
+                </Label>
+                <ShadCalendar
+                  mode="single"
+                  id="deadline"
+                  locale={ptBR}
+                  onSelect={(date) =>
+                    setDeadline(date ? date.toISOString() : "")
+                  }
+                  selected={deadline ? new Date(deadline) : undefined}
+                  className="rounded-lg border border-zinc-700 bg-zinc-800 text-white"
+                />
               </div>
             </div>
 
