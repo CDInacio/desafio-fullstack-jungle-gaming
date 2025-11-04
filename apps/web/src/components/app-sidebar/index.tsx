@@ -36,7 +36,7 @@ export function AppSidebar() {
           {/* Header com Avatar */}
           <div className="px-4 py-6 border-b border-zinc-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-sky-600 flex items-center justify-center">
                 <span className="text-white text-sm font-semibold">
                   {user?.username?.[0]?.toUpperCase() || "U"}
                 </span>
@@ -59,7 +59,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="group hover:bg-blue-600/10 hover:text-blue-600 text-zinc-400 rounded-lg transition-colors duration-150"
+                    className="group hover:bg-sky-600/10 hover:text-sky-600 text-zinc-400 rounded-lg transition-colors duration-150"
                   >
                     <Link
                       to={item.url}

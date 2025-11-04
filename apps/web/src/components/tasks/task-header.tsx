@@ -9,7 +9,7 @@ export function TaskHeader() {
     <div className="flex items-start justify-between">
       <div className="flex items-start gap-4">
         {/* Ícone azul da task */}
-        <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-sky-600 flex items-center justify-center flex-shrink-0">
           <FileText className="w-6 h-6 text-white" />
         </div>
 
@@ -36,7 +36,7 @@ export function TaskHeader() {
           onClick={toggleEditMode}
           variant="outline"
           size="sm"
-          className="bg-transparent border-zinc-700 hover:bg-blue-600/10 hover:text-blue-600 hover:border-blue-600/50 text-zinc-400 transition-colors"
+          className="bg-transparent border-zinc-700 hover:bg-sky-600/10 hover:text-sky-600 hover:border-sky-600/50 text-zinc-400 transition-colors"
         >
           <Edit className="h-4 w-4 mr-2" />
           Editar

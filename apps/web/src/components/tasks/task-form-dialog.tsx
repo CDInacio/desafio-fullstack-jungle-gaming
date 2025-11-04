@@ -89,7 +89,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-sky-600 hover:bg-sky-700 text-white">
           <Plus className="w-4 h-4 mr-2" />
           Nova Tarefa
         </Button>
@@ -99,7 +99,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
                 <Plus className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -124,7 +124,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Input
                 id="title"
-                className="text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20"
+                className="text-white bg-zinc-800 border-zinc-700 focus:border-sky-600 focus:ring-sky-600/20"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ex: Implementar nova funcionalidade"
@@ -142,7 +142,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Textarea
                 id="description"
-                className="text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20 resize-none"
+                className="text-white bg-zinc-800 border-zinc-700 focus:border-sky-600 focus:ring-sky-600/20 resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descreva os detalhes da tarefa..."
@@ -160,7 +160,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                   onValueChange={(v) => setPriority(v as TaskPriority)}
                   defaultValue="LOW"
                 >
-                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20">
+                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20">
                     <SelectValue placeholder="Prioridade" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 text-white border-zinc-700">
@@ -181,7 +181,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                   onValueChange={(v) => setStatus(v as TaskStatus)}
                   defaultValue="TODO"
                 >
-                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20">
+                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 text-white border-zinc-700">
@@ -219,7 +219,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
             </DialogClose>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+              className="bg-sky-600 hover:bg-sky-700 text-white disabled:opacity-50"
               disabled={!user?.id || !title.trim()}
             >
               <Plus className="w-4 h-4 " />

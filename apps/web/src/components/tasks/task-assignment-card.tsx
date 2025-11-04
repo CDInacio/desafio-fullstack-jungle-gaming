@@ -107,7 +107,7 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
   return (
     <Card className="bg-primary border-zinc-800">
       <CardHeader>
-        <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+        <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
           <Users className="w-5 h-5 text-white" />
         </div>
         <CardTitle className="text-white">Pessoas Atribuídas</CardTitle>
@@ -156,7 +156,7 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
                 <Button
                   onClick={handleAssignUsers}
                   disabled={isPending || assignedUsers.length === 0}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-sky-600 hover:bg-sky-700 text-white"
                 >
                   {isPending ? "Atribuindo..." : "Atribuir"}
                 </Button>

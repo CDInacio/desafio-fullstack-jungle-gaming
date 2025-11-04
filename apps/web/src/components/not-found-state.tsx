@@ -11,8 +11,8 @@ export function NotFoundState({
     <CenteredContainer>
       <Card className="bg-primary border-zinc-800">
         <CardContent className="flex flex-col items-center justify-center h-64 gap-4">
-          <div className="w-16 h-16 rounded-lg bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
-            <AlertCircle className="h-8 w-8 text-blue-600" />
+          <div className="w-16 h-16 rounded-lg bg-sky-600/10 border border-sky-600/20 flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-sky-600" />
           </div>
           <p className="text-zinc-400">{message}</p>
         </CardContent>

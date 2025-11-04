@@ -223,7 +223,7 @@ export function TaskDetailsCard({
         <DialogContent className="sm:max-w-[650px] bg-zinc-900 border-zinc-800 max-h-[90vh] overflow-y-auto">
           <DialogHeader className="border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
                 <Edit className="w-5 h-5 text-white" />
               </div>
               <div>
@@ -250,7 +250,7 @@ export function TaskDetailsCard({
                 id="title"
                 value={editedTask.title}
                 onChange={(e) => handleChange("title", e.target.value)}
-                className="bg-zinc-800 border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
+                className="bg-zinc-800 border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20"
                 placeholder="Digite o título da tarefa"
               />
             </div>
@@ -267,7 +267,7 @@ export function TaskDetailsCard({
                 id="description"
                 value={editedTask.description}
                 onChange={(e) => handleChange("description", e.target.value)}
-                className="min-h-[120px] text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20 resize-none"
+                className="min-h-[120px] text-white bg-zinc-800 border-zinc-700 focus:border-sky-600 focus:ring-sky-600/20 resize-none"
                 placeholder="Descreva a tarefa em detalhes..."
               />
               <p className="text-xs text-zinc-500">
@@ -290,7 +290,7 @@ export function TaskDetailsCard({
                 >
                   <SelectTrigger
                     id="priority"
-                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
+                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -316,7 +316,7 @@ export function TaskDetailsCard({
                 >
                   <SelectTrigger
                     id="status"
-                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
+                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -373,7 +373,7 @@ export function TaskDetailsCard({
             <Button
               onClick={handleSave}
               disabled={!hasChanges() || isSaving}
-              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+              className="bg-sky-600 hover:bg-sky-700 text-white disabled:opacity-50"
             >
               {isSaving ? "Salvando..." : "Salvar alterações"}
             </Button>

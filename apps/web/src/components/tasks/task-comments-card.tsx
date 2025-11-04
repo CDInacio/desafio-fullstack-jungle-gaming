@@ -30,14 +30,14 @@ export function TaskCommentsCard({ task }: TaskCommentsCardProps) {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-white" />
             </div>
             <div>
               <CardTitle className="text-white flex items-center gap-2">
                 Comentários
                 {commentsCount > 0 && (
-                  <span className="text-xs bg-blue-600/20 text-blue-600 px-2 py-1 rounded-full font-normal">
+                  <span className="text-xs bg-sky-600/20 text-sky-600 px-2 py-1 rounded-full font-normal">
                     {commentsCount}
                   </span>
                 )}
@@ -51,7 +51,7 @@ export function TaskCommentsCard({ task }: TaskCommentsCardProps) {
             <Link
               to="/task/$id/comments"
               params={{ id: id as string }}
-              className="text-sm text-blue-600 hover:text-blue-500 transition-colors"
+              className="text-sm text-sky-600 hover:text-sky-500 transition-colors"
             >
               Ver todos →
             </Link>
@@ -66,7 +66,7 @@ export function TaskCommentsCard({ task }: TaskCommentsCardProps) {
               Nenhum comentário ainda. Seja o primeiro a comentar!
             </p>
             <Link to="/task/$id/comments" params={{ id: id as string }}>
-              <button className="mt-4 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+              <button className="mt-4 text-sm text-sky-400 hover:text-sky-300 transition-colors">
                 Adicionar comentário
               </button>
             </Link>
@@ -107,7 +107,7 @@ export function TaskCommentsCard({ task }: TaskCommentsCardProps) {
               <Link
                 to="/task/$id/comments"
                 params={{ id: id as string }}
-                className="block text-center py-2 text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                className="block text-center py-2 text-sm text-sky-400 hover:text-sky-300 transition-colors"
               >
                 Ver mais {commentsCount - 3} comentário(s)
               </Link>
