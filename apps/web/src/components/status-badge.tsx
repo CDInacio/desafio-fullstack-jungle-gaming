@@ -22,7 +22,7 @@ export function StatusBadge({ status }: { status: string }) {
   const text = STATUS_TEXT[status] ?? status;
 
   return (
-    <Badge className={`${classes} border-none `} variant="outline">
+    <Badge className={`${classes} border-none text-xs sm:text-sm whitespace-nowrap`} variant="outline">
       {text}
     </Badge>
   );

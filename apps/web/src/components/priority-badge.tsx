@@ -15,7 +15,7 @@ export function PriorityBadge({ priority }: { priority: string }) {
 
   return (
     <Badge
-      className={`${PRIORITY_STYLES[priority] ?? "bg-gray-300 text-gray-900 dark:bg-gray-300/40 dark:text-gray-200"} border-none `}
+      className={`${PRIORITY_STYLES[priority] ?? "bg-gray-300 text-gray-900 dark:bg-gray-300/40 dark:text-gray-200"} border-none text-xs sm:text-sm whitespace-nowrap`}
       variant="outline"
     >
       {PRIORITY_TEXT[priority] ?? priority}

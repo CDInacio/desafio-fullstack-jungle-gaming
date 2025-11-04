@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { CreateTaskDto, type TaskCommentDto } from '@repo/shared/task';
 import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 import type { PaginationQuery } from '@repo/shared/pagination';
+import { NotificationHelper } from './helpers/notification.helper';
 
 @Controller()
 export class AppController {
@@ -17,7 +18,20 @@ export class AppController {
   async handleCreateTask(@Payload() payload: CreateTaskDto) {
     const result = await this.appService.createTask(payload);
 
-    this.notificationClient.emit('task.created', result);
+    if (result.data) {
+      const notificationPayload = NotificationHelper.createNotificationPayload(
+        'task.created',
+        NotificationHelper.extractUserIdsFromTask(result.data),
+        result.data,
+        {
+          taskId: result.data.id,
+          taskTitle: result.data.title,
+          userId: result.data.createdBy ?? undefined,
+        },
+      );
+
+      this.notificationClient.emit('task.created', notificationPayload);
+    }
 
     return result;
   }
@@ -30,7 +44,21 @@ export class AppController {
       Object.fromEntries(Object.entries(payload).filter(([k]) => k !== 'id'));
 
     const result = await this.appService.updateTask(id, rest);
-    this.notificationClient.emit('task.updated', result);
+
+    if (result.data) {
+      const notificationPayload = NotificationHelper.createNotificationPayload(
+        'task.created',
+        NotificationHelper.extractUserIdsFromTask(result.data),
+        result.data,
+        {
+          taskId: result.data.id,
+          taskTitle: result.data.title,
+          userId: result.data.createdBy ?? undefined,
+        },
+      );
+      this.notificationClient.emit('task.updated', notificationPayload);
+    }
+
     return result;
   }
 
@@ -55,7 +83,15 @@ export class AppController {
   @MessagePattern('comment.new')
   async createComment(@Payload() payload: TaskCommentDto) {
     const result = await this.appService.createComment(payload);
-    this.notificationClient.emit('comment.new', result);
+
+    const notificationPayload = NotificationHelper.createNotificationPayload(
+      'comment.new',
+      result.userIds || [],
+      result.data,
+      result.metadata,
+    );
+
+    this.notificationClient.emit('comment.new', notificationPayload);
     return result;
   }
 }

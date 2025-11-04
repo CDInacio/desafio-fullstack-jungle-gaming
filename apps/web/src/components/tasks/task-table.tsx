@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -22,20 +21,23 @@ export function TaskTable({ tasks }: TaskTableProps) {
     <div className="space-y-4">
       {/* Header da tabela com ícone */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
-          <Clipboard className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-600 flex items-center justify-center">
+          <Clipboard className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
         <div>
-          <h2 className="text-xl font-semibold text-white"> Tarefas</h2>
-          <p className="text-sm text-zinc-500">
+          <h2 className="text-lg sm:text-xl font-semibold text-white">
+            {" "}
+            Tarefas
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-500">
             {tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"}{" "}
             encontrada(s)
           </p>
         </div>
       </div>
 
-      {/* Tabela */}
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden">
+      {/* Tabela - Desktop */}
+      <div className="hidden lg:block rounded-lg border border-zinc-800 bg-zinc-900 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="border-b border-zinc-800 hover:bg-transparent">
@@ -162,6 +164,93 @@ export function TaskTable({ tasks }: TaskTableProps) {
         {tasks.length > 0 && (
           <div className="border-t border-zinc-800 bg-zinc-900/50 px-6 py-3">
             <p className="text-sm text-zinc-500">
+              Mostrando {tasks.length} de {tasks.length}{" "}
+              {tasks.length === 1 ? "tarefa" : "tarefas"}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Cards - Mobile/Tablet */}
+      <div className="lg:hidden space-y-3">
+        {tasks.length === 0 ? (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-8">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-zinc-800 flex items-center justify-center">
+                <Clipboard className="w-6 h-6 text-zinc-600" />
+              </div>
+              <p className="text-zinc-500 text-center">
+                Nenhuma tarefa encontrada
+              </p>
+            </div>
+          </div>
+        ) : (
+          tasks.map((task) => (
+            <Link
+              key={task.id}
+              to={`/task/${task.id}`}
+              className="block rounded-lg border border-zinc-800 bg-zinc-900 p-4 hover:bg-zinc-800/50 transition-colors"
+            >
+              {/* Título e Link */}
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <h3 className="font-medium text-white text-base flex-1">
+                  {task.title}
+                </h3>
+                <ExternalLink className="w-4 h-4 text-sky-600 shrink-0 mt-1" />
+              </div>
+
+              {/* Descrição */}
+              {task.description && (
+                <p className="text-sm text-zinc-400 mb-3 line-clamp-2">
+                  {task.description}
+                </p>
+              )}
+
+              {/* Badges */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                <StatusBadge status={task.status} />
+                <PriorityBadge priority={task.priority} />
+              </div>
+
+              {/* Informações adicionais */}
+              <div className="space-y-2 text-sm">
+                {/* Prazo */}
+                {task.deadline && (
+                  <div className="flex items-center gap-2 text-zinc-400">
+                    <span className="text-zinc-500">Prazo:</span>
+                    <span>
+                      {new Date(task.deadline).toLocaleDateString("pt-BR")}
+                    </span>
+                  </div>
+                )}
+
+                {/* Criado por */}
+                <div className="flex items-center gap-2">
+                  <span className="text-zinc-500">Criado por:</span>
+                  <div className="flex items-center gap-2 text-zinc-400">
+                    <div className="w-5 h-5 rounded-full bg-sky-600 flex items-center justify-center text-xs text-white font-semibold">
+                      {task.creator?.username?.charAt(0).toUpperCase() || "?"}
+                    </div>
+                    <span>{task.creator?.username || "Desconhecido"}</span>
+                  </div>
+                </div>
+
+                {/* Atribuídos */}
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <span className="text-zinc-500">Atribuídos:</span>
+                  <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-600/20 text-sky-600 text-xs font-semibold">
+                    {task.assignments?.length || 0}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
+
+        {/* Footer Mobile */}
+        {tasks.length > 0 && (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3">
+            <p className="text-xs sm:text-sm text-zinc-500 text-center">
               Mostrando {tasks.length} de {tasks.length}{" "}
               {tasks.length === 1 ? "tarefa" : "tarefas"}
             </p>

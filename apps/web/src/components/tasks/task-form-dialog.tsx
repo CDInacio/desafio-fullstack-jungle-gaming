@@ -19,10 +19,9 @@ import {
   SelectContent,
   SelectItem,
   SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Flag, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { IUser } from "@/types/auth";
 import type { CreateTask, TaskPriority, TaskStatus } from "@/types/task";
 import { AssignedUserInput } from "./assigned-user-input";
@@ -95,25 +94,25 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-zinc-900 border-zinc-800 sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-zinc-900 border-zinc-800 sm:max-w-[600px] w-[95vw] max-w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b border-zinc-800 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
-                <Plus className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-600 flex items-center justify-center shrink-0">
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <div>
-                <DialogTitle className="text-white text-xl">
+              <div className="min-w-0">
+                <DialogTitle className="text-white text-lg sm:text-xl">
                   Nova tarefa
                 </DialogTitle>
-                <DialogDescription className="text-zinc-500 text-sm mt-1">
+                <DialogDescription className="text-zinc-500 text-xs sm:text-sm mt-1">
                   Preencha os campos abaixo para criar uma nova tarefa
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
 
-          <div className="space-y-6 pt-6">
+          <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6">
             {/* Título */}
             <div className="space-y-2">
               <Label
@@ -151,7 +150,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
             </div>
 
             {/* Prioridade e Status */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label className="text-white text-sm font-medium flex items-center gap-2">
                   Prioridade
@@ -207,22 +206,22 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
             </div>
           </div>
 
-          <DialogFooter className="mt-6 gap-2 sm:gap-0 pt-4 border-t border-zinc-800">
+          <DialogFooter className="mt-4 sm:mt-6 gap-2 flex-col sm:flex-row pt-4 border-t border-zinc-800">
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="outline"
-                className="bg-transparent mr-3 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                className="bg-transparent w-full sm:w-auto sm:mr-3 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
               >
                 Cancelar
               </Button>
             </DialogClose>
             <Button
               type="submit"
-              className="bg-sky-600 hover:bg-sky-700 text-white disabled:opacity-50"
+              className="bg-sky-600 hover:bg-sky-700 text-white disabled:opacity-50 w-full sm:w-auto"
               disabled={!user?.id || !title.trim()}
             >
-              <Plus className="w-4 h-4 " />
+              <Plus className="w-4 h-4 mr-1" />
               Criar Tarefa
             </Button>
           </DialogFooter>

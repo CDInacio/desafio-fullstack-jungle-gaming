@@ -437,11 +437,7 @@ export class AppService {
 
       const savedComment = await this.commentRepository.save(comment);
 
-      let assignedUserIds: string[] = [];
-
-      if (task.assignments && task.assignments.length > 0) {
-        assignedUserIds = task.assignments.map((a) => a.userId);
-      }
+      const assignedUserIds = task.assignments?.map((a) => a.userId) || [];
 
       const commentWithRelations = await this.commentRepository.findOne({
         where: { id: savedComment.id },
@@ -456,6 +452,12 @@ export class AppService {
         message: 'Comment created successfully',
         data: commentWithRelations,
         userIds: assignedUserIds,
+        metadata: {
+          taskId: task.id,
+          taskTitle: task.title,
+          commentId: savedComment.id,
+          userId: payload.userId,
+        },
       };
     } catch (error) {
       this.logger.error(`Error creating comment: ${error.message}`);

@@ -35,8 +35,8 @@ export function AssignedUserInput({
   };
 
   return (
-    <div className="mt-5 relative">
-      <Label htmlFor="assignTo" className="text-input mb-2">
+    <div className="mt-3 sm:mt-5 relative">
+      <Label htmlFor="assignTo" className="text-input mb-2 text-sm">
         Atribuir para
       </Label>
 
@@ -48,16 +48,16 @@ export function AssignedUserInput({
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder="Digite o nome do usuário"
-        className="text-input bg-primary border-none focus:ring-input/40"
+        className="text-input bg-primary border-none focus:ring-input/40 text-sm"
       />
 
       {showDropdown && input && filteredUsers?.length > 0 && (
-        <Card className="absolute w-full mt-1 bg-primary border-none shadow-lg z-10">
+        <Card className="absolute w-full mt-1 bg-primary border-none shadow-lg z-10 max-h-48 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
               key={user.id}
               onClick={() => addUser(user)}
-              className="p-2 hover:bg-accent/70 cursor-pointer text-input"
+              className="p-2 sm:p-3 hover:bg-accent/70 cursor-pointer text-input text-sm"
             >
               {user.username}
             </div>
@@ -70,12 +70,12 @@ export function AssignedUserInput({
           {assignedUsers.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-2 bg-accent/50 text-input px-3 py-1 rounded-full"
+              className="flex items-center gap-1.5 sm:gap-2 bg-accent/50 text-input px-2 sm:px-3 py-1 rounded-full text-sm"
             >
-              <span>{user.username}</span>
+              <span className="truncate max-w-[150px]">{user.username}</span>
               <button
                 onClick={() => user.id && removeUser(user.id)}
-                className="text-xs text-input/60 hover:text-input cursor-pointer"
+                className="text-xs text-input/60 hover:text-input cursor-pointer shrink-0"
               >
                 ✕
               </button>

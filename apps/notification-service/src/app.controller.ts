@@ -1,7 +1,8 @@
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 import { NotificationsGateway } from './notifications.gateway';
+import type { NotificationEventPayload } from '@repo/shared/notification-event';
 
 @Controller()
 export class AppController {
@@ -12,88 +13,24 @@ export class AppController {
   private logger = new Logger('AppController');
 
   @MessagePattern('task.created')
-  async handleTaskCreated(@Payload() payload: any) {
+  async handleTaskCreated(@Payload() payload: NotificationEventPayload) {
     this.logger.log('task.created received');
-    const userIds = extractUserIds(payload).map(String);
-    this.gateway.emitToUsers('task.created', payload, userIds);
+    this.gateway.emitToUsers('task.created', payload, payload.userIds);
     return { status: 'Notification sent' };
   }
 
   @MessagePattern('task.updated')
-  async handleTaskUpdated(@Payload() payload: any) {
+  async handleTaskUpdated(@Payload() payload: NotificationEventPayload) {
     this.logger.log('task.updated received');
     console.log(payload);
-    const userIds = extractUserIds(payload).map(String);
-    this.gateway.emitToUsers('task.updated', payload, userIds);
+    this.gateway.emitToUsers('task.updated', payload, payload.userIds);
     return { status: 'Notification sent' };
   }
 
   @MessagePattern('comment.new')
-  async handleCommentCreated(@Payload() payload: any) {
+  async handleCommentCreated(@Payload() payload: NotificationEventPayload) {
     this.logger.log('comment.created received');
-    const userIds = extractUserIds(payload).map(String);
-    this.gateway.emitToUsers('comment.new', payload, userIds);
+    this.gateway.emitToUsers('comment.new', payload, payload.userIds);
     return { status: 'Notification sent' };
   }
-}
-
-function extractUserIds(payload: any): string[] {
-  if (!payload) return [];
-
-  if (payload.userIds && Array.isArray(payload.userIds)) {
-    console.log(' Using userIds directly from payload:', payload.userIds);
-    return payload.userIds.map(String).filter(Boolean);
-  }
-
-  const task = payload.data ?? payload.task ?? payload;
-
-  try {
-    console.log('Received payload:', JSON.stringify(payload, null, 2));
-  } catch (err) {
-    console.dir(payload, { depth: null });
-  }
-
-  const candidates =
-    task?.assignments ??
-    task?.assignedUsers ??
-    task?.assignees ??
-    task?.userIds ??
-    task?.participantIds ??
-    task?.assigneeIds ??
-    [];
-
-  const ids = new Set<string>();
-
-  if (Array.isArray(candidates) && candidates.length > 0) {
-    candidates.forEach((item) => {
-      if (!item) return;
-
-      if (typeof item === 'string' || typeof item === 'number') {
-        ids.add(String(item));
-        return;
-      }
-
-      if (item.userId) ids.add(String(item.userId));
-      else if (item.user_id) ids.add(String(item.user_id));
-      else if (item.id) ids.add(String(item.id));
-      else if (item.assignedTo) ids.add(String(item.assignedTo));
-      else if (item.user && (item.user.id || item.userId))
-        ids.add(String(item.user.id ?? item.userId));
-    });
-  }
-
-  // campos únicos no próprio task (fallback)
-  const fallbacks = ['userId', 'creatorId', 'createdBy', 'created_by'];
-  for (const f of fallbacks) {
-    if (task && (task as any)[f]) ids.add(String((task as any)[f]));
-  }
-
-  // Remover o criador da lista de destinatários
-  const creatorId =
-    task?.createdBy ?? task?.creatorId ?? task?.created_by ?? task?.userId;
-  if (creatorId) {
-    ids.delete(String(creatorId));
-  }
-
-  return Array.from(ids);
 }

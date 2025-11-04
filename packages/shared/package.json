@@ -23,6 +23,10 @@
       "types": "./src/dto/pagination.dto.ts",
       "default": "./dist/dto/pagination.dto.js"
     },
+    "./notification-event": {
+      "types": "./src/dto/notification-event.dto.ts",
+      "default": "./dist/dto/notification-event.dto.js"
+    },
     "./entities/task-assignment": {
       "types": "./src/entities/task-assignment.entity.ts",
       "default": "./dist/entities/task-assignment.entity.js"
