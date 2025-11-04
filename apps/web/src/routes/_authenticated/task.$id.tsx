@@ -1,15 +1,14 @@
 import CenteredContainer from "@/components/centered-container";
 import Layout from "@/components/layout";
-import { useGetTask, useUpdateTask } from "@/hooks/use-tasks.hook";
+import { useGetTask } from "@/hooks/use-tasks.hook";
 import { createFileRoute, Outlet, useParams } from "@tanstack/react-router";
 import { Clock, CheckCircle2, Circle, AlertCircle } from "lucide-react";
 import { TaskHeader } from "@/components/tasks/task-header";
-import type { ITask } from "@/types/task";
-import { LoadingState } from "@/components/loading-state";
 import { NotFoundState } from "@/components/not-found-state";
 import type { StatusInfo } from "@/types/status-info";
-import { useState } from "react";
 import { TaskEditProvider } from "@/context/task-edit-context";
+import { LoadingState } from "@/components/loading-state";
+import { TaskDetailsSkeleton } from "@/components/ui/task-details-skeleton";
 
 export const Route = createFileRoute("/_authenticated/task/$id")({
   component: RouteComponent,
@@ -42,19 +41,20 @@ function RouteComponent() {
   const { id } = useParams({ strict: false });
   const { data: response, isLoading } = useGetTask(id);
 
-  if (isLoading) return <LoadingState />;
-  if (!response) return <NotFoundState />;
-
   const task = response?.data;
 
   return (
     <TaskEditProvider initialTask={task}>
       <Layout>
         <CenteredContainer>
-          <div className="space-y-6">
-            <TaskHeader />
-            <Outlet />
-          </div>
+          {isLoading ? (
+            <TaskDetailsSkeleton />
+          ) : (
+            <div className="space-y-6">
+              <TaskHeader />
+              <Outlet />
+            </div>
+          )}
         </CenteredContainer>
       </Layout>
     </TaskEditProvider>

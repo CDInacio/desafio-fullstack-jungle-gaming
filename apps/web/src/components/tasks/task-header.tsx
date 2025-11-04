@@ -1,9 +1,16 @@
 import { Calendar, Edit, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTaskEdit } from "@/context/task-edit-context";
+import { Skeleton } from "../ui/skeleton";
 
 export function TaskHeader() {
   const { currentTask, toggleEditMode } = useTaskEdit();
+
+  if (!currentTask) {
+    return (
+      <Skeleton className="h-16 bg-zinc-800/50 rounded-lg animate-pulse w-full" />
+    );
+  }
 
   return (
     <div className="flex items-start justify-between">
