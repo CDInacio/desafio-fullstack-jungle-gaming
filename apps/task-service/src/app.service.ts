@@ -192,12 +192,12 @@ export class AppService {
   async getTasks(query: PaginationQuery) {
     try {
       const page = query.page && query.page > 0 ? query.page : 1;
-      const limit =
-        query.limit && query.limit > 0 && query.limit <= 100 ? query.limit : 10;
+      const size =
+        query.size && query.size > 0 && query.size <= 100 ? query.size : 10;
       const sortBy = query.sortBy || 'createdAt';
       const sortOrder = query.sortOrder || 'DESC';
 
-      const skip = (page - 1) * limit;
+      const skip = (page - 1) * size;
 
       const validSortFields = [
         'createdAt',
@@ -220,14 +220,14 @@ export class AppService {
           },
           creator: true,
         },
-        take: limit,
+        take: size,
         skip: skip,
         order: {
           [orderField]: sortOrder,
         },
       });
 
-      const totalPages = Math.ceil(total / limit);
+      const totalPages = Math.ceil(total / size);
 
       const formattedTasks = tasks.map((task) => ({
         ...task,
@@ -270,7 +270,7 @@ export class AppService {
             totalItems: total,
             totalPages: totalPages,
             currentPage: page,
-            pageLimit: limit,
+            pagesize: size,
             hasNextPage: page < totalPages,
             hasPreviousPage: page > 1,
           },

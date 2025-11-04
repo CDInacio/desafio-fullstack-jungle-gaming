@@ -5,27 +5,40 @@ import { useUsers } from "@/hooks/use-users.hook";
 import { TaskFormDialog } from "@/components/tasks/task-form-dialog";
 import { TaskTable } from "@/components/tasks/task-table";
 import type { CreateTask } from "@/types/task";
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { TaskTableSkeleton } from "@/components/ui/task-table-skeleton";
+
+type HomeSearch = {
+  page?: number;
+  size?: number;
+};
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: RouteComponent,
+  // definindo os parâmetros que serão aceitos na rota
+  validateSearch: (search: Record<string, unknown>): HomeSearch => {
+    const size = Number(search?.size) || 5;
+    return {
+      page: Number(search?.page) || 1,
+      size: size > 0 && size <= 100 ? size : 5, // Valida entre 1 e 100
+    };
+  },
 });
 
-const ITEMS_PER_PAGE = 5; // Mudei de 10 para 5
-
 function RouteComponent() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { data: tasksResponse } = useGetTasks(currentPage, ITEMS_PER_PAGE);
+  const { page, size } = useSearch({ from: "/_authenticated/home" });
+  const currentPage = page || 1;
+  const itemsPerPage = size || 5;
+
+  const { data: taskData, isLoading } = useGetTasks(currentPage, itemsPerPage);
   const { data: users } = useUsers();
   const { mutate: createTask } = useCreateTask();
 
@@ -33,19 +46,14 @@ function RouteComponent() {
     createTask(data);
   };
 
-  const pagination = tasksResponse?.pagination;
-  const tasks = tasksResponse?.tasks || [];
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const pagination = taskData?.pagination;
+  const tasks = taskData?.tasks || [];
 
   // Gera os números das páginas para exibir
   const getPageNumbers = () => {
     if (!pagination) return [];
 
-    const pages = [];
+    const pages: (number | string)[] = [];
     const totalPages = pagination.totalPages;
     const maxVisiblePages = 5;
 
@@ -87,24 +95,30 @@ function RouteComponent() {
           <TaskFormDialog users={users ?? []} onSubmit={handleCreateTask} />
         </div>
 
-        {tasks && <TaskTable tasks={tasks} />}
+        {isLoading ? <TaskTableSkeleton /> : <TaskTable tasks={tasks} />}
 
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-8 mb-6">
             <Pagination>
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() =>
-                      pagination.hasPreviousPage &&
-                      handlePageChange(currentPage - 1)
-                    }
-                    className={
-                      !pagination.hasPreviousPage
-                        ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
-                  />
+                  <Link
+                    to="/home"
+                    search={{ page: currentPage - 1, size: itemsPerPage }}
+                    disabled={!pagination.hasPreviousPage}
+                    onClick={(e) => {
+                      if (!pagination.hasPreviousPage) e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
+                    <PaginationPrevious
+                      className={
+                        !pagination.hasPreviousPage
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </Link>
                 </PaginationItem>
 
                 {getPageNumbers().map((page, index) => (
@@ -112,29 +126,42 @@ function RouteComponent() {
                     {page === "ellipsis" ? (
                       <PaginationEllipsis />
                     ) : (
-                      <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
-                        className="cursor-pointer"
+                      <Link
+                        to="/home"
+                        search={{ page: page as number, size: itemsPerPage }}
+                        className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ${
+                          currentPage === page
+                            ? "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
+                            : "hover:bg-accent hover:text-accent-foreground"
+                        } h-9 w-9 cursor-pointer`}
+                        onClick={() =>
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
                       >
                         {page}
-                      </PaginationLink>
+                      </Link>
                     )}
                   </PaginationItem>
                 ))}
 
                 <PaginationItem>
-                  <PaginationNext
-                    onClick={() =>
-                      pagination.hasNextPage &&
-                      handlePageChange(currentPage + 1)
-                    }
-                    className={
-                      !pagination.hasNextPage
-                        ? "pointer-events-none opacity-50"
-                        : "cursor-pointer"
-                    }
-                  />
+                  <Link
+                    to="/home"
+                    search={{ page: currentPage + 1, size: itemsPerPage }}
+                    disabled={!pagination.hasNextPage}
+                    onClick={(e) => {
+                      if (!pagination.hasNextPage) e.preventDefault();
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
+                    <PaginationNext
+                      className={
+                        !pagination.hasNextPage
+                          ? "pointer-events-none opacity-50"
+                          : "cursor-pointer"
+                      }
+                    />
+                  </Link>
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
@@ -143,8 +170,6 @@ function RouteComponent() {
             <div className="text-center mt-4 text-sm text-zinc-500">
               Mostrando {tasks.length} de {pagination.totalItems}{" "}
               {pagination.totalItems === 1 ? "tarefa" : "tarefas"}
-              {" · "}
-              Página {pagination.currentPage} de {pagination.totalPages}
             </div>
           </div>
         )}

@@ -13,7 +13,7 @@ export class PaginationQueryDto {
   @IsInt()
   @Min(1)
   @Max(100)
-  limit?: number = 10;
+  size?: number = 10;
 
   @IsOptional()
   @Type(() => String)
@@ -30,7 +30,7 @@ export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
     page: number;
-    limit: number;
+    size: number;
     total: number;
     totalPages: number;
     hasNextPage: boolean;
@@ -40,7 +40,7 @@ export interface PaginatedResponse<T> {
 
 export interface PaginationQuery {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   sortOrder?: "ASC" | "DESC";
 }

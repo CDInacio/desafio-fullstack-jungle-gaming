@@ -24,16 +24,6 @@ export function TaskTable({ tasks }: TaskTableProps) {
         <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-sky-600 flex items-center justify-center">
           <Clipboard className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
-        <div>
-          <h2 className="text-lg sm:text-xl font-semibold text-white">
-            {" "}
-            Tarefas
-          </h2>
-          <p className="text-xs sm:text-sm text-zinc-500">
-            {tasks.length} {tasks.length === 1 ? "tarefa" : "tarefas"}{" "}
-            encontrada(s)
-          </p>
-        </div>
       </div>
 
       {/* Tabela - Desktop */}
