@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,6 +8,7 @@ import { JwtStrategy } from './strategies/jwt-strategy';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     ClientsModule.register([
       {
         name: AUTH_SERVICE_TCP,
