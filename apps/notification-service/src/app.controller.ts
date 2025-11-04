@@ -40,6 +40,11 @@ export class AppController {
 function extractUserIds(payload: any): string[] {
   if (!payload) return [];
 
+  if (payload.userIds && Array.isArray(payload.userIds)) {
+    console.log(' Using userIds directly from payload:', payload.userIds);
+    return payload.userIds.map(String).filter(Boolean);
+  }
+
   const task = payload.data ?? payload.task ?? payload;
 
   try {
@@ -83,8 +88,7 @@ function extractUserIds(payload: any): string[] {
     if (task && (task as any)[f]) ids.add(String((task as any)[f]));
   }
 
-  // Remover o criador da lista de destinatários — assim o autor não recebe notificação
-  // quando apenas atribuiu a outros usuários.
+  // Remover o criador da lista de destinatários
   const creatorId =
     task?.createdBy ?? task?.creatorId ?? task?.created_by ?? task?.userId;
   if (creatorId) {
