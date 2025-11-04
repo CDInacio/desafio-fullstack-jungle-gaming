@@ -202,7 +202,7 @@ export class AppController {
       };
 
       const result = await firstValueFrom(
-        this.taskClient.send('comment.create', payload),
+        this.taskClient.send('comment.new', payload),
       );
 
       return result;

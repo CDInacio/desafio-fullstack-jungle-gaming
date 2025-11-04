@@ -136,7 +136,7 @@ export class AppService {
             (uid) => !newUserIds.includes(uid),
           );
 
-          // 🔸 Remove somente quem saiu
+          // Remove somente quem saiu
           if (usersToRemove.length > 0) {
             await manager.delete(TaskAssignmentEntity, {
               taskId: id,
@@ -144,7 +144,7 @@ export class AppService {
             });
           }
 
-          // 🔹 Adiciona apenas quem é novo
+          //  Adiciona apenas quem é novo
           if (usersToAdd.length > 0) {
             const newAssignments = usersToAdd.map((userId) =>
               manager.create(TaskAssignmentEntity, {
@@ -404,6 +404,11 @@ export class AppService {
 
       const task = await this.taskRepository.findOne({
         where: { id: payload.taskId },
+        relations: {
+          assignments: {
+            user: true,
+          },
+        },
       });
 
       if (!task) {
@@ -432,6 +437,12 @@ export class AppService {
 
       const savedComment = await this.commentRepository.save(comment);
 
+      let assignedUserIds: string[] = [];
+
+      if (task.assignments && task.assignments.length > 0) {
+        assignedUserIds = task.assignments.map((a) => a.userId);
+      }
+
       const commentWithRelations = await this.commentRepository.findOne({
         where: { id: savedComment.id },
         relations: {
@@ -444,6 +455,7 @@ export class AppService {
         statusCode: HttpStatus.CREATED,
         message: 'Comment created successfully',
         data: commentWithRelations,
+        userIds: assignedUserIds,
       };
     } catch (error) {
       this.logger.error(`Error creating comment: ${error.message}`);

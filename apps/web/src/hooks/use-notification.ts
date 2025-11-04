@@ -4,7 +4,7 @@ import { useEffect } from "react";
 type Handler = (payload: any) => void;
 
 export function useNotifications(
-  userId: string | null, // ✅ Receber userId ao invés de token
+  userId: string | null,
   handlers?: {
     onTaskCreated?: Handler;
     onTaskUpdated?: Handler;
@@ -17,7 +17,7 @@ export function useNotifications(
       return;
     }
 
-    const socket = createSocket(userId); // ✅ Passar userId
+    const socket = createSocket(userId);
 
     const onTaskCreated = (payload: any) => handlers?.onTaskCreated?.(payload);
     const onTaskUpdated = (payload: any) => handlers?.onTaskUpdated?.(payload);

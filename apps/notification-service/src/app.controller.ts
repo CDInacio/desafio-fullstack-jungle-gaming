@@ -27,6 +27,14 @@ export class AppController {
     this.gateway.emitToUsers('task.updated', payload, userIds);
     return { status: 'Notification sent' };
   }
+
+  @MessagePattern('comment.new')
+  async handleCommentCreated(@Payload() payload: any) {
+    this.logger.log('comment.created received');
+    const userIds = extractUserIds(payload).map(String);
+    this.gateway.emitToUsers('comment.new', payload, userIds);
+    return { status: 'Notification sent' };
+  }
 }
 
 function extractUserIds(payload: any): string[] {
@@ -44,6 +52,7 @@ function extractUserIds(payload: any): string[] {
     task?.assignments ??
     task?.assignedUsers ??
     task?.assignees ??
+    task?.userIds ??
     task?.participantIds ??
     task?.assigneeIds ??
     [];

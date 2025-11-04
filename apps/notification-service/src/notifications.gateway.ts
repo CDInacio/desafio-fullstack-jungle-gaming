@@ -22,11 +22,8 @@ export class NotificationsGateway
   private logger = new Logger('NotificationsGateway');
   private userSockets = new Map<string, Set<string>>();
 
-  // ✅ Removido: constructor com JwtService
-
   async handleConnection(client: Socket) {
     try {
-      // ✅ Receber userId diretamente (sem JWT)
       const userId =
         client.handshake.auth?.userId ||
         (client.handshake.query?.userId as string);
@@ -37,10 +34,9 @@ export class NotificationsGateway
         return;
       }
 
-      // Join room with userId
+      // Entrar na sala com o userId
       client.join(this.roomForUser(userId));
 
-      // Save socket id
       const sockets = this.userSockets.get(userId) || new Set<string>();
       sockets.add(client.id);
       this.userSockets.set(userId, sockets);
@@ -64,6 +60,7 @@ export class NotificationsGateway
     }
   }
 
+  // Emite um evento para usuários específicos
   emitToUsers(event: string, payload: any, userIds: string[] | number[]) {
     if (!userIds || userIds.length === 0) return;
 
@@ -71,6 +68,21 @@ export class NotificationsGateway
 
     for (const id of userIds) {
       const room = this.roomForUser(String(id));
+      this.server.to(room).emit(event, payload);
+    }
+  }
+
+  emitToAllExcept(event: string, payload: any, excludeUserId?: string) {
+    this.logger.log(
+      `Emitting ${event} to all users except ${excludeUserId || 'none'}`,
+    );
+
+    for (const [userId] of this.userSockets.entries()) {
+      if (excludeUserId && String(userId) === String(excludeUserId)) {
+        continue; // Pula o criador
+      }
+
+      const room = this.roomForUser(userId);
       this.server.to(room).emit(event, payload);
     }
   }

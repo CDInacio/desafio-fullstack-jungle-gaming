@@ -52,10 +52,10 @@ export class AppController {
     console.log(result);
   }
 
-  @MessagePattern('comment.create')
+  @MessagePattern('comment.new')
   async createComment(@Payload() payload: TaskCommentDto) {
     const result = await this.appService.createComment(payload);
-    this.notificationClient.emit('comment.created', result);
+    this.notificationClient.emit('comment.new', result);
     return result;
   }
 }
