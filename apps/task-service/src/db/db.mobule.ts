@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentEntity } from '@repo/shared/entities/comment';
 import { TaskEntity } from '@repo/shared/entities/task';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 import { UserEntity } from '@repo/shared/entities/user';
@@ -15,7 +16,7 @@ import { UserEntity } from '@repo/shared/entities/user';
         username: configService.get<string>('DB_USERNAME', 'postgres'),
         password: configService.get<string>('DB_PASSWORD', '12345678'),
         database: configService.get<string>('DB_NAME', 'challenge_db'),
-        entities: [TaskEntity, TaskAssignmentEntity, UserEntity],
+        entities: [TaskEntity, TaskAssignmentEntity, UserEntity, CommentEntity],
         synchronize: false,
       }),
       inject: [ConfigService],

@@ -48,6 +48,16 @@ export interface TaskApiResponse {
   data: ITask;
 }
 
+export interface ITaskCommentData {
+  id: string;
+  content: string;
+  taskId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  user: IUser;
+}
+
 export interface ITask {
   assignedUsers?: AssignedUser[];
   id: string;
@@ -61,6 +71,7 @@ export interface ITask {
   updatedAt: string;
   creator: IUser | null;
   assignments: IAssignment[];
+  comments?: ITaskCommentData[];
 }
 
 export interface IPagination {

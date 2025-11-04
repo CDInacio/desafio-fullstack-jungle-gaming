@@ -22,6 +22,7 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Plus, FileText, Flag, Users } from "lucide-react";
 import type { IUser } from "@/types/auth";
 import type { CreateTask, TaskPriority, TaskStatus } from "@/types/task";
 import { AssignedUserInput } from "./assigned-user-input";
@@ -88,86 +89,82 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Nova Tarefa</Button>
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Plus className="w-4 h-4 mr-2" />
+          Nova Tarefa
+        </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-primary z-50 border-zinc-600 sm:max-w-[525px]">
+      <DialogContent className="bg-zinc-900 border-zinc-800 sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle className="text-input text-2xl">
-              Nova tarefa
-            </DialogTitle>
-            <DialogDescription className="text-zinc-400">
-              Preencha os campos abaixo.
-            </DialogDescription>
+          <DialogHeader className="border-b border-zinc-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                <Plus className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-white text-xl">
+                  Nova tarefa
+                </DialogTitle>
+                <DialogDescription className="text-zinc-500 text-sm mt-1">
+                  Preencha os campos abaixo para criar uma nova tarefa
+                </DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title" className="text-input">
+          <div className="space-y-6 pt-6">
+            {/* Título */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="title"
+                className="text-white text-sm font-medium flex items-center gap-2"
+              >
                 Título
               </Label>
               <Input
                 id="title"
-                className="text-input bg-foreground border-zinc-600 focus:ring-input/40"
+                className="text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                placeholder="Ex: Implementar nova funcionalidade"
                 required
               />
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="description" className="text-input">
+            {/* Descrição */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="description"
+                className="text-white text-sm font-medium"
+              >
                 Descrição
               </Label>
               <Textarea
                 id="description"
-                className="text-input bg-foreground border-zinc-600  focus:ring-input/40"
+                className="text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20 resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                placeholder="Descreva os detalhes da tarefa..."
                 rows={4}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="grid gap-2">
-                <Label className="text-input">Status</Label>
-                <Select
-                  onValueChange={(v) => setStatus(v as TaskStatus)}
-                  defaultValue="TODO"
-                >
-                  <SelectTrigger className=" text-primary-foreground cursor-pointer bg-foreground ">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-primary text-primary-foreground shadow-lg rounded-lg">
-                    <SelectGroup className="border-zinc-500 ">
-                      <SelectLabel className="text-input/80 px-2">
-                        Status
-                      </SelectLabel>
-                      {statusList.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-2">
-                <Label className="text-input">Prioridade</Label>
+            {/* Prioridade e Status */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-white text-sm font-medium flex items-center gap-2">
+                  Prioridade
+                </Label>
                 <Select
                   onValueChange={(v) => setPriority(v as TaskPriority)}
                   defaultValue="LOW"
                 >
-                  <SelectTrigger className="bg-primary border-none text-primary-foreground cursor-pointer">
+                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20">
                     <SelectValue placeholder="Prioridade" />
                   </SelectTrigger>
-                  <SelectContent className="bg-primary text-primary-foreground border-none shadow-lg rounded-lg">
+                  <SelectContent className="bg-zinc-800 text-white border-zinc-700">
                     <SelectGroup>
-                      <SelectLabel className="text-input/80 px-2">
-                        Prioridade
-                      </SelectLabel>
                       {prioritiesList.map((item) => (
                         <SelectItem key={item.value} value={item.value}>
                           {item.label}
@@ -177,9 +174,31 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-2">
+                <Label className="text-white text-sm font-medium">Status</Label>
+                <Select
+                  onValueChange={(v) => setStatus(v as TaskStatus)}
+                  defaultValue="TODO"
+                >
+                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-800 text-white border-zinc-700">
+                    <SelectGroup>
+                      {statusList.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="grid gap-2">
+            {/* Atribuir usuários */}
+            <div className="space-y-2">
               <AssignedUserInput
                 users={users}
                 assignedUsers={assignedUsers}
@@ -188,22 +207,23 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="mt-6 gap-2 sm:gap-0 pt-4 border-t border-zinc-800">
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="outline"
-                className="bg-transparent border-zinc-700 hover:bg-zinc-800 text-zinc-200"
+                className="bg-transparent mr-3 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
               >
                 Cancelar
               </Button>
             </DialogClose>
             <Button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-              disabled={!user?.id}
+              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+              disabled={!user?.id || !title.trim()}
             >
-              Criar
+              <Plus className="w-4 h-4 " />
+              Criar Tarefa
             </Button>
           </DialogFooter>
         </form>

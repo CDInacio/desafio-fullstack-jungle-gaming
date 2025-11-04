@@ -72,7 +72,7 @@ function TaskIndexComponent() {
         onSave={handleSaveTask}
       />
       <TaskAssignmentsCard task={task} />
-      <TaskCommentsCard />
+      <TaskCommentsCard task={task} />
     </>
   );
 }

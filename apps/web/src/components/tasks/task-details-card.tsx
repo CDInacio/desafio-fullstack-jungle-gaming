@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, Edit, FileText, Flag, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { PriorityBadge } from "@/components/priority-badge";
 import { Badge } from "@/components/ui/badge";
@@ -220,36 +220,54 @@ export function TaskDetailsCard({
         open={isEditMode}
         onOpenChange={(open) => !open && handleCancel()}
       >
-        <DialogContent className="sm:max-w-[600px] bg-primary border-zinc-700 max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-white">Editar tarefa</DialogTitle>
+        <DialogContent className="sm:max-w-[650px] bg-zinc-900 border-zinc-800 max-h-[90vh] overflow-y-auto">
+          <DialogHeader className="border-b border-zinc-800 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                <Edit className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <DialogTitle className="text-white text-xl">
+                  Editar tarefa
+                </DialogTitle>
+                <p className="text-zinc-500 text-sm mt-1">
+                  Atualize as informações da tarefa
+                </p>
+              </div>
+            </div>
           </DialogHeader>
 
-          <div className="space-y-4 pt-2">
+          <div className="space-y-6 pt-6">
             {/* Título */}
             <div className="space-y-2">
-              <Label htmlFor="title" className="text-white">
-                Título <span className="text-red-400">*</span>
+              <Label
+                htmlFor="title"
+                className="text-white text-sm font-medium flex items-center gap-2"
+              >
+                Título
               </Label>
               <Input
                 id="title"
                 value={editedTask.title}
                 onChange={(e) => handleChange("title", e.target.value)}
-                className={"bg-foreground border-zinc-500 text-input"}
+                className="bg-zinc-800 border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
                 placeholder="Digite o título da tarefa"
               />
             </div>
 
             {/* Descrição */}
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-white">
+              <Label
+                htmlFor="description"
+                className="text-white text-sm font-medium"
+              >
                 Descrição
               </Label>
               <Textarea
                 id="description"
                 value={editedTask.description}
                 onChange={(e) => handleChange("description", e.target.value)}
-                className={`min-h-[120px] text-input bg-foreground border-zinc-500`}
+                className="min-h-[120px] text-white bg-zinc-800 border-zinc-700 focus:border-blue-600 focus:ring-blue-600/20 resize-none"
                 placeholder="Descreva a tarefa em detalhes..."
               />
               <p className="text-xs text-zinc-500">
@@ -260,7 +278,10 @@ export function TaskDetailsCard({
             {/* Prioridade e Status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="priority" className="text-white">
+                <Label
+                  htmlFor="priority"
+                  className="text-white text-sm font-medium flex items-center gap-2"
+                >
                   Prioridade
                 </Label>
                 <Select
@@ -269,11 +290,11 @@ export function TaskDetailsCard({
                 >
                   <SelectTrigger
                     id="priority"
-                    className="bg-foreground text-input w-full"
+                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-primary text-input border-zinc-500">
+                  <SelectContent className="bg-zinc-800 text-white border-zinc-700">
                     <SelectItem value="LOW">Baixa</SelectItem>
                     <SelectItem value="MEDIUM">Média</SelectItem>
                     <SelectItem value="HIGH">Alta</SelectItem>
@@ -283,7 +304,10 @@ export function TaskDetailsCard({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="status" className="text-white">
+                <Label
+                  htmlFor="status"
+                  className="text-white text-sm font-medium"
+                >
                   Status
                 </Label>
                 <Select
@@ -292,11 +316,11 @@ export function TaskDetailsCard({
                 >
                   <SelectTrigger
                     id="status"
-                    className="bg-foreground text-input w-full"
+                    className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-blue-600 focus:ring-blue-600/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-primary text-input border-zinc-500">
+                  <SelectContent className="bg-zinc-800 text-white border-zinc-700">
                     {Object.entries(statusConfig).map(([key, config]) => (
                       <SelectItem key={key} value={key}>
                         {config.label}
@@ -309,7 +333,10 @@ export function TaskDetailsCard({
 
             {/* Prazo */}
             <div className="space-y-2">
-              <Label htmlFor="deadline" className="text-white">
+              <Label
+                htmlFor="deadline"
+                className="text-white text-sm font-medium flex items-center gap-2"
+              >
                 Prazo
               </Label>
               <ShadCalendar
@@ -326,7 +353,7 @@ export function TaskDetailsCard({
                     ? new Date(editedTask.deadline)
                     : undefined
                 }
-                className="rounded-lg border border-zinc-500 bg-foreground"
+                className="rounded-lg border border-zinc-700 bg-zinc-800 text-white"
               />
               <p className="text-xs text-zinc-500">
                 Deixe em branco para remover o prazo
@@ -334,15 +361,20 @@ export function TaskDetailsCard({
             </div>
           </div>
 
-          <DialogFooter className="mt-6 gap-2 sm:gap-0">
+          <DialogFooter className="mt-6 gap-2 sm:gap-0 pt-4 border-t border-zinc-800">
             <Button
               variant="outline"
               onClick={handleCancel}
               disabled={isSaving}
+              className="bg-transparent mr-3 border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-white"
             >
               Cancelar
             </Button>
-            <Button onClick={handleSave} disabled={!hasChanges()}>
+            <Button
+              onClick={handleSave}
+              disabled={!hasChanges() || isSaving}
+              className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+            >
               {isSaving ? "Salvando..." : "Salvar alterações"}
             </Button>
           </DialogFooter>

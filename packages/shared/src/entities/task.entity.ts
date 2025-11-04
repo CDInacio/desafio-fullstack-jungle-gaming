@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { TaskAssignmentEntity } from "./task-assignment.entity";
 import { UserEntity } from "./user.entity";
+import { CommentEntity } from "./comment.entity";
 
 @Entity("tasks")
 export class TaskEntity {
@@ -48,6 +49,9 @@ export class TaskEntity {
 
   @OneToMany(() => TaskAssignmentEntity, (assignment) => assignment.task)
   assignments?: TaskAssignmentEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.task)
+  comments?: CommentEntity[];
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: "created_by" })

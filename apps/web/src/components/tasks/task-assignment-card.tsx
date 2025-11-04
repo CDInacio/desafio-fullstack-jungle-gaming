@@ -24,6 +24,7 @@ import { useUsers } from "@/hooks/use-users.hook";
 import { AssignedUserInput } from "./assigned-user-input";
 import { toast } from "sonner";
 import { useUpdateTask } from "@/hooks/use-tasks.hook";
+import { Users } from "lucide-react";
 
 interface TaskAssignmentsCardProps {
   task: ITask;
@@ -106,6 +107,9 @@ export function TaskAssignmentsCard({ task }: TaskAssignmentsCardProps) {
   return (
     <Card className="bg-primary border-zinc-800">
       <CardHeader>
+        <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+          <Users className="w-5 h-5 text-white" />
+        </div>
         <CardTitle className="text-white">Pessoas Atribuídas</CardTitle>
         <CardDescription className="text-zinc-400">
           Membros da equipe trabalhando nesta tarefa

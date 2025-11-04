@@ -1,4 +1,4 @@
-import { Clipboard, Home, LogOut, Mail, User } from "lucide-react";
+import { Clipboard, Home, LogOut, Bell, User } from "lucide-react";
 
 import {
   Sidebar,
@@ -6,62 +6,68 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/context/auth-context";
-import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarImage } from "../ui/avatar";
+import { Link } from "@tanstack/react-router";
 
 const items = [
   {
     title: "Início",
-    url: "#",
+    url: "/home",
     icon: Home,
   },
   {
     title: "Tarefas",
-    url: "#",
+    url: "/home",
     icon: Clipboard,
-  },
-  {
-    title: "Notificações",
-    url: "#",
-    icon: Mail,
-  },
-  {
-    title: "Perfil",
-    url: "#",
-    icon: User,
   },
 ];
 
 export function AppSidebar() {
   const { logout, user } = useAuth();
+
   return (
     <Sidebar>
-      <SidebarContent className="bg-sidebar-primary">
+      <SidebarContent className="bg-zinc-900 border-r border-zinc-800">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-input">
-            Application
-          </SidebarGroupLabel>
-          <div className="w-10 my-5 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 text-sm font-medium flex-shrink-0">
-            {user?.username?.[0]?.toUpperCase() || "U"}
+          {/* Header com Avatar */}
+          <div className="px-4 py-6 border-b border-zinc-800">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                <span className="text-white text-sm font-semibold">
+                  {user?.username?.[0]?.toUpperCase() || "U"}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white text-sm font-medium truncate">
+                  {user?.username || "Usuário"}
+                </p>
+                <p className="text-zinc-500 text-xs truncate">
+                  {user?.email || "email@exemplo.com"}
+                </p>
+              </div>
+            </div>
           </div>
-          <SidebarGroupContent>
-            <SidebarMenu>
+
+          {/* Menu Items */}
+          <SidebarGroupContent className="px-3 py-4">
+            <SidebarMenu className="space-y-1">
               {items.map((item) => (
-                <SidebarMenuItem className="text-input" key={item.title}>
+                <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className="hover:bg-primary hover:text-input"
+                    className="group hover:bg-blue-600/10 hover:text-blue-600 text-zinc-400 rounded-lg transition-colors duration-150"
                   >
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                    <Link
+                      to={item.url}
+                      className="flex items-center gap-3 px-3 py-2"
+                    >
+                      <item.icon className="w-5 h-5" />
+                      <span className="text-sm font-medium">{item.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -69,15 +75,16 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="bg-sidebar-primary flex justify-center">
-        <div className="flex gap-x-2 ">
-          <LogOut
-            size="20px"
-            className="text-input cursor-pointer"
-            onClick={logout}
-          />{" "}
-          <p className="text-input">Sair</p>
-        </div>
+
+      {/* Footer com botão de logout */}
+      <SidebarFooter className="bg-zinc-900 p-4 border-t border-zinc-800">
+        <button
+          onClick={logout}
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-colors duration-150 group"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="text-sm font-medium">Sair</span>
+        </button>
       </SidebarFooter>
     </Sidebar>
   );

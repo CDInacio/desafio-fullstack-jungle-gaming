@@ -65,9 +65,9 @@ export function useCreatTaskComment() {
     mutationFn: (commentData: ITaskComment) => {
       return taskService.createComment(commentData);
     },
-    onSuccess: () => {
+    onSuccess: (_, commentData) => {
       toast.success("Comentário criado com sucesso!");
-      queryClient.invalidateQueries({ queryKey: ["task"] });
+      queryClient.invalidateQueries({ queryKey: ["task", commentData.taskId] });
     },
     onError: (error) => {
       toast.error("Erro ao criar comentário", { description: error.message });

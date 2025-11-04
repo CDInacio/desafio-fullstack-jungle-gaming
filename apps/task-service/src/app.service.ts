@@ -297,6 +297,9 @@ export class AppService {
             assigner: true,
           },
           creator: true,
+          comments: {
+            user: true,
+          },
         },
       });
 
@@ -307,6 +310,13 @@ export class AppService {
         });
       }
 
+      if (task.comments && task.comments.length > 0) {
+        task.comments.sort((a, b) => {
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
+      }
       // const formattedTask = {
       //   ...task,
       //   creator: task.creator
