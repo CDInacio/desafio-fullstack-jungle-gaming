@@ -55,6 +55,17 @@ export class AppController {
     }
   }
 
+  @Post('auth/refresh')
+  async refreshToken(@Body() body: any) {
+    try {
+      const result = await firstValueFrom(
+        this.authClient.send('refresh-token', body),
+      );
+
+      return { message: 'Token refreshed successfully', data: result };
+    } catch (error) {}
+  }
+
   @Post('auth/register')
   async register(@Body() body: SignupCredentialsDto) {
     try {
@@ -78,11 +89,6 @@ export class AppController {
       this.logger.error('Error in register:', error);
       throw error;
     }
-  }
-
-  @Post('auth/refresh-token')
-  async refreshToken(@Body() body: any) {
-    console.log(body);
   }
 
   // ================================ TASKS CRUD ==================================
@@ -123,6 +129,7 @@ export class AppController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Get('tasks/:id')
   async getTaskById(@Param('id') id: string) {
     try {
@@ -159,6 +166,7 @@ export class AppController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Put('/tasks/:id')
   async updateTaskById(@Param('id') id: string, @Body() body: any) {
     try {
@@ -172,6 +180,7 @@ export class AppController {
     }
   }
 
+  @UseGuards(JwtGuard)
   @Delete('/tasks/:id')
   async deleteTaskById(@Param('id') id: string) {
     try {
@@ -187,6 +196,7 @@ export class AppController {
 
   // ================================ TASK COMMENTS ==================================
 
+  @UseGuards(JwtGuard)
   @Post('/tasks/:id/comments')
   async createTaskComment(
     @Param('id') taskId: string,
@@ -214,7 +224,7 @@ export class AppController {
   }
 
   // ================================ USERS ==================================
-
+  @UseGuards(JwtGuard)
   @Get('/users')
   async getUsers() {
     try {

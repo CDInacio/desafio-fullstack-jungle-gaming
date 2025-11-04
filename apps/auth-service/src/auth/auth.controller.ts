@@ -21,6 +21,17 @@ export class AuthController {
     }
   }
 
+  @MessagePattern('refresh-token')
+  async refreshToken(@Payload() data: any) {
+    try {
+      const result = await this.authService.refreshToken(data.user);
+      return result;
+    } catch (error) {
+      console.error('Refresh token error in microservice:', error);
+      return { error: error.message };
+    }
+  }
+
   @MessagePattern('auth-register')
   async register(@Payload() data: SignupCredentialsDto) {
     try {

@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import type { SignupCredentialsDto } from '@repo/shared/user';
 import { compareSync as bcryptCompareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import type { UserDto } from 'src/users/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +33,24 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
-    return { ...user, token };
+    return {
+      ...user,
+      token,
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+    };
+  }
+
+  async refreshToken(user: UserDto) {
+    const payload = {
+      username: user.email,
+      sub: {
+        name: user.username,
+      },
+    };
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
   }
 
   async register(data: SignupCredentialsDto) {

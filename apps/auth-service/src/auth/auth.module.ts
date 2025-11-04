@@ -16,7 +16,8 @@ import { UserEntity } from '@repo/shared/entities/user';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<number>('JWT_EXPIRATION_TIME') || '24h',
+          expiresIn: '15m',
+          // expiresIn: configService.get<number>('JWT_EXPIRATION_TIME') || '24h',
         },
       }),
       inject: [ConfigService],
