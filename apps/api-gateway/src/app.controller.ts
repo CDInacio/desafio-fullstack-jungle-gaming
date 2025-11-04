@@ -1,4 +1,4 @@
-import { JwtGuard } from './../../auth-service/src/guards/jwt-auth.guard';
+import { JwtGuard } from './guards/jwt-auth.guard';
 import {
   Body,
   Controller,
@@ -16,12 +16,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
-import type { PaginationQuery } from '@repo/shared/pagination';
-import type {
-  CreateTaskDto,
-  QueryParams,
-  TaskCommentDto,
-} from '@repo/shared/task';
+import type { CreateTaskDto, TaskCommentDto } from '@repo/shared/task';
 import type {
   SigninCredentialsDto,
   SignupCredentialsDto,
