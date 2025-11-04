@@ -44,7 +44,6 @@ const prioritiesList = [
   { label: "Baixa", value: "LOW" },
   { label: "Média", value: "MEDIUM" },
   { label: "Alta", value: "HIGH" },
-  { label: "Urgente", value: "URGENT" },
 ];
 
 export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {

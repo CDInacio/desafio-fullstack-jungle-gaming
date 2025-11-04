@@ -90,7 +90,6 @@ export function TaskDetailsCard({
     setEditedTask((prev) => ({ ...prev, [field]: value }));
   };
 
-  // compara apenas os campos relevantes
   const getChangedFields = (): Partial<ITask> => {
     const changed: Partial<ITask> = {};
 
@@ -154,7 +153,6 @@ export function TaskDetailsCard({
 
   return (
     <>
-      {/* CARD PRINCIPAL */}
       <Card className="bg-primary border-zinc-800">
         <CardContent className="pt-6 space-y-6">
           <div className="flex items-center gap-3">
