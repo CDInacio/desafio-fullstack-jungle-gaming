@@ -8,27 +8,27 @@ FROM base AS development
 COPY package*.json ./
 COPY turbo.json ./
 COPY packages ./packages
-COPY apps/auth-service ./apps/auth-service
+COPY apps/task-service ./apps/task-service
 
 RUN npm ci
 
-EXPOSE 3002
+EXPOSE 3003
 
-CMD ["npm", "run", "dev", "--workspace=auth-service"]
+CMD ["npm", "run", "dev", "--workspace=task-service"]
 
 FROM base AS builder
 
 COPY . .
 RUN npm ci
-RUN npm run build --workspace=auth-service
+RUN npm run build --workspace=task-service
 
 FROM base AS production
 
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/auth-service/dist ./apps/auth-service/dist
-COPY --from=builder /app/apps/auth-service/package.json ./apps/auth-service/
+COPY --from=builder /app/apps/task-service/dist ./apps/task-service/dist
+COPY --from=builder /app/apps/task-service/package.json ./apps/task-service/
 
-EXPOSE 3002
+EXPOSE 3003
 
-CMD ["node", "apps/auth-service/dist/main.js"]
+CMD ["node", "apps/task-service/dist/main.js"]
