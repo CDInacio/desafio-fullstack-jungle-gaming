@@ -99,18 +99,13 @@ export class AppController {
   }
 
   @Get('tasks')
-  async getTasks(
-    @Query('page') page: number,
-    @Query('size') size: number,
-    @Query('sortBy') sortBy: string,
-    @Query('sortOrder') sortOrder: 'ASC' | 'DESC',
-  ) {
+  async getTasks(@Query('page') page: number, @Query('size') size: number) {
     try {
       if (page < 1) page = 1;
       if (size < 1) size = 10;
       if (size > 100) size = 100;
 
-      const query = { page, size, sortBy, sortOrder };
+      const query = { page, size };
 
       const result = await firstValueFrom(
         this.taskClient.send('task.getAll', query),

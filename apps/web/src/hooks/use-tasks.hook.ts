@@ -31,10 +31,15 @@ export function useGetTask(id: string) {
   });
 }
 
-export function useGetTasks() {
+export function useGetTasks(
+  page: number = 1,
+  size: number = 10,
+  sortBy: string = "createdAt",
+  sortOrder: "ASC" | "DESC" = "DESC"
+) {
   return useQuery<ITaskResponse, Error>({
-    queryKey: ["tasks"],
-    queryFn: () => taskService.getAll(),
+    queryKey: ["tasks", page, size, sortBy, sortOrder],
+    queryFn: () => taskService.getAll(page, size, sortBy, sortOrder),
   });
 }
 

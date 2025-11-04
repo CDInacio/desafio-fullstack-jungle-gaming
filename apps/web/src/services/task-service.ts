@@ -21,9 +21,16 @@ export class TaskService {
     }
   }
 
-  async getAll() {
+  async getAll(
+    page: number = 1,
+    size: number = 10,
+    sortBy: string = "createdAt",
+    sortOrder: "ASC" | "DESC" = "DESC"
+  ) {
     try {
-      const { data: result } = await api.get("/api/tasks");
+      const { data: result } = await api.get("/api/tasks", {
+        params: { page, size, sortBy, sortOrder },
+      });
       return result.data;
     } catch (error) {
       throw handleApiError(error);
