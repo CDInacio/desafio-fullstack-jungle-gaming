@@ -1,11 +1,11 @@
-// src/contexts/auth-context.tsx
 import type { IUser } from "@/types/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { AuthStorage } from "@/utils/auth-storage";
 
 export interface AuthState {
   token: string | null;
   user: IUser | null;
-  login: (token: string, userData: IUser) => void;
+  login: (token: string, refreshToken: string, userData: IUser) => void;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -16,31 +16,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [token, setToken] = useState<string | null>(() => {
-    const token = localStorage.getItem("token");
-    return token ? token : null;
+    return AuthStorage.getToken();
   });
 
   const [user, setUser] = useState<IUser | null>(() => {
-    const userData = localStorage.getItem("user");
-    return userData ? JSON.parse(userData) : null;
+    return AuthStorage.getUser();
   });
 
   useEffect(() => {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
+    if (token) {
+      AuthStorage.setTokens(token, AuthStorage.getRefreshToken() || "");
+    } else {
+      AuthStorage.clearTokens();
+    }
   }, [token]);
 
   useEffect(() => {
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
+    if (user) {
+      AuthStorage.setUser(user);
+    }
   }, [user]);
 
-  const login = (token: string, userData: IUser): void => {
+  const login = (
+    token: string,
+    refreshToken: string,
+    userData: IUser
+  ): void => {
+    console.log(userData);
+    AuthStorage.setTokens(token, refreshToken);
+    AuthStorage.setUser(userData);
     setToken(token);
     setUser(userData);
   };
 
   const logout = (): void => {
+    AuthStorage.clearTokens();
     setToken(null);
     setUser(null);
   };

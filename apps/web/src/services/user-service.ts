@@ -1,6 +1,7 @@
 import type { ILogin, IRegister } from "@/types/auth";
 import { api } from "./api";
 import { handleApiError } from "@/utils/handle-api-error";
+import { AuthStorage } from "@/utils/auth-storage";
 
 export class UserService {
   async register(data: IRegister) {
@@ -16,6 +17,7 @@ export class UserService {
   async login(data: ILogin) {
     try {
       const { data: result } = await api.post("/api/auth/login", data);
+
       return result;
     } catch (error) {
       throw handleApiError(error);
@@ -38,6 +40,10 @@ export class UserService {
     } catch (error) {
       throw handleApiError(error);
     }
+  }
+
+  logout() {
+    AuthStorage.clearTokens();
   }
 }
 

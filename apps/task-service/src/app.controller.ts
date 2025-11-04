@@ -77,7 +77,7 @@ export class AppController {
   @MessagePattern('task.delete')
   async deleteTaskById(@Payload() id: string) {
     const result = await this.appService.deleteTaskById(id);
-    console.log(result);
+    return result;
   }
 
   @MessagePattern('comment.new')

@@ -24,7 +24,11 @@ export interface IAuthResponse {
 }
 
 interface IData {
+  id: string | undefined;
+  email: string;
+  username: string;
   token: string;
+  refreshToken: string;
   expiresIn: string;
   user: IUser;
 }

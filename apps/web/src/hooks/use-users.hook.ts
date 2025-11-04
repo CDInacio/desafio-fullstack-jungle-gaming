@@ -10,8 +10,15 @@ export function useLogin() {
   return useMutation<IAuthResponse, Error, ILogin>({
     mutationFn: userService.login,
     onSuccess: (data) => {
-      if (data) {
-        login(data.data.token, data.data.user);
+      if (data?.data) {
+        const user: IUser = {
+          username: data.data.username,
+          email: data.data.email,
+          id: data.data.id,
+        };
+
+        login(data.data.token, data.data.refreshToken, user);
+        toast.success("Login realizado com sucesso!");
       }
     },
     onError: (error) => {

@@ -22,6 +22,7 @@ import type {
   SignupCredentialsDto,
 } from '@repo/shared/user';
 import { catchError, firstValueFrom, timeout } from 'rxjs';
+import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
 
 @Controller('api')
 export class AppController {
@@ -55,6 +56,7 @@ export class AppController {
     }
   }
 
+  @UseGuards(RefreshJwtGuard)
   @Post('auth/refresh')
   async refreshToken(@Body() body: any) {
     try {
@@ -182,7 +184,7 @@ export class AppController {
 
   @UseGuards(JwtGuard)
   @Delete('/tasks/:id')
-  async deleteTaskById(@Param('id') id: string) {
+  async deleteTask(@Param('id') id: string) {
     try {
       this.taskClient.emit('task.delete', id);
     } catch (error) {
