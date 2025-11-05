@@ -99,8 +99,9 @@ function LoginComponent() {
                 )}
               />
               <Button
+                data-slot="button"
                 type="submit"
-                className="w-full mt-4 bg-white text-foreground hover:bg-white/90 cursor-pointer"
+                className="w-full mt-4 bg-[#008eff] hover:bg-[#009dff] text-foreground  cursor-pointer"
               >
                 Entrar
               </Button>

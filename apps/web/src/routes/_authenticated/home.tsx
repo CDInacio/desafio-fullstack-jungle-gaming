@@ -1,4 +1,4 @@
-// apps/web/src/routes/_authenticated/home.tsx - Versão Alternativa
+// apps/web/src/routes/_authenticated/home.tsx
 import Layout from "@/components/layout";
 import CenteredContainer from "@/components/centered-container";
 import { useGetTasks, useCreateTask } from "@/hooks/use-tasks.hook";
@@ -13,9 +13,16 @@ import {
   MoreHorizontalIcon,
 } from "lucide-react";
 import { TaskTableSkeleton } from "@/components/ui/task-table-skeleton";
-import { getPageNumbers } from "@/utils/get-page-numbers";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useState, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type HomeSearch = {
   page?: number;
@@ -49,116 +56,144 @@ function RouteComponent() {
   const pagination = taskData?.pagination;
   const tasks = taskData?.tasks || [];
 
+  // Estados de filtro
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [assignedFilter, setAssignedFilter] = useState("all");
+
+  // Aplica filtros
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      const matchStatus =
+        statusFilter === "all" ? true : task.status === statusFilter;
+      const matchPriority =
+        priorityFilter === "all" ? true : task.priority === priorityFilter;
+      const matchAssigned =
+        assignedFilter === "all"
+          ? true
+          : task.assignments?.some((a) => a.userId === assignedFilter);
+      return matchStatus && matchPriority && matchAssigned;
+    });
+  }, [tasks, statusFilter, priorityFilter, assignedFilter]);
+
   return (
     <Layout>
       <CenteredContainer className="px-0 sm:px-0 md:px-0">
-        <div className="flex flex-col sm:flex-row sm:justify-end mt-4 sm:mt-6 gap-3 mb-6">
+        {/* Filtros + botão de criar */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 sm:mt-6 gap-3 mb-6">
           <TaskFormDialog users={users ?? []} onSubmit={handleCreateTask} />
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            {/* Filtro por status */}
+            <Select onValueChange={setStatusFilter} value={statusFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="TODO">Todo</SelectItem>
+                <SelectItem value="IN_PROGRESS">Em progresso</SelectItem>
+                <SelectItem value="DONE">Concluído</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Filtro por prioridade */}
+            <Select onValueChange={setPriorityFilter} value={priorityFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Prioridade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="LOW">Baixa</SelectItem>
+                <SelectItem value="MEDIUM">Média</SelectItem>
+                <SelectItem value="HIGH">Alta</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Filtro por responsável */}
+            <Select onValueChange={setAssignedFilter} value={assignedFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Responsável" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                {users?.map((user) => (
+                  <SelectItem key={user.id} value={user.id!}>
+                    {user.username}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {isLoading ? <TaskTableSkeleton /> : <TaskTable tasks={tasks} />}
+        {isLoading ? (
+          <TaskTableSkeleton />
+        ) : (
+          <TaskTable tasks={filteredTasks} />
+        )}
 
         {pagination && pagination.totalPages > 1 && (
-          <div className="mt-8 mb-6">
-            <nav
-              role="navigation"
-              aria-label="pagination"
-              className="mx-auto flex w-full justify-center"
-            >
-              <ul className="flex flex-row items-center gap-1">
-                {/* Previous Button */}
-                <li>
-                  {pagination.hasPreviousPage ? (
-                    <Link
-                      to="/home"
-                      search={{ page: currentPage - 1, size: itemsPerPage }}
-                      onClick={() =>
-                        window.scrollTo({ top: 0, behavior: "smooth" })
-                      }
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "default" }),
-                        "gap-1 px-2.5 sm:pl-2.5"
-                      )}
-                    >
-                      <ChevronLeftIcon className="h-4 w-4" />
-                      <span className="hidden sm:block">Previous</span>
-                    </Link>
-                  ) : (
-                    <button
-                      disabled
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "default" }),
-                        "gap-1 px-2.5 sm:pl-2.5 pointer-events-none opacity-50 border-border bg-border text-white/65"
-                      )}
-                    >
-                      <ChevronLeftIcon className="h-4 w-4" />
-                      <span className="hidden sm:block ">Anterior</span>
-                    </button>
+          <div className="mt-8 mb-6 flex flex-col items-center gap-3 text-sm text-zinc-400">
+            <div className="flex items-center gap-3">
+              {pagination.hasPreviousPage ? (
+                <Link
+                  to="/home"
+                  search={{ page: currentPage - 1, size: itemsPerPage }}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "border-border bg-border text-white/70 hover:text-white"
                   )}
-                </li>
-
-                {getPageNumbers(pagination, currentPage).map((page, index) => (
-                  <li key={index}>
-                    {page === "ellipsis" ? (
-                      <span className="flex  size-9 items-center justify-center">
-                        <MoreHorizontalIcon className="size-4" />
-                        <span className="sr-only">More pages</span>
-                      </span>
-                    ) : (
-                      <Link
-                        to="/home"
-                        search={{ page: page as number, size: itemsPerPage }}
-                        onClick={() =>
-                          window.scrollTo({ top: 0, behavior: "smooth" })
-                        }
-                        className={cn(
-                          "border-border bg-border text-white/65",
-                          buttonVariants({
-                            variant: currentPage === page ? "outline" : "ghost",
-                            size: "icon",
-                          })
-                        )}
-                      >
-                        {page}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-
-                <li>
-                  {pagination.hasNextPage ? (
-                    <Link
-                      to="/home"
-                      search={{ page: currentPage + 1, size: itemsPerPage }}
-                      onClick={() =>
-                        window.scrollTo({ top: 0, behavior: "smooth" })
-                      }
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "default" }),
-                        "gap-1 px-2.5 sm:pr-2.5 border-border bg-border text-white/65"
-                      )}
-                    >
-                      <span className="hidden sm:block">Próximo</span>
-                      <ChevronRightIcon className="h-4 w-4" />
-                    </Link>
-                  ) : (
-                    <button
-                      disabled
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "default" }),
-                        "gap-1 px-2.5 sm:pr-2.5 pointer-events-none opacity-50"
-                      )}
-                    >
-                      <span className="hidden sm:block">Next</span>
-                      <ChevronRightIcon className="h-4 w-4" />
-                    </button>
+                >
+                  <ChevronLeftIcon />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "opacity-50 cursor-not-allowed border-border bg-border text-white/40"
                   )}
-                </li>
-              </ul>
-            </nav>
+                >
+                  <ChevronLeftIcon />
+                </button>
+              )}
 
-            {/* Informações de paginação */}
-            <div className="text-center mt-4 text-sm text-zinc-500">
+              <span className="text-zinc-400">
+                Página {currentPage} de {pagination.totalPages}
+              </span>
+
+              {pagination.hasNextPage ? (
+                <Link
+                  to="/home"
+                  search={{ page: currentPage + 1, size: itemsPerPage }}
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "border-border bg-border text-white/70 hover:text-white"
+                  )}
+                >
+                  <ChevronRightIcon />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "sm" }),
+                    "opacity-50 cursor-not-allowed border-border bg-border text-white/40"
+                  )}
+                >
+                  <ChevronRightIcon />
+                </button>
+              )}
+            </div>
+
+            <div className="text-center text-xs text-zinc-500">
               Mostrando {tasks.length} de {pagination.totalItems}{" "}
               {pagination.totalItems === 1 ? "tarefa" : "tarefas"}
             </div>

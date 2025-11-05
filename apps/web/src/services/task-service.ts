@@ -92,5 +92,22 @@ export class TaskService {
       throw handleApiError(error);
     }
   }
+
+  async getComments(
+    taskId: string,
+    page: number = 1,
+    size: number = 10,
+    sortBy: string = "createdAt",
+    sortOrder: "ASC" | "DESC" = "DESC"
+  ) {
+    try {
+      const { data: result } = await api.get(`/api/tasks/${taskId}/comments`, {
+        params: { page, size, sortBy, sortOrder },
+      });
+      return result.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
+  }
 }
 export const taskService = new TaskService();

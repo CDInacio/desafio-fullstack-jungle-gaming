@@ -94,4 +94,27 @@ export class AppController {
     this.notificationClient.emit('comment.new', notificationPayload);
     return result;
   }
+
+  @MessagePattern('comment.getAll')
+  async getComments(
+    @Payload() payload: { taskId: string; query: PaginationQuery },
+  ) {
+    const result = await this.appService.getTaskComments(
+      payload.taskId,
+      payload.query,
+    );
+    return result;
+  }
+
+  @MessagePattern('task.history')
+  async getTaskHistory(@Payload() taskId: string) {
+    const history = await this.appService.getTaskHistory(taskId);
+    return history;
+  }
+
+  @MessagePattern('user.history')
+  async getUserHistory(@Payload() userId: string) {
+    const history = await this.appService.getUserHistory(userId);
+    return history;
+  }
 }

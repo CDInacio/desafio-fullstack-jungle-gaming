@@ -31,6 +31,10 @@
       "types": "./src/entities/task-assignment.entity.ts",
       "default": "./dist/entities/task-assignment.entity.js"
     },
+    "./entities/audit-log": {
+      "types": "./src/entities/audit-log.entity.ts",
+      "default": "./dist/entities/audit-log.entity.js"
+    },
     "./entities/comment": {
       "types": "./src/entities/comment.entity.ts",
       "default": "./dist/entities/comment.entity.js"

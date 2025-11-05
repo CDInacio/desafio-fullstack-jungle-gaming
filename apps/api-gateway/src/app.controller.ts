@@ -199,6 +199,33 @@ export class AppController {
   // ================================ TASK COMMENTS ==================================
 
   @UseGuards(JwtGuard)
+  @Get('/tasks/:id/comments')
+  async getTaskComments(
+    @Param('id') taskId: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
+    try {
+      if (page < 1) page = 1;
+      if (size < 1) size = 10;
+      if (size > 100) size = 100;
+
+      const query = { page, size };
+
+      const result = await firstValueFrom(
+        this.taskClient.send('comment.getAll', { taskId, query }),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error getting comments:', error);
+      throw new HttpException(
+        'Failed to get comments',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Post('/tasks/:id/comments')
   async createTaskComment(
     @Param('id') taskId: string,
@@ -238,6 +265,42 @@ export class AppController {
       this.logger.error('Error emitting users get event:', error);
       throw new HttpException(
         'Failed to emit users get event',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // ================================ AUDIT LOGS ==================================
+
+  @UseGuards(JwtGuard)
+  @Get('/tasks/:id/history')
+  async getTaskHistory(@Param('id') taskId: string) {
+    try {
+      const result = await firstValueFrom(
+        this.taskClient.send('task.history', taskId),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error fetching task history:', error);
+      throw new HttpException(
+        'Failed to fetch task history',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
+  @Get('/users/:id/history')
+  async getUserHistory(@Param('id') userId: string) {
+    try {
+      const result = await firstValueFrom(
+        this.taskClient.send('user.history', userId),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error fetching user history:', error);
+      throw new HttpException(
+        'Failed to fetch user history',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

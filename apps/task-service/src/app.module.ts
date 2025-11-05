@@ -10,6 +10,7 @@ import { NOTIFICATION_SERVICE_RABBITMQ } from '@repo/shared/index';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 import { UserEntity } from '@repo/shared/entities/user';
 import { CommentEntity } from '@repo/shared/entities/comment';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CommentEntity } from '@repo/shared/entities/comment';
     ]),
     ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],

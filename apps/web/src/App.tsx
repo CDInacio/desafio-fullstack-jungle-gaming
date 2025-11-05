@@ -27,7 +27,7 @@ function NotificationsConnector() {
   const qc = useQueryClient();
 
   useNotifications(user?.id || null, {
-    onTaskCreated: (payload) => {
+    onTaskCreated: () => {
       qc.invalidateQueries({ queryKey: ["tasks"] });
       toast.success("Nova tarefa atribuída a você");
     },

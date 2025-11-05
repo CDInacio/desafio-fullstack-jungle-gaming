@@ -84,7 +84,9 @@ function RegisterComponent() {
                   <FormItem className="mb-5">
                     <FormControl>
                       <div>
-                        <Label htmlFor="username">Nome de usuário</Label>
+                        <Label htmlFor="username" className="mb-2">
+                          Nome de usuário
+                        </Label>
                         <Input id="username" type="text" required {...field} />
                       </div>
                     </FormControl>
@@ -99,7 +101,9 @@ function RegisterComponent() {
                   <FormItem className="mb-5">
                     <FormControl>
                       <div>
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email" className="mb-2">
+                          Email
+                        </Label>
                         <Input id="email" type="email" required {...field} />
                       </div>
                     </FormControl>
@@ -114,7 +118,9 @@ function RegisterComponent() {
                   <FormItem className="mb-5">
                     <FormControl>
                       <div>
-                        <Label htmlFor="password">Senha</Label>
+                        <Label htmlFor="password" className="mb-2">
+                          Senha
+                        </Label>
                         <Input
                           id="password"
                           type="password"
@@ -134,7 +140,9 @@ function RegisterComponent() {
                   <FormItem className="">
                     <FormControl>
                       <div>
-                        <Label htmlFor="confirmPassword">Confirmar senha</Label>
+                        <Label htmlFor="confirmPassword" className="mb-2">
+                          Confirmar senha
+                        </Label>
                         <Input
                           id="confirmPassword"
                           type="password"
@@ -149,7 +157,7 @@ function RegisterComponent() {
               />
               <Button
                 type="submit"
-                className="w-full mt-4 bg-white text-foreground hover:bg-white/90 cursor-pointer"
+                className="w-full mt-4 bg-[#008eff] hover:bg-[#009dff] text-foreground cursor-pointer"
               >
                 Cadastrar
               </Button>

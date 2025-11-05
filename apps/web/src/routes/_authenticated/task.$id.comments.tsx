@@ -1,29 +1,81 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  useParams,
+  useSearch,
+} from "@tanstack/react-router";
 import { useCreatTaskComment, useGetTask } from "@/hooks/use-tasks.hook";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, MessageSquare, Send } from "lucide-react";
-import { useState } from "react";
+import {
+  ArrowLeft,
+  MessageSquare,
+  Send,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/context/auth-context";
 import type { ITaskComment } from "@/types/task";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+
+type CommentsSearch = {
+  page?: number;
+  size?: number;
+};
 
 export const Route = createFileRoute("/_authenticated/task/$id/comments")({
   component: TaskCommentsComponent,
+  validateSearch: (search: Record<string, unknown>): CommentsSearch => {
+    const size = Number(search?.size) || 5;
+    return {
+      page: Number(search?.page) || 1,
+      size: size > 0 && size <= 20 ? size : 5,
+    };
+  },
 });
 
 function TaskCommentsComponent() {
   const { user } = useAuth();
   const { id } = useParams({ strict: false });
+  const { page = 1, size = 5 } = useSearch({
+    from: "/_authenticated/task/$id/comments",
+  });
   const { data: response } = useGetTask(id);
   const { mutate: createComment } = useCreatTaskComment();
   const [newComment, setNewComment] = useState("");
 
   const task = response?.data;
-  const comments = task?.comments || [];
-  const commentsCount = comments.length;
+  const allComments = task?.comments || [];
+  const commentsCount = allComments.length;
+
+  // Paginação manual dos comentários
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * size;
+    const endIndex = startIndex + size;
+    const comments = allComments.slice(startIndex, endIndex);
+
+    const totalPages = Math.ceil(commentsCount / size);
+
+    return {
+      comments,
+      pagination: {
+        totalItems: commentsCount,
+        totalPages,
+        currentPage: page,
+        pageLimit: size,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }, [allComments, page, size, commentsCount]);
+
+  const { comments, pagination } = paginatedData;
 
   const handleSubmitComment = () => {
     if (!newComment.trim()) return;
@@ -35,9 +87,46 @@ function TaskCommentsComponent() {
     };
     createComment(commentData, {
       onSuccess: () => {
-        setNewComment(""); // Limpa o textarea após sucesso
+        setNewComment("");
       },
     });
+  };
+
+  // Função auxiliar para gerar números de página
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const totalPages = pagination.totalPages;
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (page <= 3) {
+        for (let i = 1; i <= 3; i++) {
+          pages.push(i);
+        }
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      } else if (page >= totalPages - 2) {
+        pages.push(1);
+        pages.push("ellipsis");
+        for (let i = totalPages - 2; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push("ellipsis");
+        pages.push(page - 1);
+        pages.push(page);
+        pages.push(page + 1);
+        pages.push("ellipsis");
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
   };
 
   return (
@@ -121,45 +210,130 @@ function TaskCommentsComponent() {
                   </p>
                 </div>
               ) : (
-                /* Lista de comentários */
-                comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors"
-                  >
-                    <div className="flex items-start gap-4">
-                      {/* Avatar do usuário */}
-                      <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-white font-semibold">
-                          {comment.user?.username?.charAt(0).toUpperCase() ||
-                            "?"}
-                        </span>
-                      </div>
-
-                      {/* Conteúdo do comentário */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-sm font-semibold text-white">
-                            {comment.user?.username || "Usuário desconhecido"}
-                          </span>
-                          <span className="text-xs text-zinc-500">
-                            {comment.user?.email}
-                          </span>
-                          <span className="text-xs text-zinc-500">•</span>
-                          <span className="text-xs text-zinc-500">
-                            {formatDistanceToNow(new Date(comment.createdAt), {
-                              addSuffix: true,
-                              locale: ptBR,
-                            })}
+                /* Lista de comentários paginados */
+                <>
+                  {comments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors"
+                    >
+                      <div className="flex items-start gap-4">
+                        {/* Avatar do usuário */}
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-semibold">
+                            {comment.user?.username?.charAt(0).toUpperCase() ||
+                              "?"}
                           </span>
                         </div>
-                        <p className="text-sm text-zinc-300 whitespace-pre-wrap break-words">
-                          {comment.content}
-                        </p>
+
+                        {/* Conteúdo do comentário */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-sm font-semibold text-white">
+                              {comment.user?.username || "Usuário desconhecido"}
+                            </span>
+                            <span className="text-xs text-zinc-500">
+                              {comment.user?.email}
+                            </span>
+                            <span className="text-xs text-zinc-500">•</span>
+                            <span className="text-xs text-zinc-500">
+                              {formatDistanceToNow(
+                                new Date(comment.createdAt),
+                                {
+                                  addSuffix: true,
+                                  locale: ptBR,
+                                }
+                              )}
+                            </span>
+                          </div>
+                          <p className="text-sm text-zinc-300 whitespace-pre-wrap break-words">
+                            {comment.content}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+
+                  {pagination && pagination.totalPages > 1 && (
+                    <div className="mt-8 mb-6 flex flex-col items-center gap-3 text-sm text-zinc-400">
+                      <div className="flex items-center gap-3">
+                        {pagination.hasPreviousPage ? (
+                          <Link
+                            to="/task/$id/comments"
+                            search={{
+                              page: page - 1,
+                              size,
+                            }}
+                            onClick={() =>
+                              window.scrollTo({ top: 0, behavior: "smooth" })
+                            }
+                            className={cn(
+                              buttonVariants({
+                                variant: "outline",
+                                size: "sm",
+                              }),
+                              "border-border bg-border text-white/70 hover:text-white"
+                            )}
+                          >
+                            <ChevronLeftIcon />
+                          </Link>
+                        ) : (
+                          <button
+                            disabled
+                            className={cn(
+                              buttonVariants({
+                                variant: "outline",
+                                size: "sm",
+                              }),
+                              "opacity-50 cursor-not-allowed border-border bg-border text-white/40"
+                            )}
+                          >
+                            <ChevronLeftIcon />
+                          </button>
+                        )}
+
+                        <span className="text-zinc-400">
+                          Página {page} de {pagination.totalPages}
+                        </span>
+
+                        {pagination.hasNextPage ? (
+                          <Link
+                            to="/task/$id/comments"
+                            search={{
+                              page: page + 1,
+                              size,
+                            }}
+                            onClick={() =>
+                              window.scrollTo({ top: 0, behavior: "smooth" })
+                            }
+                            className={cn(
+                              buttonVariants({
+                                variant: "outline",
+                                size: "sm",
+                              }),
+                              "border-border bg-border text-white/70 hover:text-white"
+                            )}
+                          >
+                            <ChevronRightIcon />
+                          </Link>
+                        ) : (
+                          <button
+                            disabled
+                            className={cn(
+                              buttonVariants({
+                                variant: "outline",
+                                size: "sm",
+                              }),
+                              "opacity-50 cursor-not-allowed border-border bg-border text-white/40"
+                            )}
+                          >
+                            <ChevronRightIcon />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

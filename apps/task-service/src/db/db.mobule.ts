@@ -5,6 +5,7 @@ import { CommentEntity } from '@repo/shared/entities/comment';
 import { TaskEntity } from '@repo/shared/entities/task';
 import { TaskAssignmentEntity } from '@repo/shared/entities/task-assignment';
 import { UserEntity } from '@repo/shared/entities/user';
+import { AuditLogEntity } from '@repo/shared/entities/audit-log'; // NOVO
 
 @Module({
   imports: [
@@ -16,7 +17,13 @@ import { UserEntity } from '@repo/shared/entities/user';
         username: configService.get<string>('DB_USERNAME', 'postgres'),
         password: configService.get<string>('DB_PASSWORD', '12345678'),
         database: configService.get<string>('DB_NAME', 'challenge_db'),
-        entities: [TaskEntity, TaskAssignmentEntity, UserEntity, CommentEntity],
+        entities: [
+          TaskEntity,
+          TaskAssignmentEntity,
+          UserEntity,
+          CommentEntity,
+          AuditLogEntity,
+        ],
         synchronize: false,
       }),
       inject: [ConfigService],

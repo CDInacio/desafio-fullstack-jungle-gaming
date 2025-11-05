@@ -85,9 +85,27 @@ export function useCreatTaskComment() {
     onSuccess: (_, commentData) => {
       toast.success("Comentário criado com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["task", commentData.taskId] });
+      queryClient.invalidateQueries({
+        queryKey: ["task-comments", commentData.taskId],
+      }); // Nova linha
     },
     onError: (error) => {
       toast.error("Erro ao criar comentário", { description: error.message });
     },
+  });
+}
+
+export function useGetTaskComments(
+  taskId: string,
+  page: number = 1,
+  size: number = 10,
+  sortBy: string = "createdAt",
+  sortOrder: "ASC" | "DESC" = "DESC"
+) {
+  return useQuery({
+    queryKey: ["task-comments", taskId, page, size, sortBy, sortOrder],
+    queryFn: () =>
+      taskService.getComments(taskId, page, size, sortBy, sortOrder),
+    enabled: !!taskId,
   });
 }
