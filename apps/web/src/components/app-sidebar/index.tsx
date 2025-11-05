@@ -31,7 +31,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent className="bg-zinc-900 border-r border-zinc-800">
+      <SidebarContent className="bg-sidebar-accent border-r border-border">
         <SidebarGroup>
           {/* Header com Avatar */}
           <div className="px-4 py-6 border-b border-zinc-800">
@@ -77,7 +77,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer com botão de logout */}
-      <SidebarFooter className="bg-zinc-900 p-4 border-t border-zinc-800">
+      <SidebarFooter className="bg-sidebar-accent p-4 border-t border-zinc-800">
         <button
           onClick={logout}
           className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-zinc-400 hover:text-red-500 hover:bg-red-500/10 transition-colors duration-150 group"

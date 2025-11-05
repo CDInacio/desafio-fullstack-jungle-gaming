@@ -47,12 +47,12 @@ export function AssignedUserInput({
           setShowDropdown(true);
         }}
         onFocus={() => setShowDropdown(true)}
+        className="text-white"
         placeholder="Digite o nome do usuário"
-        className="text-input bg-primary border-none focus:ring-input/40 text-sm"
       />
 
       {showDropdown && input && filteredUsers?.length > 0 && (
-        <Card className="absolute w-full mt-1 bg-primary border-none shadow-lg z-10 max-h-48 overflow-y-auto">
+        <Card className="absolute w-full mt-1  shadow-lg z-10 max-h-48 overflow-y-auto">
           {filteredUsers.map((user) => (
             <div
               key={user.id}

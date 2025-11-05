@@ -2,9 +2,16 @@ import { Calendar, Edit, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTaskEdit } from "@/context/task-edit-context";
 import { Skeleton } from "../ui/skeleton";
+import { useDeleteTask } from "@/hooks/use-tasks.hook";
 
 export function TaskHeader() {
   const { currentTask, toggleEditMode } = useTaskEdit();
+  const { mutate: deleteTask } = useDeleteTask();
+
+  const handleDeleteTask = () => {
+    if (!currentTask) return;
+    deleteTask(currentTask.id);
+  };
 
   if (!currentTask) {
     return (
@@ -49,6 +56,7 @@ export function TaskHeader() {
           Editar
         </Button>
         <Button
+          onClick={handleDeleteTask}
           variant="outline"
           size="sm"
           className="bg-transparent border-zinc-700 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/50 text-zinc-400 transition-colors"

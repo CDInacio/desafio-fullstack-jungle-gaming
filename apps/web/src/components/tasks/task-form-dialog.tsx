@@ -97,7 +97,10 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="bg-zinc-900 border-zinc-800 sm:max-w-[600px] w-[95vw] max-w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent
+        data-slot="card"
+        className=" border-zinc-800 sm:max-w-[600px] w-[95vw] max-w-[95vw] sm:w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6"
+      >
         <form onSubmit={handleSubmit}>
           <DialogHeader className="border-b border-zinc-800 pb-4">
             <div className="flex items-center gap-2 sm:gap-3">
@@ -126,7 +129,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Input
                 id="title"
-                className="text-white bg-zinc-800 border-zinc-700 focus:border-sky-600 focus:ring-sky-600/20"
+                className="bg-bg-input"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ex: Implementar nova funcionalidade"
@@ -144,7 +147,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Textarea
                 id="description"
-                className="text-white bg-zinc-800 border-zinc-700 focus:border-sky-600 focus:ring-sky-600/20 resize-none"
+                className="text-white bg-bg-input resize-none"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Descreva os detalhes da tarefa..."
@@ -162,10 +165,10 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
                   onValueChange={(v) => setPriority(v as TaskPriority)}
                   defaultValue="LOW"
                 >
-                  <SelectTrigger className="bg-zinc-800 w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20">
+                  <SelectTrigger className=" w-full border-zinc-700 text-white focus:border-sky-600 focus:ring-sky-600/20">
                     <SelectValue placeholder="Prioridade" />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-800 text-white border-zinc-700">
+                  <SelectContent className=" text-white border-zinc-700">
                     <SelectGroup>
                       {prioritiesList.map((item) => (
                         <SelectItem key={item.value} value={item.value}>

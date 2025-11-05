@@ -22,6 +22,7 @@ export function useLogin() {
       }
     },
     onError: (error) => {
+      console.log(error);
       toast.error("Erro ao fazer login", { description: error.message });
     },
   });

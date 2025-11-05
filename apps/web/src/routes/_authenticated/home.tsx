@@ -1,3 +1,4 @@
+// apps/web/src/routes/_authenticated/home.tsx - Versão Alternativa
 import Layout from "@/components/layout";
 import CenteredContainer from "@/components/centered-container";
 import { useGetTasks, useCreateTask } from "@/hooks/use-tasks.hook";
@@ -7,15 +8,14 @@ import { TaskTable } from "@/components/tasks/task-table";
 import type { CreateTask } from "@/types/task";
 import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react";
 import { TaskTableSkeleton } from "@/components/ui/task-table-skeleton";
 import { getPageNumbers } from "@/utils/get-page-numbers";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type HomeSearch = {
   page?: number;
@@ -24,12 +24,11 @@ type HomeSearch = {
 
 export const Route = createFileRoute("/_authenticated/home")({
   component: RouteComponent,
-  // definindo os parâmetros que serão aceitos na rota
   validateSearch: (search: Record<string, unknown>): HomeSearch => {
     const size = Number(search?.size) || 5;
     return {
       page: Number(search?.page) || 1,
-      size: size > 0 && size <= 100 ? size : 5, // Valida entre 1 e 100
+      size: size > 0 && size <= 100 ? size : 5,
     };
   },
 });
@@ -61,72 +60,102 @@ function RouteComponent() {
 
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-8 mb-6">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <Link
-                    to="/home"
-                    search={{ page: currentPage - 1, size: itemsPerPage }}
-                    disabled={!pagination.hasPreviousPage}
-                    onClick={(e) => {
-                      if (!pagination.hasPreviousPage) e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                  >
-                    <PaginationPrevious
-                      className={
-                        !pagination.hasPreviousPage
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
+            <nav
+              role="navigation"
+              aria-label="pagination"
+              className="mx-auto flex w-full justify-center"
+            >
+              <ul className="flex flex-row items-center gap-1">
+                {/* Previous Button */}
+                <li>
+                  {pagination.hasPreviousPage ? (
+                    <Link
+                      to="/home"
+                      search={{ page: currentPage - 1, size: itemsPerPage }}
+                      onClick={() =>
+                        window.scrollTo({ top: 0, behavior: "smooth" })
                       }
-                    />
-                  </Link>
-                </PaginationItem>
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "default" }),
+                        "gap-1 px-2.5 sm:pl-2.5"
+                      )}
+                    >
+                      <ChevronLeftIcon className="h-4 w-4" />
+                      <span className="hidden sm:block">Previous</span>
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "default" }),
+                        "gap-1 px-2.5 sm:pl-2.5 pointer-events-none opacity-50 border-border bg-border text-white/65"
+                      )}
+                    >
+                      <ChevronLeftIcon className="h-4 w-4" />
+                      <span className="hidden sm:block ">Anterior</span>
+                    </button>
+                  )}
+                </li>
 
                 {getPageNumbers(pagination, currentPage).map((page, index) => (
-                  <PaginationItem key={index}>
+                  <li key={index}>
                     {page === "ellipsis" ? (
-                      <PaginationEllipsis />
+                      <span className="flex  size-9 items-center justify-center">
+                        <MoreHorizontalIcon className="size-4" />
+                        <span className="sr-only">More pages</span>
+                      </span>
                     ) : (
                       <Link
                         to="/home"
                         search={{ page: page as number, size: itemsPerPage }}
-                        className={`inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 ${
-                          currentPage === page
-                            ? "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground"
-                            : "hover:bg-accent hover:text-accent-foreground"
-                        } h-9 w-9 cursor-pointer`}
                         onClick={() =>
                           window.scrollTo({ top: 0, behavior: "smooth" })
                         }
+                        className={cn(
+                          "border-border bg-border text-white/65",
+                          buttonVariants({
+                            variant: currentPage === page ? "outline" : "ghost",
+                            size: "icon",
+                          })
+                        )}
                       >
                         {page}
                       </Link>
                     )}
-                  </PaginationItem>
+                  </li>
                 ))}
 
-                <PaginationItem>
-                  <Link
-                    to="/home"
-                    search={{ page: currentPage + 1, size: itemsPerPage }}
-                    disabled={!pagination.hasNextPage}
-                    onClick={(e) => {
-                      if (!pagination.hasNextPage) e.preventDefault();
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                  >
-                    <PaginationNext
-                      className={
-                        !pagination.hasNextPage
-                          ? "pointer-events-none opacity-50"
-                          : "cursor-pointer"
+                <li>
+                  {pagination.hasNextPage ? (
+                    <Link
+                      to="/home"
+                      search={{ page: currentPage + 1, size: itemsPerPage }}
+                      onClick={() =>
+                        window.scrollTo({ top: 0, behavior: "smooth" })
                       }
-                    />
-                  </Link>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "default" }),
+                        "gap-1 px-2.5 sm:pr-2.5 border-border bg-border text-white/65"
+                      )}
+                    >
+                      <span className="hidden sm:block">Próximo</span>
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <button
+                      disabled
+                      className={cn(
+                        buttonVariants({ variant: "ghost", size: "default" }),
+                        "gap-1 px-2.5 sm:pr-2.5 pointer-events-none opacity-50"
+                      )}
+                    >
+                      <span className="hidden sm:block">Next</span>
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </button>
+                  )}
+                </li>
+              </ul>
+            </nav>
 
             {/* Informações de paginação */}
             <div className="text-center mt-4 text-sm text-zinc-500">
