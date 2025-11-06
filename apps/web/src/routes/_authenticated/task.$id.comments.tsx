@@ -92,42 +92,40 @@ function TaskCommentsComponent() {
     });
   };
 
-  // Função auxiliar para gerar números de página
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-    const totalPages = pagination.totalPages;
-    const maxVisiblePages = 5;
+  //   const pages: (number | string)[] = [];
+  //   const totalPages = pagination.totalPages;
+  //   const maxVisiblePages = 5;
 
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (page <= 3) {
-        for (let i = 1; i <= 3; i++) {
-          pages.push(i);
-        }
-        pages.push("ellipsis");
-        pages.push(totalPages);
-      } else if (page >= totalPages - 2) {
-        pages.push(1);
-        pages.push("ellipsis");
-        for (let i = totalPages - 2; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push("ellipsis");
-        pages.push(page - 1);
-        pages.push(page);
-        pages.push(page + 1);
-        pages.push("ellipsis");
-        pages.push(totalPages);
-      }
-    }
+  //   if (totalPages <= maxVisiblePages) {
+  //     for (let i = 1; i <= totalPages; i++) {
+  //       pages.push(i);
+  //     }
+  //   } else {
+  //     if (page <= 3) {
+  //       for (let i = 1; i <= 3; i++) {
+  //         pages.push(i);
+  //       }
+  //       pages.push("ellipsis");
+  //       pages.push(totalPages);
+  //     } else if (page >= totalPages - 2) {
+  //       pages.push(1);
+  //       pages.push("ellipsis");
+  //       for (let i = totalPages - 2; i <= totalPages; i++) {
+  //         pages.push(i);
+  //       }
+  //     } else {
+  //       pages.push(1);
+  //       pages.push("ellipsis");
+  //       pages.push(page - 1);
+  //       pages.push(page);
+  //       pages.push(page + 1);
+  //       pages.push("ellipsis");
+  //       pages.push(totalPages);
+  //     }
+  //   }
 
-    return pages;
-  };
+  //   return pages;
+  // };
 
   return (
     <div className="space-y-6">
@@ -157,7 +155,6 @@ function TaskCommentsComponent() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Formulário para adicionar novo comentário */}
           <div className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700">
             <label className="text-sm font-medium text-white mb-2 block">
               Adicionar comentário
@@ -184,7 +181,6 @@ function TaskCommentsComponent() {
             </div>
           </div>
 
-          {/* Seção de comentários existentes */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-white">
@@ -196,10 +192,8 @@ function TaskCommentsComponent() {
               </span>
             </div>
 
-            {/* Lista de comentários */}
             <div className="space-y-4">
               {commentsCount === 0 ? (
-                /* Estado vazio */
                 <div className="bg-zinc-800/30 p-8 rounded-lg border border-zinc-700 border-dashed text-center">
                   <MessageSquare className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
                   <p className="text-zinc-400 font-medium">
@@ -210,7 +204,6 @@ function TaskCommentsComponent() {
                   </p>
                 </div>
               ) : (
-                /* Lista de comentários paginados */
                 <>
                   {comments.map((comment) => (
                     <div
@@ -218,7 +211,6 @@ function TaskCommentsComponent() {
                       className="bg-zinc-800/50 p-4 rounded-lg border border-zinc-700 hover:border-zinc-600 transition-colors"
                     >
                       <div className="flex items-start gap-4">
-                        {/* Avatar do usuário */}
                         <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                           <span className="text-white font-semibold">
                             {comment.user?.username?.charAt(0).toUpperCase() ||
@@ -226,7 +218,6 @@ function TaskCommentsComponent() {
                           </span>
                         </div>
 
-                        {/* Conteúdo do comentário */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-sm font-semibold text-white">

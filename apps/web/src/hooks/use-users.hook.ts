@@ -46,12 +46,13 @@ export function useUsers() {
   return useQuery<IUser[]>({
     queryKey: ["users"],
     queryFn: () => userService.getUsers(),
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }
 
-export function useProfile(id: string) {
-  return useQuery<IUser>({
-    queryKey: ["user-profile", id],
-    queryFn: () => userService.getUser(id),
-  });
-}
+// export function useProfile(id: string) {
+//   return useQuery<IUser>({
+//     queryKey: ["user-profile", id],
+//     queryFn: () => userService.getUser(id),
+//   });
+// }

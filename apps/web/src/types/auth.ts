@@ -34,9 +34,9 @@ interface IData {
 }
 
 export type AuthState = {
-  isAuthenticated: boolean;
   token: string | null;
   user: IUser | null;
-  login: (token: string, user: IUser) => void;
+  login: (token: string, refreshToken: string, user: IUser) => void;
   logout: () => void;
+  isAuthenticated: boolean;
 };

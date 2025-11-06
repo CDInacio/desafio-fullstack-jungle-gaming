@@ -277,38 +277,6 @@ export class AppService {
           );
         });
       }
-      // const formattedTask = {
-      //   ...task,
-      //   creator: task.creator
-      //     ? {
-      //         id: task.creator.id,
-      //         username: task.creator.username,
-      //         email: task.creator.email,
-      //       }
-      //     : null,
-      //   assignments:
-      //     task.assignments?.map((assignment) => ({
-      //       id: assignment.id,
-      //       taskId: assignment.taskId,
-      //       userId: assignment.userId,
-      //       assignedAt: assignment.assignedAt,
-      //       assignedBy: assignment.assignedBy,
-      //       user: assignment.user
-      //         ? {
-      //             id: assignment.user.id,
-      //             username: assignment.user.username,
-      //             email: assignment.user.email,
-      //           }
-      //         : null,
-      //       assigner: assignment.assigner
-      //         ? {
-      //             id: assignment.assigner.id,
-      //             username: assignment.assigner.username,
-      //             email: assignment.assigner.email,
-      //           }
-      //         : null,
-      //     })) || [],
-      // };
 
       return {
         statusCode: HttpStatus.OK,
@@ -443,7 +411,6 @@ export class AppService {
     }
   }
 
-  // Adicione este método para buscar comentários paginados
   async getTaskComments(taskId: string, query: PaginationQuery) {
     try {
       const page = query.page && query.page > 0 ? query.page : 1;
@@ -528,6 +495,15 @@ export class AppService {
     return {
       message: 'Histórico recuperado com sucesso',
       data: history,
+    };
+  }
+
+  async getAllAuditLogs(query: any) {
+    const logs = await this.auditService.getAllLogs(query);
+
+    return {
+      message: 'Logs recuperados com sucesso',
+      data: logs,
     };
   }
 }

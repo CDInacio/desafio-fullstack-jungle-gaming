@@ -100,4 +100,29 @@ export class AuditService {
 
     return changes;
   }
+
+  async getAllLogs(filters?: {
+    action?: string;
+    entityType?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<AuditLogEntity[]> {
+    const { action, entityType, page = 1, limit = 100 } = filters || {};
+
+    const queryBuilder = this.auditLogRepository.createQueryBuilder('audit');
+
+    if (action) {
+      queryBuilder.andWhere('audit.action = :action', { action });
+    }
+
+    if (entityType) {
+      queryBuilder.andWhere('audit.entityType = :entityType', { entityType });
+    }
+
+    return queryBuilder
+      .orderBy('audit.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+  }
 }

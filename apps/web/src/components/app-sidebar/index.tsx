@@ -1,4 +1,4 @@
-import { Clipboard, Home, LogOut } from "lucide-react";
+import { Clock, Home, LogOut } from "lucide-react";
 
 import {
   Sidebar,
@@ -10,8 +10,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 
 const items = [
   {
@@ -20,14 +21,17 @@ const items = [
     icon: Home,
   },
   {
-    title: "Tarefas",
-    url: "/home",
-    icon: Clipboard,
+    title: "Histórico",
+    url: "/audit-logs",
+    icon: Clock,
   },
 ];
 
 export function AppSidebar() {
   const { logout, user } = useAuth();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
   return (
     <Sidebar>
@@ -52,25 +56,34 @@ export function AppSidebar() {
             </div>
           </div>
 
-          {/* Menu Items */}
           <SidebarGroupContent className="px-3 py-4">
             <SidebarMenu className="space-y-1">
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    className="group hover:bg-sky-600/10 hover:text-sky-600 text-zinc-400 rounded-lg transition-colors duration-150"
-                  >
-                    <Link
-                      to={item.url}
-                      className="flex items-center gap-3 px-3 py-2"
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span className="text-sm font-medium">{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isActive = pathname === item.url;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        to={item.url}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150 outline-none",
+                          // quando ativo: manter cor e permitir hover escurecendo um pouco o bg
+                          isActive
+                            ? "bg-sky-600/20 text-white hover:bg-sky-700/30"
+                            : "text-zinc-400 hover:bg-sky-600/30 hover:text-white",
+                          // foco visível para acessibilidade
+                          "focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-0"
+                        )}
+                      >
+                        <item.icon className="w-5 h-5" />
+                        <span className="text-sm font-medium">
+                          {item.title}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

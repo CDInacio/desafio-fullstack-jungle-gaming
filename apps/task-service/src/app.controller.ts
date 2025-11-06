@@ -106,6 +106,12 @@ export class AppController {
     return result;
   }
 
+  @MessagePattern('audit.getAll')
+  async getAllAuditLogs(@Payload() query: any) {
+    const logs = await this.appService.getAllAuditLogs(query);
+    return logs;
+  }
+
   @MessagePattern('task.history')
   async getTaskHistory(@Payload() taskId: string) {
     const history = await this.appService.getTaskHistory(taskId);

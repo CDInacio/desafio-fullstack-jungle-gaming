@@ -40,6 +40,7 @@ export function useGetTasks(
   return useQuery<ITaskResponse, Error>({
     queryKey: ["tasks", page, size, sortBy, sortOrder],
     queryFn: () => taskService.getAll(page, size, sortBy, sortOrder),
+    staleTime: 1000 * 60 * 2, // 2 minutos
   });
 }
 
@@ -87,7 +88,7 @@ export function useCreatTaskComment() {
       queryClient.invalidateQueries({ queryKey: ["task", commentData.taskId] });
       queryClient.invalidateQueries({
         queryKey: ["task-comments", commentData.taskId],
-      }); // Nova linha
+      });
     },
     onError: (error) => {
       toast.error("Erro ao criar comentário", { description: error.message });
@@ -107,5 +108,6 @@ export function useGetTaskComments(
     queryFn: () =>
       taskService.getComments(taskId, page, size, sortBy, sortOrder),
     enabled: !!taskId,
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 }

@@ -25,6 +25,10 @@ import { AuditLogEntity } from '@repo/shared/entities/audit-log'; // NOVO
           AuditLogEntity,
         ],
         synchronize: false,
+        timezone: 'America/Sao_Paulo',
+        extra: {
+          timezone: 'America/Sao_Paulo',
+        },
       }),
       inject: [ConfigService],
     }),

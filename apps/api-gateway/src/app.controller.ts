@@ -273,6 +273,35 @@ export class AppController {
   // ================================ AUDIT LOGS ==================================
 
   @UseGuards(JwtGuard)
+  @Get('/audit-logs')
+  async getAllAuditLogs(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('action') action?: string,
+    @Query('entityType') entityType?: string,
+  ) {
+    try {
+      const query = {
+        page: page || 1,
+        limit: limit || 100,
+        action,
+        entityType,
+      };
+
+      const result = await firstValueFrom(
+        this.taskClient.send('audit.getAll', query),
+      );
+      return result;
+    } catch (error) {
+      this.logger.error('Error fetching audit logs:', error);
+      throw new HttpException(
+        'Failed to fetch audit logs',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @UseGuards(JwtGuard)
   @Get('/tasks/:id/history')
   async getTaskHistory(@Param('id') taskId: string) {
     try {

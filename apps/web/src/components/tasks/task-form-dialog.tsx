@@ -129,7 +129,7 @@ export function TaskFormDialog({ users, onSubmit }: TaskFormDialogProps) {
               </Label>
               <Input
                 id="title"
-                className="bg-bg-input"
+                className="bg-bg-input text-white"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ex: Implementar nova funcionalidade"

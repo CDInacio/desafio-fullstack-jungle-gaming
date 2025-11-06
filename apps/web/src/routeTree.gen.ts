@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
+import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated/audit-logs'
 import { Route as AuthenticatedTaskIdRouteImport } from './routes/_authenticated/task.$id'
 import { Route as AuthenticatedTaskIdIndexRouteImport } from './routes/_authenticated/task.$id.index'
 import { Route as AuthenticatedTaskIdCommentsRouteImport } from './routes/_authenticated/task.$id.comments'
@@ -42,6 +43,11 @@ const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
   path: '/home',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAuditLogsRoute = AuthenticatedAuditLogsRouteImport.update({
+  id: '/audit-logs',
+  path: '/audit-logs',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedTaskIdRoute = AuthenticatedTaskIdRouteImport.update({
   id: '/task/$id',
   path: '/task/$id',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/task/$id': typeof AuthenticatedTaskIdRouteWithChildren
   '/task/$id/comments': typeof AuthenticatedTaskIdCommentsRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/home': typeof AuthenticatedHomeRoute
   '/task/$id/comments': typeof AuthenticatedTaskIdCommentsRoute
   '/task/$id': typeof AuthenticatedTaskIdIndexRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/task/$id': typeof AuthenticatedTaskIdRouteWithChildren
   '/_authenticated/task/$id/comments': typeof AuthenticatedTaskIdCommentsRoute
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/audit-logs'
     | '/home'
     | '/task/$id'
     | '/task/$id/comments'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/audit-logs'
     | '/home'
     | '/task/$id/comments'
     | '/task/$id'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/login'
     | '/register'
+    | '/_authenticated/audit-logs'
     | '/_authenticated/home'
     | '/_authenticated/task/$id'
     | '/_authenticated/task/$id/comments'
@@ -162,6 +174,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedHomeRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/audit-logs': {
+      id: '/_authenticated/audit-logs'
+      path: '/audit-logs'
+      fullPath: '/audit-logs'
+      preLoaderRoute: typeof AuthenticatedAuditLogsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/task/$id': {
       id: '/_authenticated/task/$id'
       path: '/task/$id'
@@ -200,11 +219,13 @@ const AuthenticatedTaskIdRouteWithChildren =
   AuthenticatedTaskIdRoute._addFileChildren(AuthenticatedTaskIdRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
   AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedTaskIdRoute: typeof AuthenticatedTaskIdRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
   AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedTaskIdRoute: AuthenticatedTaskIdRouteWithChildren,
 }

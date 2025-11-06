@@ -56,7 +56,6 @@ function RouteComponent() {
   const pagination = taskData?.pagination;
   const tasks = taskData?.tasks || [];
 
-  // Estados de filtro
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [assignedFilter, setAssignedFilter] = useState("all");
@@ -79,12 +78,10 @@ function RouteComponent() {
   return (
     <Layout>
       <CenteredContainer className="px-0 sm:px-0 md:px-0">
-        {/* Filtros + botão de criar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 sm:mt-6 gap-3 mb-6">
           <TaskFormDialog users={users ?? []} onSubmit={handleCreateTask} />
 
           <div className="flex flex-col sm:flex-row gap-2">
-            {/* Filtro por status */}
             <Select onValueChange={setStatusFilter} value={statusFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Status" />
@@ -97,7 +94,6 @@ function RouteComponent() {
               </SelectContent>
             </Select>
 
-            {/* Filtro por prioridade */}
             <Select onValueChange={setPriorityFilter} value={priorityFilter}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue placeholder="Prioridade" />
@@ -110,7 +106,6 @@ function RouteComponent() {
               </SelectContent>
             </Select>
 
-            {/* Filtro por responsável */}
             <Select onValueChange={setAssignedFilter} value={assignedFilter}>
               <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Responsável" />
