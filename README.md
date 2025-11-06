@@ -309,6 +309,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 | POST   | `/api/[recurso]`     | Cria novo    |
 | PUT    | `/api/[recurso]/:id` | Atualiza     |
 | DELETE | `/api/[recurso]/:id` | Remove       |
+| DELETE | `/api/[recurso]/:id` | Remove       |
 
 _[Documente suas rotas específicas aqui]_
 

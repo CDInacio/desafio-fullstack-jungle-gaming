@@ -1,4 +1,4 @@
-import { format, formatDistanceToNow, subHours } from "date-fns";
+import { format, subHours } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
   CheckCircle2,
@@ -120,21 +120,20 @@ export function AuditLogEntry({ log, isLast = false }: AuditLogEntryProps) {
   };
 
   return (
-    <div className="flex gap-4 pb-6 relative">
+    <div className="flex gap-4 pb-6 relative flex-col sm:flex-row">
+      {/* vertical line only on sm+ screens */}
       {!isLast && (
-        <div className="absolute left-4 top-10 bottom-0 w-px bg-border" />
+        <div className="hidden sm:block absolute left-4 top-10 bottom-0 w-px bg-border" />
       )}
 
-      <div
-        className={`relative z-10 flex-shrink-0 ${config.bg} rounded-full p-2`}
-      >
+      <div className={`relative z-10 shrink-0 ${config.bg} rounded-full p-2`}>
         <Icon className={`h-4 w-4 ${config.color}`} />
       </div>
 
       <div className="flex-1 pt-0.5">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div className="w-full">
+            <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="outline" className="text-xs">
                 {config.label}
               </Badge>
@@ -142,7 +141,7 @@ export function AuditLogEntry({ log, isLast = false }: AuditLogEntryProps) {
                 {formattedDate}
               </span>
             </div>
-            <p className="mt-1 text-sm font-medium  text-white">
+            <p className="mt-1 text-sm font-medium text-white wrap-break-word">
               {log.description}
             </p>
           </div>

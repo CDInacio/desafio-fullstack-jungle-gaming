@@ -68,10 +68,12 @@ export const useDeleteTask = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => taskService.delete(id),
-    onSuccess: (_, taskId) => {
+    onSuccess: () => {
       toast.success("Tarefa deletada com sucesso!");
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 1000);
     },
   });
 };

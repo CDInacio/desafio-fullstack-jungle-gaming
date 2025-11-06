@@ -39,7 +39,7 @@ export function AuditLogsPage() {
     <Layout>
       <CenteredContainer>
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-sky-600 flex items-center justify-center">
                 <History className="w-5 h-5 text-white" />
@@ -87,7 +87,7 @@ export function AuditLogsPage() {
             )}
           </div>
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
+          <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4 sm:p-6">
             {isLoading && (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-zinc-500" />
@@ -114,7 +114,7 @@ export function AuditLogsPage() {
             )}
 
             {data && filteredLogs.length > 0 && (
-              <ScrollArea className="h-[600px] pr-4">
+              <ScrollArea className="max-h-[60vh] sm:h-[600px] pr-4">
                 <div className="space-y-1">
                   {filteredLogs.map((log, index) => (
                     <AuditLogEntry

@@ -27,10 +27,11 @@ export function AuditFilters({
   const hasFilters = action !== "all" || entityType !== "all";
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-      <div className="w-full sm:w-48">
+    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+      {/* Filtro de Ação */}
+      <div className="flex-1 min-w-[140px] sm:min-w-[180px]">
         <Select value={action} onValueChange={onActionChange}>
-          <SelectTrigger className="bg-zinc-900 border-zinc-800">
+          <SelectTrigger className="bg-zinc-900 border-zinc-800 w-full">
             <SelectValue placeholder="Todas as ações" />
           </SelectTrigger>
           <SelectContent>
@@ -44,9 +45,10 @@ export function AuditFilters({
         </Select>
       </div>
 
-      <div className="w-full sm:w-48">
+      {/* Filtro de Tipo */}
+      <div className="flex-1 min-w-[140px] sm:min-w-[180px]">
         <Select value={entityType} onValueChange={onEntityTypeChange}>
-          <SelectTrigger className="bg-zinc-900 border-zinc-800">
+          <SelectTrigger className="bg-zinc-900 border-zinc-800 w-full">
             <SelectValue placeholder="Todos os tipos" />
           </SelectTrigger>
           <SelectContent>
@@ -60,15 +62,17 @@ export function AuditFilters({
 
       {/* Botão Limpar Filtros */}
       {hasFilters && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClear}
-          className="text-zinc-400 hover:text-white"
-        >
-          <X className="w-4 h-4 mr-2" />
-          Limpar filtros
-        </Button>
+        <div className="w-full sm:w-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClear}
+            className="text-zinc-400 hover:text-white w-full sm:w-auto"
+          >
+            <X className="w-4 h-4 mr-2" />
+            Limpar filtros
+          </Button>
+        </div>
       )}
     </div>
   );

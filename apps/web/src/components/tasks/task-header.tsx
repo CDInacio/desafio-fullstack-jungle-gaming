@@ -34,7 +34,7 @@ export function TaskHeader() {
     <div className="flex items-start justify-between">
       <div className="flex items-start gap-4">
         {/* Ícone azul da task */}
-        <div className="w-12 h-12 rounded-lg bg-sky-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-lg bg-sky-600 flex items-center justify-center shrink-0">
           <FileText className="w-6 h-6 text-white" />
         </div>
 
@@ -69,7 +69,6 @@ export function TaskHeader() {
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              onClick={handleDeleteTask}
               variant="outline"
               size="sm"
               className="bg-transparent cursor-pointer border-zinc-700 hover:bg-red-600/30 hover:text-red-500 hover:border-red-500/50 text-zinc-400 transition-colors focus-visible:ring-2 focus-visible:ring-red-400"
