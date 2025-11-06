@@ -15,18 +15,6 @@
 
 ## 🎯 Sobre o Projeto
 
-[Descreva aqui o objetivo principal do projeto, o problema que ele resolve e suas principais funcionalidades]
-
-**Exemplo:**
-Este projeto foi desenvolvido como parte de um desafio técnico para a Jungle Gaming. O sistema permite [descreva as funcionalidades principais: gerenciamento de usuários, cadastro de produtos, etc.].
-
-## 🚀 Tecnologias Utilizadas
-
-### Backend
-
-- **React** - Framework Node.js para construção de aplicações server-side
-- **TypeScript** - Superset JavaScript com tipagem estática
-- **[Adicione outras: PostgreSQL, Redis, etc.]**
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -51,7 +39,6 @@ Este projeto foi desenvolvido como parte de um desafio técnico para a Jungle Ga
 - **React Query (TanStack Query)** – Gerenciamento de estado assíncrono e cache de dados
 - **shadcn/ui** – Componentes de UI acessíveis e estilizados
 - **TailwindCSS** – Framework utilitário para estilização rápida e consistente
-- **Next.js** _(opcional)_ – Framework React para renderização híbrida (SSR/SSG)
 
 ### DevOps / Infraestrutura
 
