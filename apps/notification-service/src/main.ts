@@ -3,9 +3,11 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { createWinstonLogger } from '@repo/shared/winston-logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = createWinstonLogger('Notification-Service');
 
   app.enableCors({
     origin: process.env.FRONTEND_ORIGIN || '*',
@@ -28,12 +30,12 @@ async function bootstrap() {
   app.useGlobalFilters(new ExceptionFilter());
 
   await app.startAllMicroservices();
-  Logger.log('🚀 Notification microservice connected to RabbitMQ');
+  logger.log(' Notification microservice connected to RabbitMQ', 'Bootstrap');
 
   const port = 3005;
 
   await app.listen(port);
-  Logger.log(
+  logger.log(
     `🚀 Notification Service is listening for messages on port ${port}`,
   );
 }

@@ -19,6 +19,10 @@
       "types": "./src/exceptions/rpc.ts",
       "default": "./dist/exceptions/rpc.js"
     },
+    "./winston-logger": {
+      "types": "./src/logger/winston.config.ts",
+      "default": "./dist/logger/winston.config.js"
+    },
     "./pagination": {
       "types": "./src/dto/pagination.dto.ts",
       "default": "./dist/dto/pagination.dto.js"

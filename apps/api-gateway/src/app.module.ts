@@ -8,6 +8,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -30,6 +31,13 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
           host: '127.0.0.1',
           port: 3001,
         },
+      },
+    ]),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 1000, // 1 segundo em milissegundos
+        limit: 10, // 10 requisições
       },
     ]),
     ClientsModule.register([

@@ -13,6 +13,7 @@ import {
   Put,
   Query,
   UseGuards,
+  type LoggerService,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE_TCP, TASK_SERVICE_RABBITMQ } from '@repo/shared/index';
@@ -23,15 +24,18 @@ import type {
 } from '@repo/shared/user';
 import { catchError, firstValueFrom, timeout } from 'rxjs';
 import { RefreshJwtGuard } from './guards/refresh-jwt-auth.guard';
+import { createWinstonLogger } from '@repo/shared/winston-logger';
 
 @Controller('api')
 export class AppController {
-  private readonly logger = new Logger(AppController.name);
+  private readonly logger: LoggerService;
 
   constructor(
     @Inject(TASK_SERVICE_RABBITMQ) private readonly taskClient: ClientProxy,
     @Inject(AUTH_SERVICE_TCP) private readonly authClient: ClientProxy,
-  ) {}
+  ) {
+    this.logger = createWinstonLogger('API-Gateway');
+  }
 
   // ============================= AUTHENTICATION & REGISTRATION =============================
 
@@ -49,6 +53,7 @@ export class AppController {
       if (result.error)
         throw new HttpException(result.error, HttpStatus.UNAUTHORIZED);
 
+      this.logger.log(`Usuário logado com sucesso.`);
       return { message: 'Login realizado com sucesso.', data: result };
     } catch (error) {
       this.logger.error('Falha ao realizar o login:', error);
@@ -85,7 +90,7 @@ export class AppController {
 
       if (result.error)
         throw new HttpException(result.error, HttpStatus.BAD_REQUEST);
-
+      this.logger.log('User registered successfully.');
       return { message: 'User registered successfully', data: result };
     } catch (error) {
       this.logger.error('Error in register:', error);

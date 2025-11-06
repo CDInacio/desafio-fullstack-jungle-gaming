@@ -15,16 +15,16 @@
 
 ## 🎯 Sobre o Projeto
 
+Esse projeto é um Sistema de Gestão de Tarefas Colaborativo, desenvolvido como desafio técnico full-stack para a vaga de Desenvolvedor Júnior na Jungle Gaming. O objetivo foi criar uma aplicação completa de gestão de tarefas colaborativa, com autenticação, CRUD de tarefas, comentários, atribuição de usuários, e notificações em tempo real — tudo estruturado em microserviços que se comunicam via RabbitMQ.
 
 ## 🚀 Tecnologias Utilizadas
 
 ### Backend
 
-- **Node.js** – Ambiente de execução JavaScript no servidor
+- **NestJS** – Framework Node.js progressivo para construção de APIs escaláveis
 - **TypeScript** – Superset do JavaScript com tipagem estática
 - **TypeORM** – ORM para modelagem e comunicação com o banco de dados
 - **PostgreSQL** – Banco de dados relacional principal
-- **Redis** – Armazenamento em cache e gerenciamento de filas
 - **JWT (JSON Web Token)** – Autenticação e controle de sessões seguras
 - **RabbitMQ** – Mensageria e comunicação assíncrona entre microsserviços
 - **Swagger** – Documentação interativa e automática da API
@@ -52,7 +52,7 @@
 
 ### Fluxo de Dados
 
-1. **Cliente** faz requisição para o frontend Next.js
+1. **Cliente** faz requisição para o frontend
 2. **Frontend** consome a API através do API Gateway
 3. **API Gateway** roteia requisições para os serviços apropriados
 4. **Serviços** processam a lógica de negócio e acessam o banco de dados
@@ -174,100 +174,64 @@ desafio-fullstack-jungle-gaming/
 
 ## 🤔 Decisões Técnicas e Trade-offs
 
-### Monorepo com Turborepo
+### Context API em vez de Zustand
 
-**Decisão:** Utilizar Turborepo para gerenciar múltiplas aplicações e pacotes compartilhados.
-
-**Vantagens:**
-
-- Compartilhamento de código entre frontend e backend
-- Build cache otimizado
-- Facilita a manutenção e versionamento
+**Decisão:** Utilizar React Context API para gerenciamento de estados globais, em vez de bibliotecas externas como Zustand.
 
 **Trade-offs:**
 
-- Maior complexidade inicial de configuração
-- Curva de aprendizado para desenvolvedores não familiarizados
-- Builds podem ser mais lentos em projetos muito grandes
+- Pode gerar re-renderizações desnecessárias em componentes complexos
+- Menos performático em estados globais muito grandes
 
-### NestJS como API Gateway
+### React Query (TanStack Query) em vez de useEffect + useState
 
-**Decisão:** Usar NestJS com arquitetura modular.
-
-**Vantagens:**
-
-- TypeScript nativo
-- Arquitetura escalável e testável
-- Excelente documentação e ecossistema
-
-**Trade-offs:**
-
-- Pode ser over-engineering para APIs simples
-- Requer conhecimento de decorators e injeção de dependências
-
-### Docker para Desenvolvimento
-
-**Decisão:** Containerizar todos os serviços.
+**Decisão:** Usar React Query para o gerenciamento de estado assíncrono e cache de dados, substituindo o uso manual de useEffect e useState para requisições.
 
 **Vantagens:**
 
-- Ambiente consistente entre desenvolvedores
-- Facilita deploy
-- Isolamento de dependências
+- Cache e sincronização automáticos
+- Revalidação de dados em segundo plano
 
 **Trade-offs:**
 
-- Overhead de recursos em máquinas com pouca RAM
-- Pode dificultar debugging em alguns casos
+- Curva de aprendizado maior no início
 
-### [ADICIONE SUAS PRÓPRIAS DECISÕES]
+### Não utilização do turbo prune
 
-**Exemplo:**
+**Decisão:** Optei por não utilizar o comando turbo prune nos builds do Docker, devido a dificuldades técnicas durante a configuração.
 
-- Por que escolheu PostgreSQL vs MongoDB?
-- Por que não usou GraphQL?
-- Por que escolheu essa biblioteca de UI específica?
+**Trade-offs:**
+
+- Imagens Docker maiores e builds mais lentos
 
 ## ⚠️ Problemas Conhecidos e Melhorias Futuras
 
 ### Problemas Conhecidos
 
-1. **[Descreva problemas que você identificou]**
-   - Exemplo: "Validação de formulários no frontend precisa ser melhorada"
-   - Exemplo: "Tratamento de erros na API ainda é genérico"
+1. **Builds Docker não otimizados**
+   - Os `Dockerfile` atuais não utilizam o comando `turbo prune`, o que aumenta o tamanho final das imagens e o tempo de build.
+   - **Impacto:** builds mais lentos e imagens mais pesadas do que o necessário.
 
-2. **Performance**
-   - Exemplo: "Consultas ao banco de dados sem paginação em algumas rotas"
-   - Exemplo: "Imagens não estão otimizadas"
+2. **Implementação do Refresh Token incompleta**
+   - O fluxo de **refresh token JWT** foi iniciado, mas ainda não está totalmente implementado.
+   - **Impacto:** sessões expiram após o tempo de validade do access token, exigindo novo login manual do usuário.
 
 ### Melhorias Futuras
 
-- [ ] **Testes:** Implementar testes unitários e E2E (cobertura atual: X%)
-- [ ] **CI/CD:** Configurar pipeline de integração e deploy contínuo
-- [ ] **Autenticação:** Implementar JWT refresh tokens
-- [ ] **Cache:** Adicionar Redis para cache de consultas frequentes
-- [ ] **Monitoramento:** Integrar ferramentas de observabilidade (Sentry, DataDog)
-- [ ] **Documentação:** Gerar documentação automática da API com Swagger
-- [ ] **SEO:** Otimizar meta tags e implementar sitemap
-- [ ] **Acessibilidade:** Melhorar score de acessibilidade (WCAG)
-- [ ] **Internacionalização:** Adicionar suporte a múltiplos idiomas
-- [ ] **[Adicione suas próprias melhorias]**
+- [ ] **Autenticação:** Finalizar o fluxo de refresh tokens JWT
+- [ ] **Builds Docker:** Otimizar Dockerfiles com `turbo prune`
 
-## ⏱️ Tempo de Desenvolvimento
+## ⏱️ Tempo de Desenvolvimento (aproximadamente)
 
-| Fase                      | Tempo Estimado | Descrição                                        |
-| ------------------------- | -------------- | ------------------------------------------------ |
-| **Setup Inicial**         | X horas        | Configuração do monorepo, Docker, estrutura base |
-| **Backend - API**         | X horas        | Desenvolvimento das rotas, serviços e validações |
-| **Backend - Database**    | X horas        | Modelagem, migrations e relacionamentos          |
-| **Frontend - UI**         | X horas        | Componentes, páginas e estilização               |
-| **Frontend - Integração** | X horas        | Consumo da API e gerenciamento de estado         |
-| **Testes**                | X horas        | Testes unitários e de integração                 |
-| **Docker & Deploy**       | X horas        | Configuração de containers e documentação        |
-| **Documentação**          | X horas        | README, comentários e documentação técnica       |
-| **TOTAL**                 | **X horas**    |                                                  |
-
-_Obs: Ajuste os tempos de acordo com sua experiência real_
+| Fase                      | Tempo Estimado | Descrição                                          |
+| ------------------------- | -------------- | -------------------------------------------------- |
+| **Setup Inicial**         | 4 horas        | Configuração do monorepo, Docker, estrutura base   |
+| **Backend - API**         | 25 horas       | Desenvolvimento das rotas, serviços e validações   |
+| **Backend - DB**          | 8 horas        | Modelagem, migrations e relacionamentos, entidades |
+| **Frontend - UI**         | 15 horas       | Componentes, páginas e estilização                 |
+| **Frontend - Integração** | 20 horas       | Consumo da API e gerenciamento de estado           |
+| **Documentação**          | 2 horas        | README, comentários e documentação técnica         |
+| **TOTAL**                 | **74 horas**   |                                                    |
 
 ## 📝 Instruções Específicas
 
@@ -321,12 +285,4 @@ npm run type-check
 **CDInacio**
 
 - GitHub: [@CDInacio](https://github.com/CDInacio)
-- [Adicione: LinkedIn, Email, etc.]
-
-## 📄 Licença
-
-[Especifique a licença do projeto - MIT, Apache, etc.]
-
----
-
-⭐ Se este projeto te ajudou, considere dar uma estrela!
+- Linkedin: [\claudio-dantas](https://www.linkedin.com/in/cl%C3%A1udio-dantas-520a1615b/)

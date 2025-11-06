@@ -26,10 +26,12 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-socket.io": "^11.1.8",
     "@nestjs/swagger": "^11.2.1",
+    "@nestjs/throttler": "^6.4.0",
     "@nestjs/websockets": "^11.1.8",
     "@repo/shared": "*",
     "amqp-connection-manager": "^5.0.0",
     "amqplib": "^0.10.9",
+    "nest-winston": "^1.10.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },

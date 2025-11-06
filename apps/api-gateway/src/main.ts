@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { createWinstonLogger } from '@repo/shared/winston-logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = createWinstonLogger('API-Gateway');
 
   const config = new DocumentBuilder()
     .setTitle('Documentação com Swagger - Desafio FullStack Jungle Gaming')
@@ -25,5 +27,6 @@ async function bootstrap() {
   SwaggerModule.setup('api-swagger', app, document);
 
   await app.listen(3002);
+  logger.log(' API Gateway is running on port 3002', 'Bootstrap');
 }
 bootstrap();
