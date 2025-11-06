@@ -5,7 +5,7 @@ import {
   Trash2,
   UserPlus,
 } from "lucide-react";
-import type { AuditLog, AuditAction } from "@/types/audit";
+import type { AuditLog } from "@/types/audit";
 
 interface AuditStatsProps {
   logs: AuditLog[];

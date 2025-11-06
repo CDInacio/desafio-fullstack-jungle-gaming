@@ -14,7 +14,6 @@ import {
   Send,
   ChevronLeftIcon,
   ChevronRightIcon,
-  MoreHorizontalIcon,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useAuth } from "@/context/auth-context";

@@ -1,4 +1,4 @@
-import axios, { type InternalAxiosRequestConfig, type AxiosError } from "axios";
+import axios, { type InternalAxiosRequestConfig } from "axios";
 import { AuthStorage } from "@/utils/auth-storage";
 
 export const api = axios.create({
