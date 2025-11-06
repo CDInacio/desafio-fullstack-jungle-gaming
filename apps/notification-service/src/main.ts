@@ -17,7 +17,7 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://user:password@localhost:5672'],
+      urls: ['amqp://user:password@rabbitmq:5672'],
       queue: 'notification_queue',
       queueOptions: {
         durable: true,

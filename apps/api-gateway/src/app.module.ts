@@ -45,7 +45,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         name: TASK_SERVICE_RABBITMQ,
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://user:password@localhost:5672'],
+          urls: ['amqp://user:password@rabbitmq:5672'],
           queue: 'task_queue',
           queueOptions: {
             durable: true,
