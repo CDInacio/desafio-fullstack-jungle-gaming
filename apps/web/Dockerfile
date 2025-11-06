@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:21-alpine AS base
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -28,16 +28,16 @@ RUN npm run build --workspace=web
 FROM base AS production
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN adduser --system --uid 1001 reactjs
 
 COPY --from=builder /app/apps/web/next.config.js ./apps/web/
 COPY --from=builder /app/apps/web/package.json ./apps/web/
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next ./apps/web/.next
+COPY --from=builder --chown=reactjs:nodejs /app/apps/web/.next ./apps/web/.next
 COPY --from=builder /app/apps/web/public ./apps/web/public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-USER nextjs
+USER reactjs
 
 EXPOSE 3000
 
