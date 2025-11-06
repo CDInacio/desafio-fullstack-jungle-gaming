@@ -18,30 +18,3 @@ ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
 CMD ["npm", "run", "dev", "--workspace=web"]
-
-FROM base AS builder
-
-COPY . .
-RUN npm ci
-RUN npm run build --workspace=web
-
-FROM base AS production
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 reactjs
-
-COPY --from=builder /app/apps/web/next.config.js ./apps/web/
-COPY --from=builder /app/apps/web/package.json ./apps/web/
-COPY --from=builder --chown=reactjs:nodejs /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-
-USER reactjs
-
-EXPOSE 3000
-
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-
-CMD ["npm", "run", "start", "--workspace=web"]

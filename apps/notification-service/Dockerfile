@@ -16,19 +16,3 @@ EXPOSE 3004
 
 CMD ["npm", "run", "dev", "--workspace=notification-service"]
 
-FROM base AS builder
-
-COPY . .
-RUN npm ci
-RUN npm run build --workspace=notification-service
-
-FROM base AS production
-
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/notification-service/dist ./apps/notification-service/dist
-COPY --from=builder /app/apps/notification-service/package.json ./apps/notification-service/
-
-EXPOSE 3004
-
-CMD ["node", "apps/notification-service/dist/main.js"]

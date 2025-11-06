@@ -16,19 +16,3 @@ EXPOSE 3003
 
 CMD ["npm", "run", "dev", "--workspace=task-service"]
 
-FROM base AS builder
-
-COPY . .
-RUN npm ci
-RUN npm run build --workspace=task-service
-
-FROM base AS production
-
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/task-service/dist ./apps/task-service/dist
-COPY --from=builder /app/apps/task-service/package.json ./apps/task-service/
-
-EXPOSE 3003
-
-CMD ["node", "apps/task-service/dist/main.js"]
